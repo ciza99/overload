@@ -12,6 +12,7 @@ import { userRouterFactory } from "components/user/user-router";
 import { sessionRouterFactory } from "components/session/session-router";
 import { sessionServiceFactory } from "components/session/session-service";
 import { sessionProceduresFactory } from "components/session/session-procedures";
+import { userProducersFactory } from "components/user/user-procedures";
 
 type AppFactoryProps = {
   config: AppConfig;
@@ -27,13 +28,14 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   const userService = userServiceFactory({ db });
   const sessionService = sessionServiceFactory({ db, config });
 
+  const userProducers = userProducersFactory({ userService });
   const sessionProcedures = sessionProceduresFactory({
     config,
     sessionService,
     userService,
   });
 
-  const userRouter = userRouterFactory({ userService });
+  const userRouter = userRouterFactory({ userProducers });
   const sessionRouter = sessionRouterFactory({ sessionProcedures });
 
   const router = routerFactory({ userRouter, sessionRouter });
