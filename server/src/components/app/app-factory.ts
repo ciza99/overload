@@ -6,7 +6,6 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { createContextFactory } from "utils/trpc";
 import { AppConfig } from "config/config-types";
 import { prismaFactory } from "utils/prisma-client";
-import { errorHandlerFactory } from "middlewares/error-handler-middleware";
 import { routerFactory } from "components/router/router";
 import { userServiceFactory } from "components/user/user-service";
 import { userRouterFactory } from "components/user/user-router";
@@ -22,7 +21,6 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   const app = express();
 
   const corsMiddleware = cors();
-  const errorHandler = errorHandlerFactory(config);
 
   const db = prismaFactory();
 
@@ -48,7 +46,6 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   app.use(corsMiddleware);
   app.use(cookieParser());
   app.use(trpc);
-  app.use(errorHandler);
 
   return app;
 };
