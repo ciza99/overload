@@ -5,6 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
 
+import { trpc } from "utils/trpc";
+import { useFormikValidation } from "hooks/use-formik-validation";
+import { KeyboardAvoidingBox } from "components/keyboard-avoiding-box/keyboard-avoiding-box";
 import {
   Typography,
   Paper,
@@ -15,29 +18,14 @@ import {
   SubmitButton,
   ScrollBox,
 } from "components/index";
-import { KeyboardAvoidingBox } from "components/keyboard-avoiding-box/keyboard-avoiding-box";
-import { trpc } from "trpc/index";
 
-import { signUpSchema } from "./sign-up-schema";
-
-export type SignUpFormValues = {
-  username: string;
-  email: string;
-  password: string;
-  repeatPassword: string;
-};
-
-const initialValues: SignUpFormValues = {
-  username: "mike",
-  email: "mike@gmail.com",
-  password: "test123",
-  repeatPassword: "test123",
-};
+import { SignupSchema, signUpSchema } from "./sign-up-schema";
 
 const AnimatedTypography = animated(Typography);
 
 export const SignUp = () => {
   const { navigate } = useNavigation();
+  const validate = useFormikValidation(signUpSchema);
 
   const { error, mutate, isLoading } = trpc.users.add.useMutation({
     onSuccess: () => {
@@ -46,7 +34,7 @@ export const SignUp = () => {
   });
 
   const onSubmit = useCallback(
-    (values: SignUpFormValues) => mutate(values),
+    (values: SignupSchema) => mutate(values),
     [mutate]
   );
 
@@ -69,9 +57,14 @@ export const SignUp = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        username: "mike",
+        email: "mike@gmail.com",
+        password: "test123",
+        repeatPassword: "test123",
+      }}
       onSubmit={onSubmit}
-      validationSchema={signUpSchema}
+      validate={validate}
     >
       <KeyboardAvoidingBox
         behavior="padding"

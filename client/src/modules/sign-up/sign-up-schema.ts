@@ -1,18 +1,25 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { passwordSchema } from "modules/login/login-schema";
 
-export const signUpSchema = yup
+export type SignupSchema = z.infer<typeof signUpSchema>;
+
+export const signUpSchema = z
   .object({
-    username: yup
-      .string()
-      .min(4, "Username is too short")
-      .required("Username is required"),
-    email: yup.string().email("Email is invalid").required("Email is required"),
+    username: z.string().min(4, "Username is too short"),
+    email: z.string().email("Email is invalid"),
     password: passwordSchema,
-    repeatPassword: yup
-      .string()
-      .required("Repeat password is required")
-      .oneOf([yup.ref("password")], "Passwords dont match"),
+    repeatPassword: z.string(),
   })
-  .required();
+  .required()
+  .superRefine(({ password, repeatPassword }, ctx) => {
+    if (password === repeatPassword) {
+      return;
+    }
+
+    ctx.addIssue({
+      code: "custom",
+      message: "Passwords don't match",
+      path: ["repeatPassword"],
+    });
+  });

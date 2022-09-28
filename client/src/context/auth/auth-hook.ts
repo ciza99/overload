@@ -4,7 +4,7 @@ import { User } from "models/user";
 
 import { tokenHandler } from "./token-handler";
 import { AuthContextType } from "./auth-types";
-import { trpc } from "trpc/index";
+import { trpc } from "utils/trpc";
 
 export const useAuthContext = (): AuthContextType => {
   const utils = trpc.useContext();
@@ -30,8 +30,6 @@ export const useAuthContext = (): AuthContextType => {
     () => utils.sessions.get.invalidate(),
     [utils.sessions.get]
   );
-
-  console.log({ user });
 
   const logout = useCallback(() => logoutMutation.mutate(), [logoutMutation]);
 

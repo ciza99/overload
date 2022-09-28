@@ -14,12 +14,25 @@ export const userRouterFactory = ({
   t.router({
     add: t.procedure
       .input(
-        z.object({
-          username: z.string().min(4),
-          email: z.string().email(),
-          password: z.string().min(4),
-          repeatPassword: z.string().min(4),
-        })
+        z
+          .object({
+            username: z.string().min(4),
+            email: z.string().email(),
+            password: z.string().min(4),
+            repeatPassword: z.string().min(4),
+          })
+          .required()
+          .superRefine(({ password, repeatPassword }, ctx) => {
+            if (password === repeatPassword) {
+              return;
+            }
+
+            ctx.addIssue({
+              code: "custom",
+              message: "Passwords don't match",
+              path: ["repeatPassword"],
+            });
+          })
       )
       .mutation(async ({ input }) => {
         await userService.checkUsernameOrEmailTaken(input);

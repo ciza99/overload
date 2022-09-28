@@ -12,7 +12,7 @@ import {
 } from "@expo-google-fonts/poppins";
 import Constants from "expo-constants";
 
-import { trpc } from "trpc/index";
+import { trpc } from "utils/trpc";
 import { themeConfig } from "constants/theme-config";
 import { ThemeProvider } from "context/theme/theme-provider";
 import { AuthProvider } from "context/auth/auth-provider";
@@ -22,7 +22,8 @@ import { useState } from "react";
 
 const { manifest } = Constants;
 
-const url = manifest?.packagerOpts?.dev
+const isDevelompent = manifest?.packagerOpts?.dev;
+const url = isDevelompent
   ? `http://192.168.1.100:8080`
   : `http://overload-api.com`;
 
@@ -36,10 +37,7 @@ const App = () => {
     Poppins_800ExtraBold,
   });
   const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        logger: console,
-      })
+    () => new QueryClient(isDevelompent ? { logger: console } : undefined)
   );
   const [trpcClient] = useState(() =>
     trpc.createClient({

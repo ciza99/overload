@@ -15,7 +15,7 @@ module.exports = function (api) {
             models: "./src/models",
             types: "./src/types",
             api: "./src/api",
-            trpc: "./src/trpc",
+            utils: "./src/utils",
             src: "./src",
           },
         },

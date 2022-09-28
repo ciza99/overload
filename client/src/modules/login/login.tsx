@@ -1,11 +1,9 @@
 import { useCallback } from "react";
 import { Keyboard } from "react-native";
-import { useMutation } from "@tanstack/react-query";
-import { AxiosError, AxiosResponse } from "axios";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { animated, useTransition } from "@react-spring/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
+import { useNavigation } from "@react-navigation/native";
 
 import {
   Box,
@@ -20,33 +18,23 @@ import {
   KeyboardAvoidingBox,
 } from "components/index";
 import { Divider } from "components/divider/divider";
-import { useAuth } from "context/auth/auth-context";
 import { tokenHandler } from "context/auth/token-handler";
+import { trpc } from "utils/trpc";
 
-import { loginSchema } from "./login-schema";
-import { useNavigation } from "@react-navigation/native";
-import { trpc } from "trpc/index";
-
-export type LoginFormValues = {
-  email: string;
-  password: string;
-};
-
-const initialValues: LoginFormValues = {
-  email: "mike@gmail.com",
-  password: "test123",
-};
+import { LoginSchema, loginSchema } from "./login-schema";
+import { useFormikValidation } from "hooks/use-formik-validation";
 
 const AnimatedTypography = animated(Typography);
 
 export const Login = () => {
-  const { reauthenticate } = useAuth();
   const { navigate } = useNavigation();
+  const validate = useFormikValidation(loginSchema);
+  const utils = trpc.useContext();
 
   const { error, mutate, isLoading } = trpc.sessions.login.useMutation({
     onSuccess: ({ token }) => {
       tokenHandler.setToken(token);
-      reauthenticate();
+      utils.sessions.get.invalidate();
     },
     onError: () => {
       // TODO: show popup
@@ -54,7 +42,7 @@ export const Login = () => {
   });
 
   const onSubmit = useCallback(
-    (values: LoginFormValues) => mutate(values),
+    (values: LoginSchema) => mutate(values),
     [mutate]
   );
 
@@ -77,9 +65,12 @@ export const Login = () => {
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        email: "mike@gmail.com",
+        password: "test123",
+      }}
       onSubmit={onSubmit}
-      validationSchema={loginSchema}
+      validate={validate}
     >
       <TouchableNoFeedback onPress={Keyboard.dismiss} sx={{ mx: 3, flex: 1 }}>
         <KeyboardAvoidingBox
