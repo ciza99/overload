@@ -1,0 +1,9 @@
+{
+  "preset": "ts-jest",
+  "coverageDirectory": "./test/coverage",
+  "resetMocks": true,
+  "clearMocks": true,
+  "moduleDirectories": ["node_modules", "src"],
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "src"
+}

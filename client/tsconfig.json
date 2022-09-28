@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "components/*": ["./src/components/*"],
+      "context/*": ["./src/context/*"],
+      "constants/*": ["./src/constants/*"],
+      "hooks/*": ["./src/hooks/*"],
+      "modules/*": ["./src/modules/*"],
+      "models/*": ["./src/models/*"],
+      "types/*": ["./src/types/*"],
+      "api/*": ["./src/api/*"],
+      "trpc/*": ["./src/trpc/*"],
+      "src/*": ["./src/*"]
+    }
+  },
+  "references": [{ "path": "../server" }],
+  "extends": "expo/tsconfig.base"
+}

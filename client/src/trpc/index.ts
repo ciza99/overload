@@ -1,0 +1,4 @@
+import { createTRPCReact } from "@trpc/react";
+import type { TRPCRouter } from "../../../server/src/components/router/trpc-router";
+
+export const trpc = createTRPCReact<TRPCRouter>();
