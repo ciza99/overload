@@ -1,4 +1,4 @@
-import { NavigationParamMap } from "src/modules/router/router-types";
+import { NavigationParamMap } from "pages/index";
 
 declare global {
   namespace ReactNavigation {

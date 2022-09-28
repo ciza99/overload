@@ -1,5 +1,5 @@
-import { neutral } from "context/theme/colors/colors";
-import { ThemeConfig } from "context/theme/theme-types";
+import { ThemeConfig } from "components/theme/theme-types";
+import { neutral } from "components/theme/colors/colors";
 
 export const themeConfig: ThemeConfig = {
   breakpoints: {

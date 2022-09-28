@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
+import { httpBatchLink, TRPCLink } from "@trpc/client";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   useFonts,
@@ -12,13 +12,13 @@ import {
 } from "@expo-google-fonts/poppins";
 import Constants from "expo-constants";
 
-import { trpc } from "utils/trpc";
+import { AppRouter, trpc } from "utils/trpc";
+import { tokenHandler } from "utils/token-handler";
 import { themeConfig } from "constants/theme-config";
-import { ThemeProvider } from "context/theme/theme-provider";
-import { AuthProvider } from "context/auth/auth-provider";
-import { tokenHandler } from "context/auth/token-handler";
-import { Router } from "modules/router/router";
+import { ThemeProvider } from "components/theme/theme-provider";
+import { Router } from "pages/index";
 import { useState } from "react";
+import { observable } from "@trpc/server/observable";
 
 const { manifest } = Constants;
 
@@ -26,6 +26,35 @@ const isDevelompent = manifest?.packagerOpts?.dev;
 const url = isDevelompent
   ? `http://192.168.1.100:8080`
   : `http://overload-api.com`;
+
+type Response = {
+  headers?: {
+    map?: Record<string, string>;
+  };
+};
+
+export const authTokenLink: TRPCLink<AppRouter> = () => {
+  return ({ next, op }) => {
+    return observable((observer) => {
+      const unsubscribe = next(op).subscribe({
+        next: (value) => {
+          const response = value.context?.response as Response;
+          const headers = response?.headers?.map;
+          const token = headers?.["token"];
+
+          if (token) {
+            tokenHandler.setToken(token);
+          }
+          observer.next(value);
+        },
+        error: (err) => observer.error(err),
+        complete: () => observer.complete(),
+      });
+
+      return unsubscribe;
+    });
+  };
+};
 
 const App = () => {
   const [fontsLoaded] = useFonts({
@@ -36,12 +65,11 @@ const App = () => {
     Poppins_700Bold,
     Poppins_800ExtraBold,
   });
-  const [queryClient] = useState(
-    () => new QueryClient(isDevelompent ? { logger: console } : undefined)
-  );
+  const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
+        authTokenLink,
         httpBatchLink({
           url,
           headers: () => {
@@ -65,9 +93,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
           <ThemeProvider config={themeConfig}>
-            <AuthProvider>
-              <Router />
-            </AuthProvider>
+            <Router />
           </ThemeProvider>
         </NavigationContainer>
       </QueryClientProvider>

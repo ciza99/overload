@@ -1,4 +1,4 @@
-import { RouteKey } from "modules/router/router-types";
+import { RouteKey } from "pages/index";
 
 type RouteConfig<TRouteKey extends RouteKey> = {
   key: TRouteKey;
