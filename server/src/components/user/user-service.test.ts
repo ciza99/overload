@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 
 import { userServiceFactory } from "./user-service";
-import { UserService } from "./user-service-types";
+import { UserService } from "./user-service";
 
 describe("UserService", () => {
   describe("checkUsernameOrEmailTaken", () => {

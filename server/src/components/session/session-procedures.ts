@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { t } from "trpc";
+import { t } from "utils/trpc";
 import { createUserDto } from "components/user/user-utils";
-import { UserService } from "components/user/user-service/user-service-types";
+import { UserService } from "components/user/user-service";
 import { AppConfig } from "config/config-types";
-import { AuthMiddleware } from "middlewares/auth-middleware";
+import { authMiddleware } from "middlewares/auth-middleware";
 
 import { createLoginError } from "./session-errors";
 import { SessionService } from "./session-service";
@@ -14,13 +14,11 @@ export type SessionProcedures = ReturnType<typeof sessionProceduresFactory>;
 export const sessionProceduresFactory = ({
   config,
   sessionService,
-  authMiddleware,
   userService,
 }: {
   config: AppConfig;
   sessionService: SessionService;
   userService: UserService;
-  authMiddleware: AuthMiddleware;
 }) => ({
   get: t.procedure.use(authMiddleware).query(({ ctx }) => {
     const { user } = ctx;

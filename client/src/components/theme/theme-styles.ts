@@ -64,7 +64,6 @@ type UseStylesType<Props, MapKey extends string> = keyof Props extends never
     (props?: any) => StyleMap<MapKey>
   : (props: Props) => StyleMap<MapKey>;
 
-// optimize for functions that dont need theme? (dont sign up for context updates, will it be a benefit anywat - theme doesnt update much ?)
 export const makeStyles =
   <Props = object, MapKey extends string = string>(
     createStyleMapFactory: CreateStyleMapFnc<Props, MapKey>

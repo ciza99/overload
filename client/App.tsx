@@ -42,6 +42,7 @@ export const authTokenLink: TRPCLink<AppRouter> = () => {
           const headers = response?.headers?.map;
           const token = headers?.["token"];
 
+          // update the token when recieved from the server (refresh token flow)
           if (token) {
             tokenHandler.setToken(token);
           }

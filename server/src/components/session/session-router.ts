@@ -1,4 +1,4 @@
-import { t } from "trpc";
+import { t } from "utils/trpc";
 
 import { SessionProcedures } from "./session-procedures";
 
@@ -8,13 +8,4 @@ export const sessionRouterFactory = ({
   sessionProcedures,
 }: {
   sessionProcedures: SessionProcedures;
-}) => {
-  const { get, login, logout, refreshAuthToken } = sessionProcedures;
-
-  return t.router({
-    get,
-    login,
-    logout,
-    refreshAuthToken,
-  });
-};
+}) => t.router(sessionProcedures);

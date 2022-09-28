@@ -1,18 +1,20 @@
-import { Router } from "express";
+import { UserRouter } from "components/user/user-router";
+import { SessionRouter } from "components/session/session-router";
+
+import { t } from "utils/trpc";
 
 type RouterFactoryProps = {
-  userRouter: Router;
-  sessionRouter: Router;
+  userRouter: UserRouter;
+  sessionRouter: SessionRouter;
 };
 
 export const routerFactory = ({
   userRouter,
   sessionRouter,
-}: RouterFactoryProps) => {
-  const router = Router();
+}: RouterFactoryProps) =>
+  t.router({
+    users: userRouter,
+    sessions: sessionRouter,
+  });
 
-  router.use("/users", userRouter);
-  router.use("/session", sessionRouter);
-
-  return router;
-};
+export type TRPCRouter = ReturnType<typeof routerFactory>;
