@@ -1,8 +1,11 @@
 import dotenv from "dotenv";
 
 import { AppConfig } from "./config-types";
-import { processEnvVariable } from "./process-env-variable";
-import { processNodeEnvironment, processNumberFactory } from "./utils";
+import {
+  processNodeEnvironment,
+  processNumberFactory,
+  processEnvVariable,
+} from "./config-utils";
 
 export const createAppConfig = (): AppConfig => {
   dotenv.config();

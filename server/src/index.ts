@@ -1,5 +1,5 @@
 import { appFactory } from "components/app/app-factory";
-import { createAppConfig } from "config/config";
+import { createAppConfig } from "config/app-config";
 
 const config = createAppConfig();
 const app = appFactory({ config });
