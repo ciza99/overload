@@ -28,9 +28,7 @@ export const userServiceFactory = ({ db }: { db: PrismaClient }) => {
       where: { email: { equals: email } },
     });
 
-    if (!user && error) {
-      throw error instanceof Function ? error() : error;
-    }
+    if (!user && error) throw error instanceof Function ? error() : error;
 
     return user;
   };
@@ -41,9 +39,7 @@ export const userServiceFactory = ({ db }: { db: PrismaClient }) => {
   ): Promise<any> => {
     const user = await db.user.findFirst({ where: { username } });
 
-    if (!user && error) {
-      throw error instanceof Function ? error() : error;
-    }
+    if (!user && error) throw error instanceof Function ? error() : error;
 
     return user;
   };
@@ -58,13 +54,8 @@ export const userServiceFactory = ({ db }: { db: PrismaClient }) => {
 
     const { username: foundUsername, email: foundEmail } = user ?? {};
 
-    if (username === foundUsername) {
-      throw createUsernameTakenError();
-    }
-
-    if (email === foundEmail) {
-      throw createEmailTakenError();
-    }
+    if (username === foundUsername) throw createUsernameTakenError();
+    if (email === foundEmail) throw createEmailTakenError();
   };
 
   const registerUser = async ({

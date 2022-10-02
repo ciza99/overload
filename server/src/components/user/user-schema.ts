@@ -11,9 +11,7 @@ export const addUserSchema = z
   })
   .required()
   .superRefine(({ password, repeatPassword }, ctx) => {
-    if (password === repeatPassword) {
-      return;
-    }
+    if (password === repeatPassword) return;
 
     ctx.addIssue({
       code: "custom",

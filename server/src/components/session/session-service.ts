@@ -21,9 +21,7 @@ export const sessionServiceFactory = ({
   async validatePassword(user: User, password: string) {
     const valid = await verify(user.password, password);
 
-    if (!valid) {
-      throw createLoginError();
-    }
+    if (!valid) throw createLoginError();
   },
 
   issueJwtToken({ id }: User, expirationTime: number) {
@@ -71,9 +69,7 @@ export const sessionServiceFactory = ({
   },
 
   async rotateRefreshToken(token: string | undefined, expirationTime: number) {
-    if (!token) {
-      throw createUnauthorizedError();
-    }
+    if (!token) throw createUnauthorizedError();
 
     const hashedToken = await this.hashRefreshToken(token);
 
@@ -82,9 +78,7 @@ export const sessionServiceFactory = ({
       include: { user: true },
     });
 
-    if (!refreshToken) {
-      throw createUnauthorizedError();
-    }
+    if (!refreshToken) throw createUnauthorizedError();
 
     const { user } = refreshToken;
 

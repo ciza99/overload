@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { inferAsyncReturnType, initTRPC } from "@trpc/server";
 import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import { TokenExpiredError, verify } from "jsonwebtoken";
-
 import { SessionService } from "components/session/session-service";
 import { JwtTokenPayload } from "components/session/session-types";
 import { AppConfig } from "config/config-types";
@@ -52,28 +51,20 @@ export const createContextFactory =
 
     const authHeader = req.headers["authorization"];
 
-    if (!authHeader) {
-      return refreshTokenFnc();
-    }
+    if (!authHeader) return refreshTokenFnc();
 
     const [method, token] = authHeader.split(" ") as (string | undefined)[];
-    if (method !== "Bearer" || !token?.length) {
-      return { req, res };
-    }
+    if (method !== "Bearer" || !token?.length) return { req, res };
 
     try {
       const { id } = verify(token, config.jwtSecret) as JwtTokenPayload;
       const user = await db.user.findFirst({ where: { id } });
 
-      if (!user) {
-        return { req, res };
-      }
+      if (!user) return { req, res };
 
       return { user, req, res };
     } catch (err) {
-      if (!(err instanceof TokenExpiredError)) {
-        return { req, res };
-      }
+      if (!(err instanceof TokenExpiredError)) return { req, res };
 
       return refreshTokenFnc();
     }

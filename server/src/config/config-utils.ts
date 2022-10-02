@@ -7,22 +7,14 @@ export const processEnvVariable: ProcessEnvVariable = ({ key, ...props }) => {
   if ("required" in props) {
     const { processValue } = props;
 
-    if (!value) {
-      throw new Error(`environment variable ${key} is required!`);
-    }
+    if (!value) throw new Error(`environment variable ${key} is required!`);
 
     return processValue?.({ key, value }) ?? value;
   }
 
-  if ("processValue" in props) {
-    const { processValue } = props;
-    return processValue({ key, value });
-  }
+  if ("processValue" in props) return props.processValue({ key, value });
 
-  if ("defaultValue" in props) {
-    const { defaultValue } = props;
-    return value ?? defaultValue;
-  }
+  if ("defaultValue" in props) return value ?? props.defaultValue;
 
   return value;
 };
@@ -30,24 +22,19 @@ export const processEnvVariable: ProcessEnvVariable = ({ key, ...props }) => {
 export const processNumberFactory =
   (defaultValue: number) =>
   ({ key, value }: ProcessValueProps<string | undefined>) => {
-    if (!value) {
-      return defaultValue;
-    }
+    if (!value) return defaultValue;
 
     const parsed = parseInt(value);
-    if (isNaN(parsed)) {
-      throw new Error(`invalid value for variable ${key}`);
-    }
+    if (isNaN(parsed)) throw new Error(`invalid value for variable ${key}`);
 
     return parsed;
   };
 
 export const processNodeEnvironment = ({
   value,
-}: ProcessValueProps<string | undefined>): NodeEnvironment => {
-  return value === "production"
+}: ProcessValueProps<string | undefined>): NodeEnvironment =>
+  value === "production"
     ? "production"
     : value === "test"
     ? "test"
     : "development";
-};
