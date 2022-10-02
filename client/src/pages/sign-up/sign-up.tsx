@@ -5,8 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
 
-import { trpc } from "utils/trpc";
-import { useFormikValidation } from "hooks/use-formik-validation";
+import { trpc } from "@utils/trpc";
+import { useFormikValidation } from "@hooks/use-formik-validation";
 import {
   Typography,
   Paper,
@@ -17,7 +17,7 @@ import {
   SubmitButton,
   ScrollBox,
   KeyboardAvoidingBox,
-} from "components/common/index";
+} from "@components/common";
 
 import { SignupSchema, signUpSchema } from "./sign-up-schema";
 
@@ -28,9 +28,7 @@ export const SignUp = () => {
   const validate = useFormikValidation(signUpSchema);
 
   const { error, mutate, isLoading } = trpc.users.add.useMutation({
-    onSuccess: () => {
-      navigate("login");
-    },
+    onSuccess: () => navigate("login"),
   });
 
   const onSubmit = useCallback(

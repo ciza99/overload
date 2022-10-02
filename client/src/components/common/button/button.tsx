@@ -2,13 +2,13 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
 import { animated, useSpring, useTransition } from "@react-spring/native";
 
-import { ThemeConfig } from "components/theme/theme-types";
-import { Box } from "components/common/box/box";
-import { Stack } from "components/common/stack/stack";
-import { SxProp } from "components/theme/sx/sx-types";
-import { useTheme } from "components/theme/theme-context";
-import { Typography } from "components/common/typography/typography";
-import { Spinner } from "components/common/spinner/spinner";
+import { ThemeConfig } from "@components/theme/theme-types";
+import { Box } from "@components/common/box/box";
+import { Stack } from "@components/common/stack/stack";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { useTheme } from "@components/theme";
+import { Typography } from "@components/common/typography/typography";
+import { Spinner } from "@components/common/spinner/spinner";
 
 export type ButtonProps = {
   children?: ReactNode;

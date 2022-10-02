@@ -1,9 +1,9 @@
 import { animated, useSpring } from "@react-spring/native";
 import { StyleProp, ViewStyle } from "react-native";
 
-import { Box } from "components/common/box/box";
-import { SxProp } from "components/theme/sx/sx-types";
-import { Theme } from "components/theme/theme-types";
+import { Box } from "@components/common/box/box";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { Theme } from "@components/theme";
 
 type Props = {
   scale?: number;

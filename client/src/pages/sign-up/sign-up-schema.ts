@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { passwordSchema } from "src/pages/login/login-schema";
+import { passwordSchema } from "@pages/login/login-schema";
 
 export type SignupSchema = z.infer<typeof signUpSchema>;
 
@@ -13,9 +13,7 @@ export const signUpSchema = z
   })
   .required()
   .superRefine(({ password, repeatPassword }, ctx) => {
-    if (password === repeatPassword) {
-      return;
-    }
+    if (password === repeatPassword) return;
 
     ctx.addIssue({
       code: "custom",

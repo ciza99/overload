@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCLink } from "@trpc/client";
 import { NavigationContainer } from "@react-navigation/native";
@@ -10,15 +11,14 @@ import {
   Poppins_700Bold,
   Poppins_800ExtraBold,
 } from "@expo-google-fonts/poppins";
+import { observable } from "@trpc/server/observable";
 import Constants from "expo-constants";
 
-import { AppRouter, trpc } from "utils/trpc";
-import { tokenHandler } from "utils/token-handler";
-import { themeConfig } from "constants/theme-config";
-import { ThemeProvider } from "components/theme/theme-provider";
-import { Router } from "pages/index";
-import { useState } from "react";
-import { observable } from "@trpc/server/observable";
+import { AppRouter, trpc } from "@utils/trpc";
+import { tokenHandler } from "@utils/token-handler";
+import { themeConfig } from "@constants/theme-config";
+import { ThemeProvider } from "@components/theme";
+import { Router } from "@pages";
 
 const { manifest } = Constants;
 
@@ -43,9 +43,7 @@ export const authTokenLink: TRPCLink<AppRouter> = () => {
           const token = headers?.["token"];
 
           // update the token when recieved from the server (refresh token flow)
-          if (token) {
-            tokenHandler.setToken(token);
-          }
+          if (token) tokenHandler.setToken(token);
           observer.next(value);
         },
         error: (err) => observer.error(err),
@@ -85,9 +83,7 @@ const App = () => {
     })
   );
 
-  if (!fontsLoaded) {
-    return;
-  }
+  if (!fontsLoaded) return;
 
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>

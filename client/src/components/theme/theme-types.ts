@@ -33,13 +33,3 @@ export type ThemeConfig = {
     [Key in Breakpoint]: number;
   };
 };
-
-type BreakpointFnc = (breakpoint: Breakpoint) => string;
-
-export type Theme = Omit<ThemeConfig, "spacing" | "breakpoints"> & {
-  spacing: (factor: number) => number;
-  breakpoints: {
-    up: BreakpointFnc;
-    down: BreakpointFnc;
-  };
-};

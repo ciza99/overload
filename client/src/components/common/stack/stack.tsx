@@ -1,7 +1,7 @@
 import { ViewProps, ViewStyle } from "react-native";
 
-import { Box } from "components/common/box/box";
-import { SxProp } from "components/theme/sx/sx-types";
+import { Box } from "@components/common/box/box";
+import { SxProp } from "@components/theme/sx/sx-types";
 
 export type StackProps = ViewProps & {
   direction?: "row" | "column";

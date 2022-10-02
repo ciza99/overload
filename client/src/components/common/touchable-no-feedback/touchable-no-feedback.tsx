@@ -5,8 +5,8 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { SxProp } from "components/theme/sx/sx-types";
-import { Box } from "components/common/box/box";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { Box } from "@components/common/box/box";
 
 type TouchableNoFeedbackProps = TouchableWithoutFeedbackProps & {
   sx?: SxProp<ViewStyle>;

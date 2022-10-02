@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { useField } from "formik";
 
-import { Box } from "components/common/box/box";
-import { NativeNode } from "components/common/native-node/native-node";
-import { Typography } from "components/common/typography/typography";
-import { SxProp } from "components/theme/sx/sx-types";
-import { useSxStyle } from "components/theme/sx/sx-hook";
-import { useTheme } from "components/theme/theme-context";
+import { Box } from "@components/common/box/box";
+import { NativeNode } from "@components/common/native-node/native-node";
+import { Typography } from "@components/common/typography/typography";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { useSxStyle } from "@components/theme/sx/use-sx-style";
+import { useTheme } from "@components/theme";
 
 type TextFieldProps = Omit<
   TextInputProps,

@@ -1,12 +1,12 @@
+import { forwardRef } from "react";
 import {
   KeyboardAvoidingView,
   KeyboardAvoidingViewProps,
   ViewStyle,
 } from "react-native";
 
-import { forwardRef } from "react";
-import { SxProp } from "components/theme/sx/sx-types";
-import { useSxStyle } from "components/theme/sx/sx-hook";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { useSxStyle } from "@components/theme/sx/use-sx-style";
 
 type KeyboardAvoidingBoxProps = KeyboardAvoidingViewProps & {
   sx?: SxProp<ViewStyle>;

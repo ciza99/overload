@@ -1,8 +1,8 @@
+import { forwardRef } from "react";
 import { ScrollViewProps, ScrollView, ViewStyle } from "react-native";
 
-import { forwardRef } from "react";
-import { SxProp } from "components/theme/sx/sx-types";
-import { useSxStyle } from "components/theme/sx/sx-hook";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { useSxStyle } from "@components/theme/sx/use-sx-style";
 
 type ScrollBoxProps = ScrollViewProps & {
   sx?: SxProp<ViewStyle>;

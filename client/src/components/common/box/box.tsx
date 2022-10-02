@@ -1,8 +1,8 @@
+import { forwardRef } from "react";
 import { View, ViewProps, ViewStyle } from "react-native";
 
-import { forwardRef } from "react";
-import { SxProp } from "components/theme/sx/sx-types";
-import { useSxStyle } from "components/theme/sx/sx-hook";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { useSxStyle } from "@components/theme/sx/use-sx-style";
 
 type BoxProps = ViewProps & {
   sx?: SxProp<ViewStyle>;

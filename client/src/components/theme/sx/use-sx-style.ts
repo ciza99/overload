@@ -1,9 +1,8 @@
 import { useMemo } from "react";
 
-import { Falsy } from "types/common";
+import { Falsy } from "@src/types/common";
 
-import { useTheme } from "../theme-context";
-import { Theme } from "../theme-types";
+import { useTheme, Theme } from "..";
 import { transformations } from "./sx-constants";
 import { AnyStyle, SxProp, SxStyle } from "./sx-types";
 
@@ -18,9 +17,7 @@ const applyThemeStyles = <Style extends AnyStyle>(
     ];
     const transformation = transformations[key];
 
-    if (!transformation) {
-      return { ...acc, [key]: value };
-    }
+    if (!transformation) return { ...acc, [key]: value };
 
     const newValue = transformation({ key, value, theme } as never);
 
@@ -28,9 +25,8 @@ const applyThemeStyles = <Style extends AnyStyle>(
       typeof newValue === "object" &&
       !Array.isArray(newValue) &&
       newValue !== null
-    ) {
+    )
       return { ...acc, ...newValue };
-    }
 
     return { ...acc, [key]: newValue };
   }, {} as Style);
@@ -39,17 +35,12 @@ const traverseSxProp = <Style extends AnyStyle>(
   sxProp: SxProp<Style>,
   theme: Theme
 ): Style | Falsy => {
-  if (!sxProp) {
-    return sxProp;
-  }
+  if (!sxProp) return sxProp;
 
-  if (!Array.isArray(sxProp) && !(sxProp instanceof Function)) {
+  if (!Array.isArray(sxProp) && !(sxProp instanceof Function))
     return applyThemeStyles(sxProp, theme);
-  }
 
-  if (!Array.isArray(sxProp)) {
-    return traverseSxProp(sxProp(theme), theme);
-  }
+  if (!Array.isArray(sxProp)) return traverseSxProp(sxProp(theme), theme);
 
   return sxProp.reduce<Style>(
     (acc, subSxProp) => ({ ...acc, ...traverseSxProp(subSxProp, theme) }),

@@ -1,4 +1,4 @@
-import { RouteKey } from "pages/index";
+import { RouteKey } from "@pages";
 
 type RouteConfig<TRouteKey extends RouteKey> = {
   key: TRouteKey;

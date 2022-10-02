@@ -1,6 +1,6 @@
 import { StyleProp, ViewStyle } from "react-native";
 
-import { SxProp } from "components/theme/sx/sx-types";
+import { SxProp } from "@components/theme/sx/sx-types";
 
 import { Box } from "../box/box";
 

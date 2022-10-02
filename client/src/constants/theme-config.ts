@@ -1,5 +1,4 @@
-import { ThemeConfig } from "components/theme/theme-types";
-import { neutral } from "components/theme/colors/colors";
+import { ThemeConfig } from "@components/theme/theme-types";
 
 export const themeConfig: ThemeConfig = {
   breakpoints: {
@@ -13,7 +12,7 @@ export const themeConfig: ThemeConfig = {
     secondary: "#429A95",
     text: "white",
     background: "#191A1C",
-    paper: neutral[800],
+    paper: "#121212",
     divider: "rgba(255, 255, 255, 0.5)",
     muted: "rgba(255, 255, 255, 0.5)",
     danger: "#d13f34",

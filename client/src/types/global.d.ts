@@ -1,4 +1,4 @@
-import { NavigationParamMap } from "pages/index";
+import { NavigationParamMap } from "@pages";
 
 declare global {
   namespace ReactNavigation {

@@ -17,12 +17,12 @@ import {
   SubmitButton,
   KeyboardAvoidingBox,
   Divider,
-} from "components/common/index";
-import { tokenHandler } from "utils/token-handler";
-import { trpc } from "utils/trpc";
+} from "@components/common";
+import { tokenHandler } from "@utils/token-handler";
+import { trpc } from "@utils/trpc";
+import { useFormikValidation } from "@hooks/use-formik-validation";
 
 import { LoginSchema, loginSchema } from "./login-schema";
-import { useFormikValidation } from "hooks/use-formik-validation";
 
 const AnimatedTypography = animated(Typography);
 

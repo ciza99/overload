@@ -1,8 +1,8 @@
+import { useCallback } from "react";
 import { useFormikContext } from "formik";
 import { GestureResponderEvent } from "react-native";
 
-import { ButtonProps, Button } from "components/common/button/button";
-import { useCallback } from "react";
+import { ButtonProps, Button } from "@components/common/button/button";
 
 export const SubmitButton = ({ onPress, ...rest }: ButtonProps) => {
   const { submitForm } = useFormikContext();

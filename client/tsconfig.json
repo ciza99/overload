@@ -1,16 +1,25 @@
 {
   "compilerOptions": {
     "strict": true,
+    "module": "commonjs",
     "paths": {
-      "components/*": ["./src/components/*"],
-      "constants/*": ["./src/constants/*"],
-      "hooks/*": ["./src/hooks/*"],
-      "pages/*": ["./src/pages/*"],
-      "models/*": ["./src/models/*"],
-      "types/*": ["./src/types/*"],
-      "api/*": ["./src/api/*"],
-      "utils/*": ["./src/utils/*"],
-      "src/*": ["./src/*"]
+      "@components": ["./src/components"],
+      "@constants": ["./src/constants"],
+      "@hooks": ["./src/hooks"],
+      "@pages": ["./src/pages"],
+      "@models": ["./src/models"],
+      "@api": ["./src/api"],
+      "@utils": ["./src/utils"],
+      "@src": ["./src"],
+
+      "@components/*": ["./src/components/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@models/*": ["./src/models/*"],
+      "@api/*": ["./src/api/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@src/*": ["./src/*"]
     }
   },
   "references": [{ "path": "../server" }],

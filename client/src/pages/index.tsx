@@ -1,14 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Spinner, Box } from "components/common/index";
-import { Login } from "pages/login/login";
-import { screens } from "constants/screens";
-import { useTheme } from "components/theme/theme-context";
-import { Home } from "pages/home/home";
-import { SignUp } from "pages/sign-up/sign-up";
-import { trpc } from "utils/trpc";
-import { useStore } from "components/store/use-store";
-import { tokenHandler } from "utils/token-handler";
+import { Spinner, Box } from "@components/common";
+import { Login } from "@pages/login/login";
+import { screens } from "@constants/screens";
+import { useTheme } from "@components/theme";
+import { Home } from "@pages/home/home";
+import { SignUp } from "@pages/sign-up/sign-up";
+import { trpc } from "@utils/trpc";
+import { useStore } from "@components/store/use-store";
+import { tokenHandler } from "@utils/token-handler";
 
 export type NavigationParamMap = {
   login: undefined;
@@ -33,7 +33,7 @@ export const Router = () => {
     },
   });
 
-  if (isLoading) {
+  if (isLoading)
     return (
       <Box
         sx={{
@@ -46,7 +46,6 @@ export const Router = () => {
         <Spinner scale={2} />
       </Box>
     );
-  }
 
   return (
     <Stack.Navigator

@@ -1,8 +1,8 @@
 import { ImageStyle, TextStyle, ViewStyle } from "react-native";
 
-import { Falsy } from "types/common";
+import { Falsy } from "@src/types/common";
 
-import { Theme } from "../theme-types";
+import { Theme } from "..";
 
 export type AnyStyle = ViewStyle | TextStyle | ImageStyle;
 

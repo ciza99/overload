@@ -10,9 +10,8 @@ export const useFormikValidation = <TData = unknown>(
       try {
         await schema.parseAsync(data, params);
       } catch (err) {
-        if (!(err instanceof ZodError<TData>)) {
+        if (!(err instanceof ZodError<TData>))
           throw new Error("something when wrong when validating");
-        }
 
         return err.formErrors.fieldErrors;
       }

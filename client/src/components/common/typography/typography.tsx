@@ -1,9 +1,8 @@
 import { Text, TextProps, TextStyle } from "react-native";
 
-import { Theme } from "components/theme/theme-types";
-import { SxProp } from "components/theme/sx/sx-types";
-import { useTheme } from "components/theme/theme-context";
-import { useSxStyle } from "components/theme/sx/sx-hook";
+import { useTheme, Theme } from "@components/theme";
+import { SxProp } from "@components/theme/sx/sx-types";
+import { useSxStyle } from "@components/theme/sx/use-sx-style";
 
 export type TypographyProps = TextProps & {
   color?: keyof Theme["palette"];
