@@ -22,10 +22,9 @@ import { Router } from "@pages";
 
 const { manifest } = Constants;
 
-const isDevelompent = manifest?.packagerOpts?.dev;
-const url = isDevelompent
-  ? `http://192.168.1.100:8080`
-  : `http://overload-api.com`;
+const url = manifest?.packagerOpts?.dev
+  ? `http://${manifest?.debuggerHost?.split(":")?.shift()}:8080`
+  : "http://overload-api.com";
 
 type Response = {
   headers?: {

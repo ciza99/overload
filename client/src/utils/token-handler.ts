@@ -3,8 +3,12 @@ const tokenHandlerFactory = () => {
 
   return {
     getToken: () => token,
-    setToken: (value: string) => (token = value),
-    deleteToken: () => (token = undefined),
+    setToken: (value: string) => {
+      token = value;
+    },
+    deleteToken: () => {
+      token = undefined;
+    },
   };
 };
 
