@@ -1,35 +1,31 @@
-import { Text, TextProps, TextStyle } from "react-native";
-
-import { useTheme, Theme } from "@components/theme";
-import { SxProp } from "@components/theme/sx/sx-types";
-import { useSxStyle } from "@components/theme/sx/use-sx-style";
+import { Text, TextProps } from "react-native";
+import cx from "clsx";
 
 export type TypographyProps = TextProps & {
-  color?: keyof Theme["palette"];
-  variant?: keyof Theme["typography"];
-  sx?: SxProp<TextStyle>;
+  variant?: "title1" | "title2" | "title3" | "body" | "caption";
+  weight?: "regular" | "medium" | "semibold" | "bold";
 };
 
 export const Typography = ({
-  color,
-  variant = "body1",
-  sx,
+  variant = "body",
+  weight = "regular",
+  tw,
   children,
   style,
   ...rest
 }: TypographyProps) => {
-  const sxStyle = useSxStyle(sx);
-  const theme = useTheme();
-
   return (
     <Text
-      style={[
-        { color: theme.palette.text },
-        { ...theme.typography[variant] },
-        color && { color: theme.palette[color] },
-        sxStyle,
-        style,
-      ]}
+      tw={cx(tw, "dark:text-white", {
+        "text-4xl": variant === "title1",
+        "text-3xl": variant === "title2",
+        "text-2xl": variant === "title3",
+        "text-sm": variant === "caption",
+        "font-poppins-medium": weight === "medium",
+        "font-poppins-semibold": weight === "semibold",
+        "font-poppins-bold": weight === "bold",
+        "font-poppins-regular": weight === "regular",
+      })}
       {...rest}
     >
       {children}

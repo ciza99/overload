@@ -1,20 +1,15 @@
 import { animated, useSpring } from "@react-spring/native";
-import { StyleProp, ViewStyle } from "react-native";
-
-import { Box } from "@components/common/box/box";
-import { SxProp } from "@components/theme/sx/sx-types";
-import { Theme } from "@components/theme";
+import cx from "clsx";
+import { View, ViewProps } from "react-native";
 
 type Props = {
-  scale?: number;
-  color?: keyof Theme["palette"];
-  sx?: SxProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
+  tw?: string;
+  style?: ViewProps["style"];
 };
 
-const AnimatedBox = animated(Box);
+const AnimatedView = animated(View);
 
-export const Spinner = ({ color = "primary", scale = 1, sx, style }: Props) => {
+export const Spinner = ({ tw, style }: Props) => {
   const { rotate } = useSpring({
     from: {
       rotate: "0deg",
@@ -31,23 +26,11 @@ export const Spinner = ({ color = "primary", scale = 1, sx, style }: Props) => {
   });
 
   return (
-    <AnimatedBox
-      sx={[
-        (theme) => ({
-          borderBottomWidth: scale * theme.spacing(1),
-          borderLeftWidth: scale * theme.spacing(1),
-          borderTopWidth: scale * theme.spacing(1),
-          borderRightWidth: scale * theme.spacing(1),
-          borderBottomColor: theme.palette[color],
-          borderRightColor: "rgba(0,0,0,0)",
-          borderLeftColor: theme.palette[color],
-          borderTopColor: theme.palette[color],
-          borderRadius: 500,
-          height: scale * theme.spacing(5),
-          width: scale * theme.spacing(5),
-        }),
-        sx,
-      ]}
+    <AnimatedView
+      tw={cx(
+        tw,
+        "border-4 border-r-transparent border-gray-300 rounded-full h-8 w-8"
+      )}
       style={[{ transform: [{ rotate }] }, style]}
     />
   );

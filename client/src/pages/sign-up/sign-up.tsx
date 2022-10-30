@@ -1,5 +1,11 @@
 import { useCallback } from "react";
-import { Keyboard } from "react-native";
+import {
+  Keyboard,
+  View,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 import { animated, useTransition } from "@react-spring/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
@@ -13,10 +19,7 @@ import {
   TextField,
   Stack,
   TextButton,
-  TouchableNoFeedback,
   SubmitButton,
-  ScrollBox,
-  KeyboardAvoidingBox,
 } from "@components/common";
 
 import { SignupSchema, signUpSchema } from "./sign-up-schema";
@@ -64,92 +67,92 @@ export const SignUp = () => {
       onSubmit={onSubmit}
       validate={validate}
     >
-      <KeyboardAvoidingBox
+      <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={100}
-        sx={{ flex: 1 }}
+        tw="grow"
         enabled
       >
-        <ScrollBox sx={{ flex: 1 }}>
-          <TouchableNoFeedback
+        <ScrollView tw="grow">
+          <TouchableWithoutFeedback
             onPress={Keyboard.dismiss}
-            sx={{ mx: 3, flex: 1, justifyContent: "flex-end" }}
+            tw="mx-1 grow justify-end"
           >
-            <Typography variant="title1Bold" sx={{ my: 10 }}>
-              Overload
-            </Typography>
-            <Paper elevation={1} sx={{ p: 4 }}>
-              <Typography variant="title2" sx={{ mb: 10 }}>
-                Sign up
+            <View>
+              <Typography variant="title1" weight="bold">
+                Overload
               </Typography>
-              <TextField
-                label="Username:"
-                name="username"
-                textContentType="username"
-                placeholder="johndoe@gmail.com"
-                sx={{ mb: 5 }}
-              />
-              <TextField
-                label="Email:"
-                name="email"
-                textContentType="emailAddress"
-                placeholder="johndoe@gmail.com"
-                sx={{ mb: 5 }}
-                onLayout={(e) => e.nativeEvent.layout.x}
-              />
-              <TextField
-                label="Password:"
-                name="password"
-                textContentType="newPassword"
-                placeholder="************"
-                sx={{ mb: 5 }}
-                secureTextEntry={true}
-              />
-              <TextField
-                label="Repeat password:"
-                name="repeatPassword"
-                textContentType="newPassword"
-                placeholder="************"
-                sx={{ mb: 10 }}
-                secureTextEntry={true}
-              />
-              <SubmitButton
-                onPress={Keyboard.dismiss}
-                beforeIcon={<Ionicons size={24} name="create-outline" />}
-                sx={(theme) => ({
-                  mb: 5,
-                  height: theme.spacing(12),
-                })}
-                loading={isLoading}
-              >
-                sign up
-              </SubmitButton>
-              {transitions(
-                ({ scaleY, height }, error) =>
-                  error && (
-                    <AnimatedTypography
-                      color="danger"
-                      variant="body2"
-                      sx={{ textAlign: "center" }}
-                      style={{ height, transform: [{ scaleY }] }}
-                    >
-                      {error.message}
-                    </AnimatedTypography>
-                  )
-              )}
-            </Paper>
-            <Stack direction="row" justifyContent="center" sx={{ mt: 5 }}>
-              <Typography>Already have an account?</Typography>
-              <TextButton
-                onPress={navigateToLogin}
-                sx={(theme) => ({ ml: 2, color: theme.palette.primary })}
-              >
-                Log in
-              </TextButton>
-            </Stack>
-          </TouchableNoFeedback>
-        </ScrollBox>
-      </KeyboardAvoidingBox>
+              <Paper elevation={1} tw="p-2">
+                <Typography variant="title2" tw="mb-5">
+                  Sign up
+                </Typography>
+                <TextField
+                  label="Username:"
+                  name="username"
+                  textContentType="username"
+                  placeholder="johndoe@gmail.com"
+                  tw="mb-2"
+                />
+                <TextField
+                  label="Password:"
+                  name="password"
+                  textContentType="newPassword"
+                  placeholder="************"
+                />
+                <TextField
+                  label="Email:"
+                  name="email"
+                  textContentType="emailAddress"
+                  placeholder="johndoe@gmail.com"
+                  tw="mb-2"
+                  onLayout={(e) => e.nativeEvent.layout.x}
+                />
+                <TextField
+                  label="Password:"
+                  name="password"
+                  textContentType="newPassword"
+                  placeholder="************"
+                  secureTextEntry={true}
+                  tw="mb-2"
+                />
+                <TextField
+                  label="Repeat password:"
+                  name="repeatPassword"
+                  textContentType="newPassword"
+                  placeholder="************"
+                  tw="mb-5"
+                  secureTextEntry={true}
+                />
+                <SubmitButton
+                  onPress={Keyboard.dismiss}
+                  beforeIcon={<Ionicons size={24} name="create-outline" />}
+                  tw="mb-2 h-6"
+                  loading={isLoading}
+                >
+                  sign up
+                </SubmitButton>
+                {transitions(
+                  ({ scaleY, height }, error) =>
+                    error && (
+                      <AnimatedTypography
+                        tw="text-danger text-center"
+                        style={{ height, transform: [{ scaleY }] }}
+                      >
+                        {error.message}
+                      </AnimatedTypography>
+                    )
+                )}
+              </Paper>
+              <Stack direction="row" justify="center" tw="mt-2">
+                <Typography>Already have an account?</Typography>
+                <TextButton onPress={navigateToLogin} tw="ml-1 text-primary">
+                  Log in
+                </TextButton>
+              </Stack>
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Formik>
   );
 };

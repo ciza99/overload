@@ -1,42 +1,24 @@
-import { StyleProp, ViewStyle } from "react-native";
+import { View, ViewProps } from "react-native";
+import cx from "clsx";
 
-import { SxProp } from "@components/theme/sx/sx-types";
-
-import { Box } from "../box/box";
-
-type DividerProps = {
+type DividerProps = ViewProps & {
   thickness?: number;
   direction?: "horizontal" | "vertical";
   rounded?: boolean;
-  sx?: SxProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
 };
 
 export const Divider = ({
-  thickness = 1,
   direction = "horizontal",
   rounded = false,
-  sx,
   style,
+  tw,
 }: DividerProps) => (
-  <Box
-    sx={[
-      (theme) => ({
-        borderColor: theme.palette.divider,
-        borderWidth: thickness,
-      }),
-      direction === "horizontal" && {
-        width: 1,
-      },
-      direction === "vertical" && {
-        height: 1,
-      },
-      rounded &&
-        ((theme) => ({
-          borderRadius: theme.shape.borderRadius,
-        })),
-      ...(Array.isArray(sx) ? sx : [sx]),
-    ]}
+  <View
+    tw={cx(tw, "bg-divider border", {
+      "rounded-full": rounded,
+      "w-full": direction === "horizontal",
+      "h-full": direction === "vertical",
+    })}
     style={style}
   />
 );

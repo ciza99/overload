@@ -1,37 +1,40 @@
-import { ViewProps, ViewStyle } from "react-native";
-
-import { Box } from "@components/common/box/box";
-import { SxProp } from "@components/theme/sx/sx-types";
+import { View, ViewProps } from "react-native";
+import cx from "clsx";
 
 export type StackProps = ViewProps & {
   direction?: "row" | "column";
-  justifyContent?: ViewStyle["justifyContent"];
-  alignItems?: ViewStyle["alignItems"];
-  sx?: SxProp<ViewStyle>;
+  justify?: "start" | "center" | "end" | "between" | "around" | "evenly";
+  items?: "start" | "center" | "end" | "stretch" | "baseline";
 };
 
 export const Stack = ({
   direction = "row",
-  alignItems = "center",
-  justifyContent = "flex-start",
-  sx,
+  items = "center",
+  justify = "center",
   children,
+  tw,
   ...rest
 }: StackProps) => {
   return (
-    <Box
-      sx={[
-        {
-          display: "flex",
-          flexDirection: direction,
-          alignItems,
-          justifyContent,
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+    <View
+      tw={cx(tw, "flex", {
+        "flex-row": direction === "row",
+        "flex-col": direction === "column",
+        "items-start": items === "start",
+        "items-center": items === "center",
+        "items-end": items === "end",
+        "items-stretch": items === "stretch",
+        "items-baseline": items === "baseline",
+        "justify-start": justify === "start",
+        "justify-center": justify === "center",
+        "justify-end": justify === "end",
+        "justify-between": justify === "between",
+        "justify-around": justify === "around",
+        "justify-evenly": justify === "evenly",
+      })}
       {...rest}
     >
       {children}
-    </Box>
+    </View>
   );
 };

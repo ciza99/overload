@@ -1,9 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { View } from "react-native";
+import { colors } from "@constants/theme";
 
-import { Spinner, Box } from "@components/common";
+import { Spinner } from "@components/common";
 import { Login } from "@pages/login/login";
 import { screens } from "@constants/screens";
-import { useTheme } from "@components/theme";
 import { Home } from "@pages/home/home";
 import { SignUp } from "@pages/sign-up/sign-up";
 import { trpc } from "@utils/trpc";
@@ -21,7 +22,6 @@ export type RouteKey = keyof NavigationParamMap;
 const Stack = createNativeStackNavigator();
 
 export const Router = () => {
-  const theme = useTheme();
   const setUser = useStore((store) => store.auth.setUser);
   const user = useStore((store) => store.auth.user);
 
@@ -35,28 +35,21 @@ export const Router = () => {
 
   if (isLoading)
     return (
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background,
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Spinner scale={2} />
-      </Box>
+      <View tw="bg-background grow justify-center items-center">
+        <Spinner />
+      </View>
     );
 
   return (
     <Stack.Navigator
       initialRouteName={screens.login.key}
       screenOptions={{
-        navigationBarColor: theme.palette.primary,
-        headerTintColor: theme.palette.primary,
+        navigationBarColor: colors.background as string,
+        headerTintColor: colors.primary as string,
         headerStyle: { backgroundColor: "#252628" },
-        headerTitleStyle: { color: theme.palette.text },
+        headerTitleStyle: { color: colors.text as string },
         contentStyle: {
-          backgroundColor: theme.palette.background,
+          backgroundColor: colors.background as string,
         },
       }}
     >

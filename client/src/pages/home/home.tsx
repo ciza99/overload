@@ -1,9 +1,10 @@
 import { useCallback } from "react";
 
-import { Box, Button } from "@components/common";
+import { Button } from "@components/common";
 import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
+import { View } from "react-native";
 
 export const Home = () => {
   const setUser = useStore((store) => store.auth.setUser);
@@ -18,8 +19,8 @@ export const Home = () => {
   const logout = useCallback(() => mutate(), [mutate]);
 
   return (
-    <Box>
+    <View>
       <Button onPress={logout}>Log out</Button>
-    </Box>
+    </View>
   );
 };

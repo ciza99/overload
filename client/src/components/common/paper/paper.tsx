@@ -1,34 +1,23 @@
+import cx from "clsx";
 import { ReactNode, useMemo } from "react";
-import { StyleProp, ViewStyle } from "react-native";
-
-import { Box } from "@components/common/box/box";
-import { SxProp } from "@components/theme/sx/sx-types";
+import { View, ViewStyle } from "react-native";
 
 type PaperProps = {
   children?: ReactNode;
   elevation?: 1 | 2 | 3 | 4;
-  sx?: SxProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
+  style?: ViewStyle;
+  tw?: string;
 };
 
-export const Paper = ({ elevation = 1, children, sx, style }: PaperProps) => {
+export const Paper = ({ elevation = 1, children, tw, style }: PaperProps) => {
   const backgroundColor = useMemo(
     () => `rgba(255, 255, 255, ${elevation / 20})`,
     [elevation]
   );
 
   return (
-    <Box
-      sx={[
-        (theme) => ({
-          backgroundColor,
-          borderRadius: theme.shape.borderRadius,
-        }),
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      style={style}
-    >
+    <View tw={cx(tw, "rounded")} style={[{ backgroundColor }, style]}>
       {children}
-    </Box>
+    </View>
   );
 };

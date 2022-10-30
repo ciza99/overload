@@ -1,44 +1,38 @@
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
+import { View, Pressable, PressableProps, ViewStyle } from "react-native";
 import { animated, useSpring, useTransition } from "@react-spring/native";
+import cx from "clsx";
 
-import { ThemeConfig } from "@components/theme/theme-types";
-import { Box } from "@components/common/box/box";
 import { Stack } from "@components/common/stack/stack";
-import { SxProp } from "@components/theme/sx/sx-types";
-import { useTheme } from "@components/theme";
 import { Typography } from "@components/common/typography/typography";
 import { Spinner } from "@components/common/spinner/spinner";
 
 export type ButtonProps = {
   children?: ReactNode;
-  color?: keyof ThemeConfig["palette"];
   onPress?: PressableProps["onPress"];
   beforeIcon?: ReactNode;
   afterIcon?: ReactNode;
-  style?: StyleProp<ViewStyle>;
-  sx?: SxProp<ViewStyle>;
+  style?: ViewStyle;
   variant?: "filled" | "outlined";
   disabled?: boolean;
   loading?: boolean;
+  tw?: string;
 };
 
+const AnimatedView = animated(View);
 const AnimatedStack = animated(Stack);
-const AnimatedBox = animated(Box);
 
 export const Button = ({
   onPress,
   beforeIcon,
   afterIcon,
-  color = "primary",
   children,
-  sx,
   style,
   variant = "filled",
   disabled,
   loading,
+  tw,
 }: ButtonProps) => {
-  const theme = useTheme();
   const [pressedDown, setPressedDown] = useState(false);
 
   const { scale } = useSpring({
@@ -99,11 +93,11 @@ export const Button = ({
   const content = useMemo(
     () =>
       typeof children === "string" ? (
-        <Typography sx={theme.typography.button}>{children}</Typography>
+        <Typography weight="bold">{children}</Typography>
       ) : (
         children
       ),
-    [children, theme.typography.button]
+    [children]
   );
 
   return (
@@ -115,39 +109,19 @@ export const Button = ({
     >
       <AnimatedStack
         direction="row"
-        alignItems="center"
-        justifyContent="center"
-        sx={[
-          {
-            py: 2,
-            px: 4,
-            width: 1,
-            ml: 0,
-            mr: 0,
-            backgroundColor: theme.palette[color],
-            borderRadius: theme.shape.borderRadius,
-          },
-          variant === "outlined" && {
-            backgroundColor: undefined,
-            borderWidth: 2,
-            borderColor: theme.palette.divider,
-          },
-          ...(Array.isArray(sx) ? sx : [sx]),
-        ]}
+        items="center"
+        justify="center"
+        tw={cx(tw, "py-2 px-4 w-full mx-0 rounded", {
+          "bg-primary": variant === "filled",
+          "bg-transparent border border-divider": variant === "outlined",
+        })}
         style={[{ transform: [{ scale }] }, style]}
       >
         {bgTransition(
           ({ opacity }, notClickable) =>
             notClickable && (
-              <AnimatedBox
-                sx={{
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  position: "absolute",
-                  backgroundColor: theme.palette.muted,
-                }}
+              <AnimatedView
+                tw="top-0 left-0 right-0 bottom-0 absolute bg-muted"
                 style={{ opacity }}
               />
             )
@@ -155,51 +129,34 @@ export const Button = ({
         {transition(({ opacity, scale }, loading) => (
           <>
             {loading && (
-              <AnimatedBox
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+              <AnimatedView
+                tw="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center"
                 style={{
                   transform: [{ scale }],
                   opacity,
                 }}
               >
-                <Spinner color="text" />
-              </AnimatedBox>
+                <Spinner />
+              </AnimatedView>
             )}
 
             {!loading && (
               <AnimatedStack
                 style={{
-                  transform: [
-                    {
-                      scale: scale.to({ output: [0, 1] }),
-                    },
-                  ],
+                  transform: [{ scale: scale.to({ output: [0, 1] }) }],
                   opacity: opacity.to({ output: [0, 1] }),
                 }}
               >
-                <Typography sx={{ ...theme.typography.button }}>
-                  {beforeIcon}
-                </Typography>
-                <Box
-                  sx={{
-                    ml: beforeIcon ? 2 : 0,
-                    mr: afterIcon ? 2 : 0,
-                  }}
+                <Typography>{beforeIcon}</Typography>
+                <View
+                  tw={cx({
+                    "ml-2": beforeIcon,
+                    "mr-2": afterIcon,
+                  })}
                 >
                   {content}
-                </Box>
-                <Typography sx={{ ...theme.typography.button }}>
-                  {afterIcon}
-                </Typography>
+                </View>
+                <Typography>{afterIcon}</Typography>
               </AnimatedStack>
             )}
           </>

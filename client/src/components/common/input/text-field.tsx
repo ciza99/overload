@@ -1,20 +1,19 @@
 import { ReactNode, useCallback } from "react";
 import { animated, useTransition } from "@react-spring/native";
 import {
-  StyleProp,
+  View,
   TextInput,
   TextInputProps,
   TextStyle,
   ViewStyle,
 } from "react-native";
 import { useField } from "formik";
+import { useColorScheme } from "nativewind";
+import cx from "clsx";
 
-import { Box } from "@components/common/box/box";
+import { colors } from "@constants/theme";
 import { NativeNode } from "@components/common/native-node/native-node";
 import { Typography } from "@components/common/typography/typography";
-import { SxProp } from "@components/theme/sx/sx-types";
-import { useSxStyle } from "@components/theme/sx/use-sx-style";
-import { useTheme } from "@components/theme";
 
 type TextFieldProps = Omit<
   TextInputProps,
@@ -22,12 +21,12 @@ type TextFieldProps = Omit<
 > & {
   name: string;
   label?: ReactNode;
-  sx?: SxProp<ViewStyle>;
-  style?: StyleProp<ViewStyle>;
-  inputSx?: SxProp<TextStyle>;
-  inputStyle?: StyleProp<TextStyle>;
-  containerSx?: SxProp<ViewStyle>;
-  containerStyle?: StyleProp<ViewStyle>;
+  tw?: string;
+  style?: ViewStyle;
+  inputTw?: string;
+  inputStyle?: TextStyle;
+  containerTw?: string;
+  containerStyle?: ViewStyle;
 };
 
 const AnimatedTypography = animated(Typography);
@@ -36,16 +35,16 @@ export const TextField = ({
   name,
   label,
   style,
-  sx,
+  tw,
   inputStyle,
-  inputSx,
-  containerSx,
+  inputTw,
+  containerTw,
   containerStyle,
   ...rest
 }: TextFieldProps) => {
+  const { colorScheme } = useColorScheme();
   const [field, meta, helpers] = useField<string>(name);
-  const theme = useTheme();
-  const inputSxStyle = useSxStyle(inputSx);
+
   const transitions = useTransition(meta.touched && meta.error, {
     from: {
       opacity: 0,
@@ -57,7 +56,7 @@ export const TextField = ({
       opacity: 1,
       scaleY: 1,
       height: 20,
-      marginTop: theme.spacing(2),
+      marginTop: 4,
     },
     leave: {
       opacity: 0,
@@ -75,55 +74,39 @@ export const TextField = ({
   const handleBlur = useCallback(() => helpers.setTouched(true), [helpers]);
 
   return (
-    <Box sx={sx} style={style}>
+    <View tw={tw} style={style}>
       {label && (
-        <Box sx={{ mb: 1 }}>
+        <View>
           <NativeNode>{label}</NativeNode>
-        </Box>
+        </View>
       )}
-      <Box
-        sx={[
-          {
-            p: 2,
-            backgroundColor: theme.palette.background,
-            width: 1,
-            display: "flex",
-          },
-          ...(Array.isArray(containerSx) ? containerSx : [containerSx]),
-        ]}
+      <View
+        tw={cx(containerTw, "p-2 bg-background w-full flex")}
         style={containerStyle}
       >
         <TextInput
-          selectionColor={theme.palette.primary}
-          keyboardAppearance={theme.mode}
-          placeholderTextColor={theme.palette.muted}
+          selectionColor={colors.primary as string}
+          keyboardAppearance={colorScheme}
+          placeholderTextColor={colors.muted as string}
           onChangeText={handleChange}
           onBlur={handleBlur}
           value={field.value}
-          style={[
-            {
-              color: theme.palette.text,
-              height: theme.spacing(8),
-              ...theme.typography.body1,
-            },
-            inputSxStyle,
-            inputStyle,
-          ]}
+          tw={cx(inputTw, "text-text h-8")}
+          style={inputStyle}
           {...rest}
         />
-      </Box>
+      </View>
       {transitions(
         ({ opacity, scaleY, height, marginTop }, error) =>
           error && (
             <AnimatedTypography
-              color="danger"
-              variant="body2"
+              tw="text-danger"
               style={{ transform: [{ scaleY }], opacity, height, marginTop }}
             >
               {error}
             </AnimatedTypography>
           )
       )}
-    </Box>
+    </View>
   );
 };
