@@ -24,7 +24,7 @@ const { manifest } = Constants;
 
 const isDevelompent = manifest?.packagerOpts?.dev;
 const url = isDevelompent
-  ? `http://192.168.1.100:8080`
+  ? `http://192.168.1.105:8080`
   : `http://overload-api.com`;
 
 type Response = {
