@@ -69,18 +69,18 @@ const Calendar = () => {
         <Box>
           <Ionicons color="white" name="chevron-forward" />
         </Box>
-        </Stack>
-        <Stack
-          alignItems="center"
-          wrap="wrap"
-          sx={{mt: 4}}
-        >
-          {days.map((_date, i) => (
-            <Button key={i} variant="outlined" sx={{ mx: 1, my: 1, height: 50, width: 50 }}>
-              <Typography>{i}</Typography>
-            </Button>
-          ))}
-        </Stack>
+      </Stack>
+      <Stack alignItems="center" wrap="wrap" sx={{ mt: 4 }}>
+        {days.map((_date, i) => (
+          <Button
+            key={i}
+            variant="outlined"
+            sx={{ mx: 1, my: 1, height: 50, width: 50 }}
+          >
+            <Typography>{i}</Typography>
+          </Button>
+        ))}
+      </Stack>
     </Box>
   );
 };
