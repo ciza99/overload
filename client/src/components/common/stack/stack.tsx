@@ -7,12 +7,14 @@ export type StackProps = ViewProps & {
   direction?: "row" | "column";
   justifyContent?: ViewStyle["justifyContent"];
   alignItems?: ViewStyle["alignItems"];
+  wrap?: ViewStyle["flexWrap"];
   sx?: SxProp<ViewStyle>;
 };
 
 export const Stack = ({
   direction = "row",
   alignItems = "center",
+  wrap = "wrap",
   justifyContent = "flex-start",
   sx,
   children,
@@ -25,6 +27,7 @@ export const Stack = ({
           display: "flex",
           flexDirection: direction,
           alignItems,
+          flexWrap: wrap,
           justifyContent,
         },
         ...(Array.isArray(sx) ? sx : [sx]),

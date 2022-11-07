@@ -19,6 +19,7 @@
     "@trpc/react": "^10.0.0-proxy-beta.8",
     "@trpc/server": "^10.0.0-proxy-beta.8",
     "babel-plugin-module-resolver": "^4.1.0",
+    "date-fns": "^2.29.3",
     "expo": "~46.0.9",
     "expo-font": "~10.2.0",
     "expo-status-bar": "~1.4.0",
