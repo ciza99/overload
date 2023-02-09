@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { Spinner, Box } from "@components/common";
-import { Login } from "@pages/login/login";
+import { Login } from "@pages/login";
 import { screens } from "@constants/screens";
 import { useTheme } from "@components/theme";
-import { Home } from "@pages/home/home";
-import { SignUp } from "@pages/sign-up/sign-up";
+import { Home } from "@pages/home";
+import { SignUp } from "@pages/sign-up";
 import { trpc } from "@utils/trpc";
 import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
@@ -31,6 +31,7 @@ export const Router = () => {
       setUser(undefined);
       tokenHandler.deleteToken();
     },
+    retry: 1,
   });
 
   if (isLoading)

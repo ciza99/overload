@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "NODE_PATH=./dist/src node build/index.js",
-    "start:dev": "NODE_PATH=./src nodemon",
+    "dev": "NODE_PATH=./src nodemon",
     "build": "yarn tsc --project tsconfig.build.json",
     "test": "jest -c ./jest.config.json"
   },

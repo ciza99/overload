@@ -4,6 +4,7 @@ import { animated, useTransition } from "@react-spring/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
+import { z } from "zod";
 
 import { trpc } from "@utils/trpc";
 import { useFormikValidation } from "@hooks/use-formik-validation";
@@ -18,8 +19,27 @@ import {
   ScrollBox,
   KeyboardAvoidingBox,
 } from "@components/common";
+import { passwordSchema } from "@schemas";
 
-import { SignupSchema, signUpSchema } from "./sign-up-schema";
+type SignupSchema = z.infer<typeof signUpSchema>;
+
+const signUpSchema = z
+  .object({
+    username: z.string().min(4, "Username is too short"),
+    email: z.string().email("Email is invalid"),
+    password: passwordSchema,
+    repeatPassword: z.string(),
+  })
+  .required()
+  .superRefine(({ password, repeatPassword }, ctx) => {
+    if (password === repeatPassword) return;
+
+    ctx.addIssue({
+      code: "custom",
+      message: "Passwords don't match",
+      path: ["repeatPassword"],
+    });
+  });
 
 const AnimatedTypography = animated(Typography);
 

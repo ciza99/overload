@@ -4,6 +4,7 @@ import { animated, useTransition } from "@react-spring/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { useNavigation } from "@react-navigation/native";
+import { z } from "zod";
 
 import {
   Box,
@@ -21,8 +22,16 @@ import {
 import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
 import { useFormikValidation } from "@hooks/use-formik-validation";
+import { passwordSchema } from "@schemas";
 
-import { LoginSchema, loginSchema } from "./login-schema";
+type LoginSchema = z.infer<typeof loginSchema>;
+
+const loginSchema = z
+  .object({
+    email: z.string().email("Email is invalid"),
+    password: passwordSchema,
+  })
+  .required();
 
 const AnimatedTypography = animated(Typography);
 

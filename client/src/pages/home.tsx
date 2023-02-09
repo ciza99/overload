@@ -13,6 +13,7 @@ import {
 import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
+import { useTheme } from "@react-navigation/native";
 
 export const Home = () => {
   const setUser = useStore((store) => store.auth.setUser);
@@ -59,25 +60,30 @@ const Calendar = () => {
 
   return (
     <Box>
-      <Stack justifyContent="space-around">
+      <Stack justifyContent="space-between">
         <Box>
-          <Ionicons color="white" name="chevron-back" />
+          <Ionicons size={20} color="white" name="chevron-back" />
         </Box>
         <Typography variant="title2">
           {format(new Date(), "MMMM yyyy")}
         </Typography>
         <Box>
-          <Ionicons color="white" name="chevron-forward" />
+          <Ionicons size={20} color="white" name="chevron-forward" />
         </Box>
       </Stack>
-      <Stack alignItems="center" wrap="wrap" sx={{ mt: 4 }}>
+      <Stack
+        alignItems="center"
+        justifyContent="center"
+        wrap="wrap"
+        sx={{ mt: 4 }}
+      >
         {days.map((_date, i) => (
           <Button
             key={i}
             variant="outlined"
-            sx={{ mx: 1, my: 1, height: 50, width: 50 }}
+            sx={{ mx: 1, my: 1, height: 46, width: 46 }}
           >
-            <Typography>{i}</Typography>
+            <Typography>{i + 1}</Typography>
           </Button>
         ))}
       </Stack>
