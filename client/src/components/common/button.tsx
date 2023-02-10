@@ -1,44 +1,40 @@
 import { ReactNode, useCallback, useMemo, useState } from "react";
-import { Pressable, PressableProps, StyleProp, ViewStyle } from "react-native";
+import {
+  Pressable,
+  PressableProps,
+  StyleProp,
+  View,
+  ViewStyle,
+} from "react-native";
 import { animated, useSpring, useTransition } from "@react-spring/native";
+import clsx from "clsx";
 
-import { ThemeConfig } from "@components/theme/theme-types";
-import { Box } from "@components/common/box/box";
-import { Stack } from "@components/common/stack/stack";
-import { SxProp } from "@components/theme/sx/sx-types";
-import { useTheme } from "@components/theme";
-import { Typography } from "@components/common/typography/typography";
-import { Spinner } from "@components/common/spinner/spinner";
+import { Typography } from "@components/common/typography";
+import { Spinner } from "@components/common/spinner";
 
 export type ButtonProps = {
   children?: ReactNode;
-  color?: keyof ThemeConfig["palette"];
   onPress?: PressableProps["onPress"];
   beforeIcon?: ReactNode;
   afterIcon?: ReactNode;
   style?: StyleProp<ViewStyle>;
-  sx?: SxProp<ViewStyle>;
   variant?: "filled" | "outlined";
+  className?: string;
   disabled?: boolean;
   loading?: boolean;
 };
-
-const AnimatedStack = animated(Stack);
-const AnimatedBox = animated(Box);
 
 export const Button = ({
   onPress,
   beforeIcon,
   afterIcon,
-  color = "primary",
   children,
-  sx,
   style,
   variant = "filled",
+  className,
   disabled,
   loading,
 }: ButtonProps) => {
-  const theme = useTheme();
   const [pressedDown, setPressedDown] = useState(false);
 
   const { scale } = useSpring({
@@ -99,11 +95,11 @@ export const Button = ({
   const content = useMemo(
     () =>
       typeof children === "string" ? (
-        <Typography sx={theme.typography.button}>{children}</Typography>
+        <Typography weight="bold">{children}</Typography>
       ) : (
         children
       ),
-    [children, theme.typography.button]
+    [children]
   );
 
   return (
@@ -113,40 +109,22 @@ export const Button = ({
       onPressIn={onPressIn}
       onPressOut={onPressOut}
     >
-      <AnimatedStack
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        sx={[
+      <animated.View
+        className={clsx(
+          "flex flex-row items-center justify-center py-2 px-4 w-full mx-0 rounded",
           {
-            py: 2,
-            px: 4,
-            width: 1,
-            mx: 0,
-            backgroundColor: theme.palette[color],
-            borderRadius: theme.shape.borderRadius,
+            "bg-primary": variant === "filled",
+            "bg-transparent border-2 border-divider": variant === "outlined",
           },
-          variant === "outlined" && {
-            backgroundColor: undefined,
-            borderWidth: 2,
-            borderColor: theme.palette.divider,
-          },
-          ...(Array.isArray(sx) ? sx : [sx]),
-        ]}
+          className
+        )}
         style={[{ transform: [{ scale }] }, style]}
       >
         {bgTransition(
           ({ opacity }, notClickable) =>
             notClickable && (
-              <AnimatedBox
-                sx={{
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  position: "absolute",
-                  backgroundColor: theme.palette.muted,
-                }}
+              <animated.View
+                className="top-0 left-0 right-0 bottom-0 absolute bg-muted"
                 style={{ opacity }}
               />
             )
@@ -154,28 +132,20 @@ export const Button = ({
         {transition(({ opacity, scale }, loading) => (
           <>
             {loading && (
-              <AnimatedBox
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
+              <animated.View
+                className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center"
                 style={{
                   transform: [{ scale }],
                   opacity,
                 }}
               >
-                <Spinner color="text" />
-              </AnimatedBox>
+                <Spinner color="white" />
+              </animated.View>
             )}
 
             {!loading && (
-              <AnimatedStack
+              <animated.View
+                className="flex flex-row items-center"
                 style={{
                   transform: [
                     {
@@ -185,25 +155,21 @@ export const Button = ({
                   opacity: opacity.to({ output: [0, 1] }),
                 }}
               >
-                <Typography sx={{ ...theme.typography.button }}>
-                  {beforeIcon}
-                </Typography>
-                <Box
-                  sx={{
-                    ml: beforeIcon ? 2 : 0,
-                    mr: afterIcon ? 2 : 0,
-                  }}
+                <Typography>{beforeIcon}</Typography>
+                <View
+                  className={clsx({
+                    "ml-2": !!beforeIcon,
+                    "mr-2": !!afterIcon,
+                  })}
                 >
                   {content}
-                </Box>
-                <Typography sx={{ ...theme.typography.button }}>
-                  {afterIcon}
-                </Typography>
-              </AnimatedStack>
+                </View>
+                <Typography>{afterIcon}</Typography>
+              </animated.View>
             )}
           </>
         ))}
-      </AnimatedStack>
+      </animated.View>
     </Pressable>
   );
 };

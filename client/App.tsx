@@ -16,8 +16,6 @@ import Constants from "expo-constants";
 
 import { AppRouter, trpc } from "@utils/trpc";
 import { tokenHandler } from "@utils/token-handler";
-import { themeConfig } from "@constants/theme-config";
-import { ThemeProvider } from "@components/theme";
 import { Router } from "@pages";
 
 const { manifest } = Constants;
@@ -89,9 +87,7 @@ const App = () => {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <ThemeProvider config={themeConfig}>
-            <Router />
-          </ThemeProvider>
+          <Router />
         </NavigationContainer>
       </QueryClientProvider>
     </trpc.Provider>
