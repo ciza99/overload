@@ -5,16 +5,15 @@ import {
   TextInput,
   TextInputProps,
   TextStyle,
+  View,
   ViewStyle,
 } from "react-native";
 import { useField } from "formik";
+import clsx from "clsx";
 
-import { Box } from "@components/common/box/box";
-import { NativeNode } from "@components/common/native-node/native-node";
-import { Typography } from "@components/common/typography/typography";
-import { SxProp } from "@components/theme/sx/sx-types";
-import { useSxStyle } from "@components/theme/sx/use-sx-style";
-import { useTheme } from "@components/theme";
+import { NativeNode } from "@components/common/native-node";
+import { Typography } from "@components/common/typography";
+import { colors } from "@constants/theme";
 
 type TextFieldProps = Omit<
   TextInputProps,
@@ -22,11 +21,11 @@ type TextFieldProps = Omit<
 > & {
   name: string;
   label?: ReactNode;
-  sx?: SxProp<ViewStyle>;
+  className?: string;
   style?: StyleProp<ViewStyle>;
-  inputSx?: SxProp<TextStyle>;
+  inputClassName?: string;
   inputStyle?: StyleProp<TextStyle>;
-  containerSx?: SxProp<ViewStyle>;
+  containerClassName?: string;
   containerStyle?: StyleProp<ViewStyle>;
 };
 
@@ -36,16 +35,14 @@ export const TextField = ({
   name,
   label,
   style,
-  sx,
+  className,
   inputStyle,
-  inputSx,
-  containerSx,
+  inputClassName,
   containerStyle,
+  containerClassName,
   ...rest
 }: TextFieldProps) => {
   const [field, meta, helpers] = useField<string>(name);
-  const theme = useTheme();
-  const inputSxStyle = useSxStyle(inputSx);
   const transitions = useTransition(meta.touched && meta.error, {
     from: {
       opacity: 0,
@@ -57,7 +54,7 @@ export const TextField = ({
       opacity: 1,
       scaleY: 1,
       height: 20,
-      marginTop: theme.spacing(2),
+      marginTop: 4,
     },
     leave: {
       opacity: 0,
@@ -75,55 +72,39 @@ export const TextField = ({
   const handleBlur = useCallback(() => helpers.setTouched(true), [helpers]);
 
   return (
-    <Box sx={sx} style={style}>
+    <View className={className} style={style}>
       {label && (
-        <Box sx={{ mb: 1 }}>
+        <View className="mb-1">
           <NativeNode>{label}</NativeNode>
-        </Box>
+        </View>
       )}
-      <Box
-        sx={[
-          {
-            p: 2,
-            backgroundColor: theme.palette.background,
-            width: 1,
-            display: "flex",
-          },
-          ...(Array.isArray(containerSx) ? containerSx : [containerSx]),
-        ]}
+      <View
+        className={clsx("p-2 bg-background w-full flex", containerClassName)}
         style={containerStyle}
       >
         <TextInput
-          selectionColor={theme.palette.primary}
-          keyboardAppearance={theme.mode}
-          placeholderTextColor={theme.palette.muted}
+          selectionColor={colors.primary}
+          keyboardAppearance="dark"
+          placeholderTextColor={colors.muted}
           onChangeText={handleChange}
           onBlur={handleBlur}
           value={field.value}
-          style={[
-            {
-              color: theme.palette.text,
-              height: theme.spacing(8),
-              ...theme.typography.body1,
-            },
-            inputSxStyle,
-            inputStyle,
-          ]}
+          className={clsx("text-white h-8", inputClassName)}
+          style={inputStyle}
           {...rest}
         />
-      </Box>
+      </View>
       {transitions(
         ({ opacity, scaleY, height, marginTop }, error) =>
           error && (
             <AnimatedTypography
-              color="danger"
-              variant="body2"
+              className="text-danger text-sm"
               style={{ transform: [{ scaleY }], opacity, height, marginTop }}
             >
               {error}
             </AnimatedTypography>
           )
       )}
-    </Box>
+    </View>
   );
 };

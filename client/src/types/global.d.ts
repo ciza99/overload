@@ -1,3 +1,5 @@
+/// <reference types="nativewind/types" />
+
 import { NavigationParamMap } from "@pages";
 
 declare global {

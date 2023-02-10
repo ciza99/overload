@@ -1,19 +1,12 @@
 import { useCallback } from "react";
+import { View } from "react-native";
 import { format, eachDayOfInterval, addMonths } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 
-import {
-  Box,
-  Button,
-  Paper,
-  Stack,
-  Typography,
-  TextButton,
-} from "@components/common";
+import { Button, Paper, Typography, TextButton } from "@components/common";
 import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
-import { useTheme } from "@react-navigation/native";
 
 export const Home = () => {
   const setUser = useStore((store) => store.auth.setUser);
@@ -29,26 +22,30 @@ export const Home = () => {
   const logout = useCallback(() => mutate(), [mutate]);
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Paper sx={{ p: 4, display: "flex", flexDirection: "row" }}>
-        <Paper sx={{ height: 50, width: 50, mr: 4 }} />
-        <Stack direction="column" alignItems="flex-start">
+    <View className="p-4">
+      <Paper className="p-4 flex flex-row items-center">
+        <Paper className="h-16 w-16 mr-4" />
+        <View className="flex flex-col items-start">
           <Typography>{user?.username}</Typography>
           <TextButton>Edit profile</TextButton>
-        </Stack>
+        </View>
       </Paper>
-      <Paper sx={{ mt: 4 }}>
-        <Stack sx={{ p: 4, justifyContent: "space-between" }}>
+      <Paper className="mt-4">
+        <View className="p-4 flex flex-row justify-between">
           <Typography>Today:</Typography>
-          <Typography color="muted">Push training 1</Typography>
-        </Stack>
+          <Typography className="text-muted">Push training 1</Typography>
+        </View>
       </Paper>
-      <Button sx={{ mt: 4 }} beforeIcon={<Ionicons name="caret-forward" />}>
+      <Button
+        className="mt-4"
+        beforeIcon={<Ionicons name="caret-forward" />}
+        onPress={logout}
+      >
         Start training
       </Button>
-      <Box sx={{ pt: 4 }} />
+      <View className="pt-4" />
       <Calendar />
-    </Box>
+    </View>
   );
 };
 
@@ -59,34 +56,25 @@ const Calendar = () => {
   });
 
   return (
-    <Box>
-      <Stack justifyContent="space-between">
-        <Box>
-          <Ionicons size={20} color="white" name="chevron-back" />
-        </Box>
-        <Typography variant="title2">
+    <View>
+      <View className="flex flex-row justify-between">
+        <Ionicons size={20} color="white" name="chevron-back" />
+        <Typography weight="bold" className="text-2xl">
           {format(new Date(), "MMMM yyyy")}
         </Typography>
-        <Box>
-          <Ionicons size={20} color="white" name="chevron-forward" />
-        </Box>
-      </Stack>
-      <Stack
-        alignItems="center"
-        justifyContent="center"
-        wrap="wrap"
-        sx={{ mt: 4 }}
-      >
+        <Ionicons size={20} color="white" name="chevron-forward" />
+      </View>
+      <View className="flex flex-row flex-wrap justify-center items-center mt-4">
         {days.map((_date, i) => (
           <Button
             key={i}
             variant="outlined"
-            sx={{ mx: 1, my: 1, height: 46, width: 46 }}
+            className="p-1 mx-1 my-1 h-12 w-12"
           >
             <Typography>{i + 1}</Typography>
           </Button>
         ))}
-      </Stack>
-    </Box>
+      </View>
+    </View>
   );
 };

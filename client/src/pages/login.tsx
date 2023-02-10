@@ -1,5 +1,10 @@
 import { useCallback } from "react";
-import { Keyboard } from "react-native";
+import {
+  View,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { animated, useTransition } from "@react-spring/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
@@ -7,16 +12,12 @@ import { useNavigation } from "@react-navigation/native";
 import { z } from "zod";
 
 import {
-  Box,
   Typography,
   Paper,
   TextField,
   Button,
-  Stack,
   TextButton,
-  TouchableNoFeedback,
   SubmitButton,
-  KeyboardAvoidingBox,
   Divider,
 } from "@components/common";
 import { tokenHandler } from "@utils/token-handler";
@@ -76,96 +77,86 @@ export const Login = () => {
     <Formik
       initialValues={{
         email: "mike@gmail.com",
-        password: "test123",
+        password: "1234",
       }}
       onSubmit={onSubmit}
       validate={validate}
     >
-      <TouchableNoFeedback onPress={Keyboard.dismiss} sx={{ mx: 3, flex: 1 }}>
-        <KeyboardAvoidingBox
-          behavior="padding"
-          keyboardVerticalOffset={100}
-          enabled
-          sx={{ flex: 1 }}
-        >
-          <Box sx={{ flex: 1, justifyContent: "flex-end" }}>
-            <Box>
-              <Typography variant="title1Bold" sx={{ my: 10 }}>
-                Overload
-              </Typography>
-            </Box>
-            <Paper elevation={1} sx={{ p: 4 }}>
-              <Typography variant="title2" sx={{ mb: 10 }}>
-                Log In
-              </Typography>
-              <TextField
-                label="Email:"
-                name="email"
-                textContentType="emailAddress"
-                placeholder="johndoe@gmail.com"
-                sx={{ mb: 5 }}
-              />
-              <TextField
-                label="Password:"
-                name="password"
-                placeholder="************"
-                sx={{ mb: 10 }}
-                secureTextEntry={true}
-              />
-              <SubmitButton
-                onPress={Keyboard.dismiss}
-                beforeIcon={<Ionicons size={24} name="log-in-outline" />}
-                sx={(theme) => ({
-                  mb: 5,
-                  height: theme.spacing(12),
-                })}
-                loading={isLoading}
-              >
-                log in
-              </SubmitButton>
-              {transitions(
-                ({ scaleY, height }, error) =>
-                  error && (
-                    <AnimatedTypography
-                      color="danger"
-                      variant="body2"
-                      sx={{ textAlign: "center" }}
-                      style={{ height, transform: [{ scaleY }] }}
-                    >
-                      {error.message}
-                    </AnimatedTypography>
-                  )
-              )}
-            </Paper>
-            <Stack
-              direction="row"
-              justifyContent="center"
-              sx={{ mt: 5, mb: 10 }}
-            >
-              <Typography>Dont have an account yet?</Typography>
-              <TextButton
-                onPress={navigateToSignUp}
-                sx={(theme) => ({ ml: 2, color: theme.palette.primary })}
-              >
-                Sign up
-              </TextButton>
-            </Stack>
-            <Box sx={{ flex: 1 }} />
-          </Box>
-        </KeyboardAvoidingBox>
-        <Box sx={{ mb: 7 }}>
-          <Stack direction="row">
-            <Divider sx={{ flex: 1 }} />
-            <Typography sx={{ mx: 3 }}>Or log in with</Typography>
-            <Divider sx={{ flex: 1 }} />
-          </Stack>
-          <Button
-            beforeIcon={<Ionicons name="ios-logo-google" size={24} />}
-            variant="outlined"
-            sx={(theme) => ({ m: 4, height: theme.spacing(12) })}
-          />
-        </Box>
-      </TouchableNoFeedback>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="grow mx-3">
+          <KeyboardAvoidingView
+            behavior="padding"
+            keyboardVerticalOffset={100}
+            enabled
+            className="grow"
+          >
+            <View className="grow justify-end">
+              <View>
+                <Typography weight="bold" className="text-3xl my-10">
+                  Overload
+                </Typography>
+              </View>
+              <Paper elevation={1} className="p-4">
+                <Typography weight="bold" className="text-2xl mb-10">
+                  Log In
+                </Typography>
+                <TextField
+                  label="Email:"
+                  name="email"
+                  textContentType="emailAddress"
+                  placeholder="johndoe@gmail.com"
+                  className="mb-5"
+                />
+                <TextField
+                  label="Password:"
+                  name="password"
+                  placeholder="************"
+                  className="mb-10"
+                  secureTextEntry={true}
+                />
+                <SubmitButton
+                  onPress={Keyboard.dismiss}
+                  beforeIcon={<Ionicons size={24} name="log-in-outline" />}
+                  className="mb-5"
+                  loading={isLoading}
+                >
+                  <Typography weight="bold">log in</Typography>
+                </SubmitButton>
+                {transitions(
+                  ({ scaleY, height }, error) =>
+                    error && (
+                      <AnimatedTypography
+                        className="text-danger text-sm text-center"
+                        style={{ height, transform: [{ scaleY }] }}
+                      >
+                        {error.message}
+                      </AnimatedTypography>
+                    )
+                )}
+              </Paper>
+              <View className="flex flex-row justify-center mt-5 mb-10">
+                <Typography>Dont have an account yet?</Typography>
+                <TextButton onPress={navigateToSignUp} className="ml-2">
+                  Sign up
+                </TextButton>
+              </View>
+              <View className="grow" />
+            </View>
+          </KeyboardAvoidingView>
+          <View className="mb-7">
+            <View className="flex flex-row items-center">
+              <Divider className="grow w-0" />
+              <Typography className="mx-3">Or log in with</Typography>
+              <Divider className="grow w-0" />
+            </View>
+            <Button
+              beforeIcon={<Ionicons name="ios-logo-google" size={24} />}
+              variant="outlined"
+              className="my-4"
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </Formik>
   );
 };
