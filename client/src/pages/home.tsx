@@ -23,8 +23,8 @@ export const Home = () => {
 
   return (
     <View className="p-4">
-      <Paper className="p-4 flex flex-row">
-        <Paper className="h-20 w-20 mr-4" />
+      <Paper className="p-4 flex flex-row items-center">
+        <Paper className="h-16 w-16 mr-4" />
         <View className="flex flex-col items-start">
           <Typography>{user?.username}</Typography>
           <TextButton>Edit profile</TextButton>
@@ -66,7 +66,11 @@ const Calendar = () => {
       </View>
       <View className="flex flex-row flex-wrap justify-center items-center mt-4">
         {days.map((_date, i) => (
-          <Button key={i} variant="outlined" className="mx-1 my-1 h-12 w-12">
+          <Button
+            key={i}
+            variant="outlined"
+            className="p-1 mx-1 my-1 h-12 w-12"
+          >
             <Typography>{i + 1}</Typography>
           </Button>
         ))}
