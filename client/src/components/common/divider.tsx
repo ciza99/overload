@@ -18,14 +18,18 @@ export const Divider = ({
 }: DividerProps) => (
   <View
     className={clsx(
-      "border-divider rounded",
+      "bg-base-500 rounded",
       {
-        "w-full h-0": direction === "horizontal",
-        "h-full w-0": direction === "vertical",
+        "w-full": direction === "horizontal",
+        "h-full": direction === "vertical",
         rounded,
       },
       className
     )}
-    style={[{ borderWidth: thickness }, style]}
+    style={[
+      direction === "horizontal" && { height: thickness },
+      direction === "vertical" && { width: thickness },
+      style,
+    ]}
   />
 );

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 type PaperProps = {
@@ -15,15 +15,19 @@ export const Paper = ({
   className,
   style,
 }: PaperProps) => {
-  const backgroundColor = useMemo(
-    () => `rgba(255, 255, 255, ${elevation / 20})`,
-    [elevation]
-  );
-
   return (
     <View
-      className={clsx("rounded", className)}
-      style={[{ backgroundColor }, style]}
+      className={clsx(
+        "rounded",
+        {
+          "bg-base-700": elevation === 1,
+          "bg-base-600": elevation === 2,
+          "bg-base-500": elevation === 3,
+          "bg-base-400": elevation === 4,
+        },
+        className
+      )}
+      style={style}
     >
       {children}
     </View>

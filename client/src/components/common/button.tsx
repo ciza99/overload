@@ -18,7 +18,7 @@ export type ButtonProps = {
   beforeIcon?: ReactNode;
   afterIcon?: ReactNode;
   style?: StyleProp<ViewStyle>;
-  variant?: "filled" | "outlined";
+  variant?: "primary" | "secondary" | "outlined";
   className?: string;
   disabled?: boolean;
   loading?: boolean;
@@ -30,7 +30,7 @@ export const Button = ({
   afterIcon,
   children,
   style,
-  variant = "filled",
+  variant = "primary",
   className,
   disabled,
   loading,
@@ -113,8 +113,9 @@ export const Button = ({
         className={clsx(
           "flex flex-row items-center justify-center py-2 px-4 w-full mx-0 rounded",
           {
-            "bg-primary": variant === "filled",
-            "bg-transparent border-2 border-divider": variant === "outlined",
+            "bg-primary": variant === "primary",
+            "bg-base-600": variant === "secondary",
+            "bg-transparent border border-base-200": variant === "outlined",
           },
           className
         )}

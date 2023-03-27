@@ -1,11 +1,11 @@
 import { t } from "utils/trpc";
 
-import { UserProducers } from "./user-procedures";
+import { UserProcedures } from "./user-procedures";
 
 export type UserRouter = ReturnType<typeof userRouterFactory>;
 
 export const userRouterFactory = ({
-  userProducers,
+  userProcedures,
 }: {
-  userProducers: UserProducers;
-}) => t.router(userProducers);
+  userProcedures: UserProcedures;
+}) => t.router(userProcedures);

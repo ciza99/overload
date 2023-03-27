@@ -38,7 +38,7 @@ model TemplateGroup {
   updatedAt DateTime   @updatedAt
   name      String
   templates Template[]
-  order     Int
+  order     Int        @default(autoincrement())
 }
 
 model Template {
@@ -49,7 +49,7 @@ model Template {
   templateGroup   TemplateGroup @relation(fields: [templateGroupId], references: [id])
   templateGroupId Int
   trainings       Training[]
-  order           Int
+  order           Int           @default(autoincrement())
 }
 
 model Training {
@@ -60,7 +60,7 @@ model Training {
   template   Template           @relation(fields: [templateId], references: [id])
   templateId Int
   exercises  TrainingExercise[]
-  order      Int
+  order      Int                @default(autoincrement())
 }
 
 model TrainingExercise {
@@ -71,7 +71,7 @@ model TrainingExercise {
   training   Training      @relation(fields: [trainingId], references: [id])
   trainingId Int
   sets       ExerciseSet[]
-  order      Int
+  order      Int           @default(autoincrement())
 }
 
 model ExerciseSet {
@@ -82,7 +82,7 @@ model ExerciseSet {
   reps               Int
   trainingExercise   TrainingExercise @relation(fields: [trainingExerciseId], references: [id])
   trainingExerciseId Int
-  order              Int
+  order              Int              @default(autoincrement())
 }
 
 model Exercise {

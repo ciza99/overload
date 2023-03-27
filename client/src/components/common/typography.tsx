@@ -16,12 +16,12 @@ export const Typography = ({
     className={clsx(
       "text-white",
       {
-        "font-poppinsLight": weight === "light",
-        "font-poppinsRegular": weight === "regular",
-        "font-poppinsMedium": weight === "medium",
-        "font-poppinsSemiBold": weight === "semibold",
-        "font-poppinsBold": weight === "bold",
-        "font-poppinsExtraBold": weight === "extrabold",
+        "font-poppins-light": weight === "light",
+        "font-poppins-regular": weight === "regular",
+        "font-poppins-medium": weight === "medium",
+        "font-poppins-semi-bold": weight === "semibold",
+        "font-poppins-bold": weight === "bold",
+        "font-poppins-extra-bold": weight === "extrabold",
       },
       className
     )}

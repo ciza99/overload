@@ -4,9 +4,9 @@ import { UserService } from "components/user/user-service";
 
 import { addUserSchema } from "./user-schema";
 
-export type UserProducers = ReturnType<typeof userProducersFactory>;
+export type UserProcedures = ReturnType<typeof userProceduresFactory>;
 
-export const userProducersFactory = ({
+export const userProceduresFactory = ({
   userService,
 }: {
   userService: UserService;

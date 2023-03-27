@@ -3,13 +3,12 @@ import {
   View,
   Keyboard,
   KeyboardAvoidingView,
-  ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
 import { animated, useTransition } from "@react-spring/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { z } from "zod";
 
 import { trpc } from "@utils/trpc";
@@ -46,11 +45,11 @@ const signUpSchema = z
 const AnimatedTypography = animated(Typography);
 
 export const SignUp = () => {
-  const { navigate } = useNavigation();
+  const { dispatch } = useNavigation();
   const validate = useFormikValidation(signUpSchema);
 
   const { error, mutate, isLoading } = trpc.users.add.useMutation({
-    onSuccess: () => navigate("login"),
+    onSuccess: () => dispatch(StackActions.replace("login")),
   });
 
   const onSubmit = useCallback(
@@ -58,7 +57,10 @@ export const SignUp = () => {
     [mutate]
   );
 
-  const navigateToLogin = useCallback(() => navigate("login"), [navigate]);
+  const navigateToLogin = useCallback(
+    () => dispatch(StackActions.replace("login")),
+    [dispatch]
+  );
 
   const transitions = useTransition(error, {
     from: {
@@ -80,8 +82,8 @@ export const SignUp = () => {
       initialValues={{
         username: "mike",
         email: "mike@gmail.com",
-        password: "test123",
-        repeatPassword: "test123",
+        password: "1234",
+        repeatPassword: "1234",
       }}
       onSubmit={onSubmit}
       validate={validate}
@@ -89,22 +91,16 @@ export const SignUp = () => {
       <KeyboardAvoidingView
         behavior="padding"
         keyboardVerticalOffset={100}
-        className="grow"
         enabled
+        className="grow"
       >
-        <ScrollView className="grow">
-          <TouchableWithoutFeedback
-            onPress={Keyboard.dismiss}
-            className="grow flex flex-end"
-          >
-            <View className="grow mx-3">
-              <Typography weight="bold" className="text-3xl my-10">
+        <View className="grow">
+          <TouchableWithoutFeedback className="grow" onPress={Keyboard.dismiss}>
+            <View className="mx-3 my-auto">
+              <Typography weight="bold" className="text-3xl my-10 text-center">
                 Overload
               </Typography>
               <Paper elevation={1} className="p-4">
-                <Typography weight="bold" className="text-2xl mb-10">
-                  Sign up
-                </Typography>
                 <TextField
                   label="Username:"
                   name="username"
@@ -139,7 +135,7 @@ export const SignUp = () => {
                 <SubmitButton
                   onPress={Keyboard.dismiss}
                   beforeIcon={<Ionicons size={24} name="create-outline" />}
-                  className="mb-5 h-12"
+                  className="mb-5"
                   loading={isLoading}
                 >
                   sign up
@@ -167,7 +163,7 @@ export const SignUp = () => {
               </View>
             </View>
           </TouchableWithoutFeedback>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </Formik>
   );

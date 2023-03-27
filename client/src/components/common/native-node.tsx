@@ -4,11 +4,12 @@ import { Typography } from "@components/common/typography";
 
 type NativeNodeProps = {
   children: ReactNode;
+  textClassName?: string;
 };
 
-export const NativeNode = ({ children }: NativeNodeProps) => {
+export const NativeNode = ({ children, textClassName }: NativeNodeProps) => {
   return typeof children === "string" ? (
-    <Typography>{children}</Typography>
+    <Typography className={textClassName}>{children}</Typography>
   ) : (
     <>{children}</>
   );

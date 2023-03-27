@@ -53,7 +53,7 @@ export const TextField = ({
     enter: {
       opacity: 1,
       scaleY: 1,
-      height: 20,
+      height: 15,
       marginTop: 4,
     },
     leave: {
@@ -75,17 +75,20 @@ export const TextField = ({
     <View className={className} style={style}>
       {label && (
         <View className="mb-1">
-          <NativeNode>{label}</NativeNode>
+          <NativeNode textClassName="text-base-100">{label}</NativeNode>
         </View>
       )}
       <View
-        className={clsx("p-2 bg-background w-full flex", containerClassName)}
+        className={clsx(
+          "px-2 py-1 bg-transparent bg-base-900 border border-base-500 w-full flex rounded",
+          containerClassName
+        )}
         style={containerStyle}
       >
         <TextInput
           selectionColor={colors.primary}
           keyboardAppearance="dark"
-          placeholderTextColor={colors.muted}
+          placeholderTextColor={colors.base[300]}
           onChangeText={handleChange}
           onBlur={handleBlur}
           value={field.value}
@@ -98,7 +101,7 @@ export const TextField = ({
         ({ opacity, scaleY, height, marginTop }, error) =>
           error && (
             <AnimatedTypography
-              className="text-danger text-sm"
+              className="text-danger text-xs"
               style={{ transform: [{ scaleY }], opacity, height, marginTop }}
             >
               {error}

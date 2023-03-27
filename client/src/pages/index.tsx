@@ -3,23 +3,40 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Spinner } from "@components/common";
 import { Login } from "@pages/login";
 import { screens } from "@constants/screens";
-import { Home } from "@pages/home";
+import { ProfileRoutes } from "@pages/profile";
 import { SignUp } from "@pages/sign-up";
 import { trpc } from "@utils/trpc";
 import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
 import { View } from "react-native";
-import { colors } from "@constants/theme";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { Training } from "./training/training";
+import { TrainingRoutes } from "./training";
 
 export type NavigationParamMap = {
   login: undefined;
   signUp: undefined;
-  home: undefined;
+
+  protectedRoutes: undefined;
+
+  profileRoutes: undefined;
+  profile: undefined;
+  settings: undefined;
+
+  trainingRoutes: undefined;
+  templates: undefined;
+  training: undefined;
+  session: undefined;
+
+  history: undefined;
+
+  statistics: undefined;
 };
 
 export type RouteKey = keyof NavigationParamMap;
 
-const Stack = createNativeStackNavigator();
+const AuthGateStack = createNativeStackNavigator();
 
 export const Router = () => {
   const setUser = useStore((store) => store.auth.setUser);
@@ -36,46 +53,90 @@ export const Router = () => {
 
   if (isLoading)
     return (
-      <View className="grow justify-center items-center bg-background">
+      <View className="grow justify-center items-center bg-base-800">
         <Spinner className="w-14 h-14 border-8" />
       </View>
     );
 
   return (
-    <Stack.Navigator
+    <AuthGateStack.Navigator
       initialRouteName={screens.login.key}
-      screenOptions={{
-        navigationBarColor: colors.primary,
-        headerTintColor: colors.primary,
-        headerStyle: { backgroundColor: "#252628" },
-        headerTitleStyle: { color: colors.text },
-        contentStyle: {
-          backgroundColor: colors.background,
-        },
-      }}
+      screenOptions={{ headerShown: false }}
     >
       {user ? (
         <>
-          <Stack.Screen
-            name={screens.home.key}
-            options={{ title: screens.home.title }}
-            component={Home}
+          <AuthGateStack.Screen
+            name={screens.protectedRoutes.key}
+            options={{ title: screens.profile.title, headerShown: false }}
+            component={ProtectedRoutes}
           />
         </>
       ) : (
         <>
-          <Stack.Screen
+          <AuthGateStack.Screen
             name={screens.login.key}
             options={{ title: screens.login.title }}
             component={Login}
           />
-          <Stack.Screen
+          <AuthGateStack.Screen
             name={screens.signUp.key}
             options={{ title: screens.signUp.title }}
             component={SignUp}
           />
         </>
       )}
-    </Stack.Navigator>
+    </AuthGateStack.Navigator>
+  );
+};
+
+const Tab = createBottomTabNavigator();
+
+export const ProtectedRoutes = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName={screens.profile.key}
+      screenOptions={{ tabBarShowLabel: false }}
+    >
+      <Tab.Screen
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={24} name="person-circle-outline" color={color} />
+          ),
+        }}
+        name={screens.profileRoutes.key}
+        component={ProfileRoutes}
+      />
+      <Tab.Screen
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={24} name="fitness" color={color} />
+          ),
+        }}
+        name={screens.trainingRoutes.key}
+        component={TrainingRoutes}
+      />
+      <Tab.Screen
+        options={{
+          title: screens.history.title,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={24} name="reader-outline" color={color} />
+          ),
+        }}
+        name={screens.history.key}
+        component={Training}
+      />
+      <Tab.Screen
+        options={{
+          title: screens.statistics.title,
+          tabBarIcon: ({ color }) => (
+            <Ionicons size={24} name="stats-chart" color={color} />
+          ),
+        }}
+        name={screens.statistics.key}
+        component={Training}
+      />
+    </Tab.Navigator>
   );
 };
