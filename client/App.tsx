@@ -1,5 +1,5 @@
 import "react-native-get-random-values";
-import { useState } from "react";
+import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCLink } from "@trpc/client";
 import { NavigationContainer } from "@react-navigation/native";
@@ -20,7 +20,7 @@ import { tokenHandler } from "@utils/token-handler";
 import { Router } from "@pages";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "@constants/theme";
-import { SafeAreaView } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import { Dialog } from "@components/dialog/dialog";
 
 const { manifest } = Constants;
@@ -91,7 +91,7 @@ const App = () => {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <SafeAreaView className="grow bg-base-800">
+        <View className="grow bg-base-800">
           <NavigationContainer
             theme={{
               dark: true,
@@ -109,7 +109,7 @@ const App = () => {
             <Dialog />
             <Router />
           </NavigationContainer>
-        </SafeAreaView>
+        </View>
       </QueryClientProvider>
     </trpc.Provider>
   );
