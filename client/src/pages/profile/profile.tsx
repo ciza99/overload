@@ -6,14 +6,21 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
-import { Ionicons } from "@expo/vector-icons";
 
-import { Button, Paper, Typography, TextButton } from "@components/common";
+import {
+  Button,
+  Paper,
+  Typography,
+  TextButton,
+  Icon,
+} from "@components/common";
 import { useStore } from "@components/store/use-store";
 import clsx from "clsx";
+import { useState } from "react";
 
 export const Profile = () => {
   const user = useStore((store) => store.auth.user);
+  const [toggle, setToggle] = useState(false);
 
   return (
     <View className="p-4">
@@ -30,7 +37,12 @@ export const Profile = () => {
           <Typography className="text-base-300">Push training 1</Typography>
         </View>
       </Paper>
-      <Button className="mt-4" beforeIcon={<Ionicons name="caret-forward" />}>
+      <Button
+        className="mt-4"
+        loading={toggle}
+        onPress={() => setToggle((prev) => !prev)}
+        beforeIcon={<Icon name="caret-forward" />}
+      >
         Start training
       </Button>
       <View className="pt-4" />
@@ -48,11 +60,11 @@ const Calendar = () => {
   return (
     <View>
       <View className="flex flex-row justify-between">
-        <Ionicons size={20} color="white" name="chevron-back" />
+        <Icon color="white" name="chevron-back" />
         <Typography weight="bold" className="text-xl">
           {format(new Date(), "MMMM yyyy")}
         </Typography>
-        <Ionicons size={20} color="white" name="chevron-forward" />
+        <Icon color="white" name="chevron-forward" />
       </View>
       <View className="flex flex-row flex-wrap justify-center items-center mt-4">
         {days.map((date, i) => (

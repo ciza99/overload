@@ -1,10 +1,10 @@
 import { screens } from "@constants/screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons";
 
 import { Profile } from "./profile";
 import { Settings } from "./settings";
 import { useNavigation } from "@react-navigation/native";
+import { Icon } from "@components/common";
 
 const ProfileStack = createNativeStackNavigator();
 
@@ -18,10 +18,10 @@ export const ProfileRoutes = () => {
         options={{
           title: screens.profile.title,
           headerRight: () => (
-            <Ionicons
+            <Icon
               color="white"
+              size="lg"
               name="settings-outline"
-              size={24}
               onPress={() => navigate("settings")}
             />
           ),

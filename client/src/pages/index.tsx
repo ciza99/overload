@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Spinner } from "@components/common";
+import { Icon, Spinner } from "@components/common";
 import { Login } from "@pages/login";
 import { screens } from "@constants/screens";
 import { ProfileRoutes } from "@pages/profile";
@@ -10,7 +10,6 @@ import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
 import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
 import { Training } from "./training/training";
 import { TrainingRoutes } from "./training";
 
@@ -101,7 +100,7 @@ export const ProtectedRoutes = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={24} name="person-circle-outline" color={color} />
+            <Icon size="lg" name="person-circle-outline" color={color} />
           ),
         }}
         name={screens.profileRoutes.key}
@@ -111,7 +110,7 @@ export const ProtectedRoutes = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={24} name="fitness" color={color} />
+            <Icon size="lg" name="fitness" color={color} />
           ),
         }}
         name={screens.trainingRoutes.key}
@@ -121,7 +120,7 @@ export const ProtectedRoutes = () => {
         options={{
           title: screens.history.title,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={24} name="reader-outline" color={color} />
+            <Icon size="lg" name="reader-outline" color={color} />
           ),
         }}
         name={screens.history.key}
@@ -131,7 +130,7 @@ export const ProtectedRoutes = () => {
         options={{
           title: screens.statistics.title,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={24} name="stats-chart" color={color} />
+            <Icon size="lg" name="stats-chart" color={color} />
           ),
         }}
         name={screens.statistics.key}

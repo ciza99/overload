@@ -1,11 +1,10 @@
 import { View } from "react-native";
-import { TextField, SubmitButton } from "@components/common";
+import { TextField, SubmitButton, Icon } from "@components/common";
 import { DialogProps } from "@components/store/use-store";
 import { trpc } from "@utils/trpc";
 import { Formik } from "formik";
 import { useFormikValidation } from "@hooks/use-formik-validation";
 import { z } from "zod";
-import { Ionicons } from "@expo/vector-icons";
 
 export const CreateGroupDialog = ({ close }: DialogProps) => {
   const utils = trpc.useContext();
@@ -31,7 +30,7 @@ export const CreateGroupDialog = ({ close }: DialogProps) => {
       >
         <View className="gap-y-4">
           <TextField name="name" placeholder="Enter name" autoFocus={true} />
-          <SubmitButton beforeIcon={<Ionicons name="add" size={24} />}>
+          <SubmitButton beforeIcon={<Icon name="add" />}>
             Create group
           </SubmitButton>
         </View>

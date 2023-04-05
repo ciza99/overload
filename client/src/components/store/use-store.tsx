@@ -1,7 +1,7 @@
 import { User } from "@models/user";
 import { v4 } from "uuid";
 
-import create from "zustand";
+import { create } from "zustand";
 
 type AuthSlice = {
   user?: User;

@@ -5,8 +5,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
 } from "react-native";
-import { animated, useTransition } from "@react-spring/native";
-import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { z } from "zod";
@@ -19,6 +17,7 @@ import {
   TextButton,
   SubmitButton,
   Divider,
+  Icon,
 } from "@components/common";
 import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
@@ -33,8 +32,6 @@ const loginSchema = z
     password: passwordSchema,
   })
   .required();
-
-const AnimatedTypography = animated(Typography);
 
 export const Login = () => {
   const { dispatch } = useNavigation();
@@ -118,7 +115,7 @@ export const Login = () => {
                   />
                   <SubmitButton
                     onPress={Keyboard.dismiss}
-                    beforeIcon={<Ionicons size={24} name="log-in-outline" />}
+                    beforeIcon={<Icon name="log-in-outline" />}
                     className="mb-5"
                     loading={isLoading}
                   >
@@ -155,7 +152,7 @@ export const Login = () => {
               <Divider className="grow w-0" />
             </View>
             <Button
-              beforeIcon={<Ionicons name="ios-logo-google" size={24} />}
+              beforeIcon={<Icon name="ios-logo-google" />}
               variant="outlined"
               className="my-4"
             />

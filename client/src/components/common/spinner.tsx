@@ -1,6 +1,13 @@
-import { animated, useSpring } from "@react-spring/native";
 import clsx from "clsx";
+import { useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
+import Animated, {
+  cancelAnimation,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSpring,
+} from "react-native-reanimated";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -9,23 +16,32 @@ type Props = {
 };
 
 export const Spinner = ({ style, color = "primary", className }: Props) => {
-  const { rotate } = useSpring({
-    from: {
-      rotate: "0deg",
-    },
-    to: {
-      rotate: "360deg",
-    },
-    loop: true,
-    config: {
-      mass: 1,
-      tension: 100,
-      friction: 20,
-    },
-  });
+  const rotate = useSharedValue(0);
+
+  useEffect(() => {
+    rotate.value = withRepeat(
+      withSpring(360, {
+        damping: 20,
+        stiffness: 100,
+        mass: 1,
+        restDisplacementThreshold: 0.2,
+      }),
+      -1
+    );
+
+    () => cancelAnimation(rotate);
+  }, []);
+
+  const aStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: `${rotate.value}deg`,
+      },
+    ],
+  }));
 
   return (
-    <animated.View
+    <Animated.View
       className={clsx(
         "!border-l-transparent rounded-full border-4 w-5 h-5",
         {
@@ -35,7 +51,7 @@ export const Spinner = ({ style, color = "primary", className }: Props) => {
         },
         className
       )}
-      style={[{ transform: [{ rotate }] }, style]}
+      style={[aStyle, style]}
     />
   );
 };

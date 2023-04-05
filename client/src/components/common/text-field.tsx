@@ -1,5 +1,4 @@
 import { ReactNode, useCallback } from "react";
-import { animated, useTransition } from "@react-spring/native";
 import {
   StyleProp,
   TextInput,
@@ -14,6 +13,18 @@ import clsx from "clsx";
 import { NativeNode } from "@components/common/native-node";
 import { Typography } from "@components/common/typography";
 import { colors } from "@constants/theme";
+import Animated, {
+  BaseAnimationBuilder,
+  EntryAnimationsValues,
+  EntryExitAnimationFunction,
+  Keyframe,
+  LayoutAnimation,
+  LayoutAnimationFunction,
+  useAnimatedStyle,
+  useDerivedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 
 type TextFieldProps = Omit<
   TextInputProps,
@@ -29,8 +40,6 @@ type TextFieldProps = Omit<
   containerStyle?: StyleProp<ViewStyle>;
 };
 
-const AnimatedTypography = animated(Typography);
-
 export const TextField = ({
   name,
   label,
@@ -43,26 +52,22 @@ export const TextField = ({
   ...rest
 }: TextFieldProps) => {
   const [field, meta, helpers] = useField<string>(name);
-  const transitions = useTransition(meta.touched && meta.error, {
-    from: {
-      opacity: 0,
-      scaleY: 0,
-      height: 0,
-      marginTop: 0,
-    },
-    enter: {
-      opacity: 1,
-      scaleY: 1,
-      height: 15,
-      marginTop: 4,
-    },
-    leave: {
-      opacity: 0,
-      scaleY: 0,
-      height: 0,
-      marginTop: 0,
-    },
-  });
+
+  const transition = useDerivedValue(() => {
+    return meta.touched && meta.error
+      ? withSpring(1, { damping: 20 })
+      : withTiming(0);
+  }, [meta.touched, meta.error]);
+
+  const errorStyle = useAnimatedStyle(
+    () => ({
+      height: transition.value * 15,
+      opacity: transition.value,
+      marginTop: transition.value * 4,
+      transform: [{ scaleY: transition.value }],
+    }),
+    []
+  );
 
   const handleChange = useCallback(
     (text: string) => helpers.setValue(text),
@@ -97,17 +102,9 @@ export const TextField = ({
           {...rest}
         />
       </View>
-      {transitions(
-        ({ opacity, scaleY, height, marginTop }, error) =>
-          error && (
-            <AnimatedTypography
-              className="text-danger text-xs"
-              style={{ transform: [{ scaleY }], opacity, height, marginTop }}
-            >
-              {error}
-            </AnimatedTypography>
-          )
-      )}
+      <Animated.View style={errorStyle}>
+        <Typography className="text-danger text-xs">{meta.error}</Typography>
+      </Animated.View>
     </View>
   );
 };

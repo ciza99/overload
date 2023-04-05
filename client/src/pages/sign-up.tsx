@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { animated, useTransition } from "@react-spring/native";
-import { Ionicons } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { z } from "zod";
@@ -19,6 +18,7 @@ import {
   TextField,
   TextButton,
   SubmitButton,
+  Icon,
 } from "@components/common";
 import { passwordSchema } from "@schemas";
 
@@ -134,7 +134,7 @@ export const SignUp = () => {
                 />
                 <SubmitButton
                   onPress={Keyboard.dismiss}
-                  beforeIcon={<Ionicons size={24} name="create-outline" />}
+                  beforeIcon={<Icon name="create-outline" />}
                   className="mb-5"
                   loading={isLoading}
                 >
