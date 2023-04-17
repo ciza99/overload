@@ -10,20 +10,43 @@ import {
   DndProvider,
   useSortable,
   SortableProvider,
+  arrayMove,
 } from "@components/common/dnd";
 import { useMemo, useState } from "react";
 import { restrictToYAxis } from "@components/common/dnd/modifiers";
 import { inferRouterOutputs } from "@trpc/server";
 
 export const Templates = () => {
+  const utils = trpc.useContext();
   const { data } = trpc.training.getTemplates.useQuery();
   const open = useStore((state) => state.dialog.open);
 
-  const items = useMemo(() => data?.map((item) => `${item.id}`) ?? [], [data]);
+  const items = useMemo(() => data?.map(({ id }) => id) ?? [], [data]);
 
   return (
     <ScrollView>
-      <DndProvider modifiers={[restrictToYAxis]}>
+      <DndProvider
+        modifiers={[restrictToYAxis]}
+        onDragEnd={({ active, over, translate }) => {
+          const activeIndex = items.findIndex((id) => Number(active.id) === id);
+          const overIndex = items.findIndex((id) => Number(over?.id) === id);
+
+          console.log("DROP", { activeIndex, overIndex, length: data?.length });
+          if (
+            !data ||
+            overIndex === -1 ||
+            activeIndex === -1 ||
+            activeIndex === overIndex
+          ) {
+            return;
+          }
+
+          utils.training.getTemplates.setData(
+            undefined,
+            arrayMove(data, activeIndex, overIndex)
+          );
+        }}
+      >
         <SortableProvider items={items}>
           <View className="p-4 gap-y-2">
             {data?.map((templateGroup) => (
@@ -55,9 +78,7 @@ export const Item = ({
   group: inferRouterOutputs<AppRouter>["training"]["getTemplates"][number];
 }) => {
   const [open, setOpen] = useState(false);
-  const { gesture, draggableRef, droppableRef, style } = useSortable(
-    group.id.toString()
-  );
+  const { gesture, draggableRef, droppableRef, style } = useSortable(group.id);
 
   return (
     <Animated.View ref={draggableRef} style={style}>

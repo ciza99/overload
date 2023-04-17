@@ -5,15 +5,14 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
-  useState,
 } from "react";
 import {
   MeasuredDimensions,
   SharedValue,
+  useAnimatedReaction,
   useAnimatedStyle,
   useDerivedValue,
-  withSpring,
+  useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import { useDndCtx, useDraggable, useDroppable } from "./core";
@@ -31,7 +30,7 @@ export function mergeRefs<T>(
   );
 }
 
-const move = <TItem,>(array: TItem[], from: number, to: number) => {
+export const arrayMove = <TItem,>(array: TItem[], from: number, to: number) => {
   "worklet";
   const newArray = array.slice();
   newArray.splice(
@@ -46,49 +45,46 @@ const move = <TItem,>(array: TItem[], from: number, to: number) => {
 export const useSortable = (id: Key) => {
   const { ref: draggableRef, gesture } = useDraggable(id);
   const { ref: droppableRef, isOver } = useDroppable(id);
-  const { active, translateX, translateY, over } = useDndCtx();
-  const { items, sortedRects, activeIndex, overIndex } = useSortableCtx();
+  const { active, translateX: dragX, translateY: dragY, over } = useDndCtx();
+  const { items, sortedRects, updatedRects } = useSortableCtx();
 
-  const translate = useDerivedValue(() => {
-    if (!active.value || !over.value) {
-      return null;
-    }
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
 
-    const index = items.indexOf(id);
+  const index = items.indexOf(id);
 
-    if (index === -1 || activeIndex.value === -1 || overIndex.value === -1) {
-      return null;
-    }
+  useAnimatedReaction(
+    () => ({
+      sortedRects: sortedRects.value,
+      updatedRects: updatedRects.value,
+    }),
+    ({ sortedRects, updatedRects }) => {
+      const oldRect = sortedRects[index];
+      const newRect = updatedRects[index];
 
-    const newRects = move(
-      sortedRects.value,
-      overIndex.value,
-      activeIndex.value
-    );
+      if (index === -1 || !oldRect || !newRect) {
+        return { x: 0, y: 0 };
+      }
 
-    const oldRect = sortedRects.value[index];
-    const newRect = newRects[index];
-
-    return {
-      x: newRect.pageX - oldRect.pageX,
-      y: newRect.pageY - oldRect.pageY,
-    };
-  }, [id]);
+      const x = newRect.pageX - oldRect.pageX;
+      const y = newRect.pageY - oldRect.pageY;
+      translateX.value = withTiming(x);
+      translateY.value = withTiming(y);
+    },
+    [index]
+  );
 
   const style = useAnimatedStyle(() => {
-    if (active.value === id) {
+    if (active.value == id) {
       return {
-        transform: [
-          { translateX: translateX.value },
-          { translateY: translateY.value },
-        ],
+        transform: [{ translateX: dragX.value }, { translateY: dragY.value }],
       };
     }
 
     return {
       transform: [
-        { translateX: withTiming(translate.value?.x ?? 0, { duration: 250 }) },
-        { translateY: withTiming(translate.value?.y ?? 0, { duration: 250 }) },
+        { translateX: translateX.value },
+        { translateY: translateY.value },
       ],
     };
   });
@@ -107,6 +103,7 @@ export const useSortable = (id: Key) => {
 type SortableCtxType = {
   items: Key[];
   sortedRects: Readonly<SharedValue<MeasuredDimensions[]>>;
+  updatedRects: Readonly<SharedValue<MeasuredDimensions[]>>;
   activeIndex: SharedValue<number>;
   overIndex: SharedValue<number>;
 };
@@ -121,24 +118,41 @@ export const SortableProvider = ({
   items: Key[];
   children: ReactNode;
 }) => {
-  const { active, over, droppableRects } = useDndCtx();
+  const { active, over, droppableRects, dragging } = useDndCtx();
   const activeIndex = useDerivedValue(
-    () => (active.value ? items.indexOf(active.value) : -1),
+    () => (active.value ? items.findIndex((id) => id == active.value) : -1),
     [items]
   );
+
   const overIndex = useDerivedValue(
-    () => (over.value ? items.indexOf(over.value) : -1),
+    () => (over.value ? items.findIndex((id) => id == over.value) : -1),
     [items]
   );
 
   const sortedRects = useDerivedValue(
-    () => items.map((item) => droppableRects.value[item]),
+    () => items.map((id) => droppableRects.value[id]),
     [items]
   );
 
+  const updatedRects = useDerivedValue(() => {
+    if (activeIndex.value === -1 || overIndex.value === -1) {
+      return sortedRects.value;
+    }
+
+    return arrayMove(sortedRects.value, overIndex.value, activeIndex.value);
+  }, []);
+
+  useEffect(() => {
+    console.log({ dragging });
+  }, [dragging]);
+
+  useEffect(() => {
+    console.log("items changed");
+  }, [items]);
+
   return (
     <SortableCtx.Provider
-      value={{ items, sortedRects, activeIndex, overIndex }}
+      value={{ items, sortedRects, updatedRects, activeIndex, overIndex }}
     >
       {children}
     </SortableCtx.Provider>

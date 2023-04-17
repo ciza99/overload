@@ -1,24 +1,20 @@
-import { useTransition } from "@components/animations/use-transition";
 import { Collapsable, Button } from "@components/common";
 import {
-  DndProvider,
+  DndContext,
   useDraggable,
   useDroppable,
-} from "@components/common/dnd";
+} from "@components/common/new-dnd";
 import clsx from "clsx";
 import { useState } from "react";
 import { View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedProps } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 export const Training = () => {
   const [open, setOpen] = useState(false);
 
-  const { persisted } = useTransition(open);
-  console.log({ persisted });
-
   return (
-    <DndProvider>
+    <DndContext>
       <View className="gap-y-4">
         <Droppable />
         <Draggable />
@@ -27,12 +23,12 @@ export const Training = () => {
         <View className="bg-red-500 h-12" />
       </Collapsable>
       <Button onPress={() => setOpen((o) => !o)}>Toggle</Button>
-    </DndProvider>
+    </DndContext>
   );
 };
 
 const Droppable = () => {
-  const { ref, isOver } = useDroppable(`${0}`);
+  const { ref, isOver } = useDroppable(0);
 
   return (
     <Animated.View
@@ -45,10 +41,10 @@ const Droppable = () => {
 };
 
 const Draggable = () => {
-  const { ref, style, gesture } = useDraggable(`${0}`);
+  const { ref, style, panGesture, isDragging } = useDraggable(0);
 
   return (
-    <GestureDetector gesture={gesture}>
+    <GestureDetector gesture={panGesture}>
       <Animated.View
         style={style}
         ref={ref}

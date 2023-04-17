@@ -17,9 +17,14 @@ import Animated, {
   BaseAnimationBuilder,
   EntryAnimationsValues,
   EntryExitAnimationFunction,
+  FadeIn,
+  FadeOut,
   Keyframe,
+  Layout,
   LayoutAnimation,
   LayoutAnimationFunction,
+  StretchInY,
+  StretchOutY,
   useAnimatedStyle,
   useDerivedValue,
   withSpring,
@@ -102,9 +107,16 @@ export const TextField = ({
           {...rest}
         />
       </View>
-      <Animated.View style={errorStyle}>
-        <Typography className="text-danger text-xs">{meta.error}</Typography>
-      </Animated.View>
+
+      {meta.touched && meta.error && (
+        <Animated.View
+          entering={StretchInY}
+          exiting={StretchOutY}
+          layout={Layout.springify()}
+        >
+          <Typography className="text-danger text-xs">{meta.error}</Typography>
+        </Animated.View>
+      )}
     </View>
   );
 };

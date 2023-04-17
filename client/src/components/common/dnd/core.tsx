@@ -2,7 +2,6 @@ import {
   createContext,
   ReactNode,
   RefObject,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -13,13 +12,11 @@ import Animated, {
   runOnJS,
   measure,
   useSharedValue,
-  withSpring,
   SharedValue,
   useAnimatedRef,
   MeasuredDimensions,
-  useDerivedValue,
   useAnimatedReaction,
-  withTiming,
+  withSpring,
 } from "react-native-reanimated";
 import { Gesture, PanGesture } from "react-native-gesture-handler";
 import { Key, Modifier, NodeType } from "./types";
@@ -32,7 +29,14 @@ export const useDroppable = (id: Key) => {
 
   useAnimatedReaction(
     () => over.value,
-    (overId) => runOnJS(setIsOver)(id === overId)
+    (overId) => {
+      const isOverUpdated = id == overId;
+      if (isOver == isOverUpdated) {
+        return;
+      }
+      runOnJS(setIsOver)(id == overId);
+    },
+    [isOver]
   );
 
   useEffect(() => {
@@ -63,21 +67,28 @@ export const useDraggable = (id: Key) => {
 
   const style = useAnimatedStyle(
     () =>
-      active.value === id
+      active.value == id
         ? {
             transform: [
               { translateX: translateX.value },
               { translateY: translateY.value },
             ],
           }
-        : {},
+        : {
+            transform: [
+              { translateX: withSpring(0) },
+              { translateY: withSpring(0) },
+            ],
+          },
     [id]
   );
 
   useEffect(() => {
     register(id, "draggable", ref);
 
-    return () => unregister(id, "draggable");
+    return () => {
+      unregister(id, "draggable");
+    };
   }, [id]);
 
   const gesture = useMemo(() => createGesture(id), [id, createGesture]);
@@ -108,10 +119,26 @@ type DndContextType = {
   droppableRects: SharedValue<Record<Key, MeasuredDimensions>>;
   register: RegisterFnc;
   unregister: UnregisterFnc;
+  dragging: boolean;
   createGesture: (key: Key) => PanGesture;
-  onDragStart?: () => void;
-  onDragUpdate?: () => void;
-  onDragEnd?: () => void;
+};
+
+type Active = {
+  id: Key;
+  rect: MeasuredDimensions | null;
+};
+
+type Over = {
+  id: Key;
+};
+
+type DndEvent = {
+  active: Active;
+  over: Over | null;
+  translate: {
+    x: number;
+    y: number;
+  };
 };
 
 export const DndProvider = ({
@@ -122,11 +149,12 @@ export const DndProvider = ({
   modifiers: initialModifiers = [],
 }: {
   children: ReactNode;
-  onDragStart?: () => void;
-  onDragEnd?: () => void;
-  onDragUpdate?: () => void;
+  onDragStart?: (event: DndEvent) => void;
+  onDragEnd?: (event: DndEvent) => void;
+  onDragUpdate?: (event: DndEvent) => void;
   modifiers?: Modifier[];
 }) => {
+  const [dragging, setDragging] = useState(false);
   const [draggables, setDraggables] = useState<
     Record<Key, RefObject<Animated.View>>
   >({});
@@ -136,7 +164,6 @@ export const DndProvider = ({
 
   const modifiers = useSharedValue<Modifier[]>(initialModifiers);
 
-  const previous = useSharedValue<Key | null>(null);
   const active = useSharedValue<Key | null>(null);
   const over = useSharedValue<Key | null>(null);
 
@@ -145,17 +172,7 @@ export const DndProvider = ({
 
   const activeRect = useSharedValue<MeasuredDimensions | null>(null);
   const droppableRects = useSharedValue<Record<Key, MeasuredDimensions>>({});
-
-  const transitioning = useSharedValue({ x: false, y: false });
-
-  useAnimatedReaction(
-    () => active.value,
-    (active) => {
-      if (previous.value !== active && active !== null) {
-        previous.value = active;
-      }
-    }
-  );
+  const updatesCount = useSharedValue(0);
 
   const register = (
     key: Key,
@@ -174,31 +191,60 @@ export const DndProvider = ({
     });
   };
 
+  const handleDragEnd = (
+    onDragEnd: ((event: DndEvent) => void) | undefined,
+    eventProps: DndEvent
+  ) => {
+    console.log("handling drag end");
+    onDragEnd?.(eventProps);
+    console.log("setting values");
+    setDragging(false);
+    active.value = null;
+    activeRect.value = null;
+    over.value = null;
+  };
+
   useAnimatedReaction(
-    () => [transitioning.value],
-    ([{ x, y }]) => {
-      if (!x && !y) {
-        active.value = null;
-      }
-    }
+    () => [active.value, over.value],
+    ([active, over]) => {
+      console.log({ active, over });
+    },
+    []
   );
 
-  const createGesture = useCallback(
-    (id: Key) =>
+  const createGesture = useMemo(() => {
+    return (id: Key) =>
       Gesture.Pan()
-        .enabled(active.value === null || active.value === id)
-        .onStart(() => {
-          if (onDragStart) {
-            runOnJS(onDragStart)();
-          }
-
+        .onStart((event) => {
+          runOnJS(setDragging)(true);
           active.value = id;
-          activeRect.value = measure(draggables[id]);
+          const rect = measure(draggables[id]);
+          activeRect.value = rect;
 
           const rects = calculateRects(droppables);
           droppableRects.value = rects;
+
+          if (onDragStart) {
+            runOnJS(onDragStart)({
+              active: {
+                id: active.value,
+                rect,
+              },
+              over:
+                over.value !== null
+                  ? {
+                      id: over.value,
+                    }
+                  : null,
+              translate: {
+                x: translateX.value,
+                y: translateY.value,
+              },
+            });
+          }
         })
         .onUpdate((event) => {
+          updatesCount.value = updatesCount.value + 1;
           if (!activeRect.value) {
             return;
           }
@@ -234,22 +280,34 @@ export const DndProvider = ({
           over.value = newOver;
         })
         .onEnd(() => {
-          if (onDragEnd) {
-            runOnJS(onDragEnd)();
+          if (active.value) {
+            runOnJS(handleDragEnd)(onDragEnd, {
+              active: {
+                id: active.value,
+                rect: activeRect.value,
+              },
+              over:
+                over.value !== null
+                  ? {
+                      id: over.value,
+                    }
+                  : null,
+              translate: {
+                x: translateX.value,
+                y: translateY.value,
+              },
+            });
           }
+        });
+  }, [draggables, droppables, onDragStart, onDragUpdate, onDragEnd]);
 
-          translateX.value = withTiming(0, {}, () => {
-            transitioning.value.x = false;
-          });
-          translateY.value = withTiming(0, {}, () => {
-            transitioning.value.y = false;
-          });
-
-          activeRect.value = null;
-          over.value = null;
-        }),
-    [draggables, droppables, onDragStart, onDragUpdate, onDragEnd]
-  );
+  // const createGesture = useCallback([
+  //   draggables,
+  //   droppables,
+  //   onDragStart,
+  //   onDragUpdate,
+  //   onDragEnd,
+  // ]);
 
   return (
     <DndContext.Provider
@@ -263,10 +321,8 @@ export const DndProvider = ({
         droppables,
         droppableRects,
         register,
+        dragging,
         unregister,
-        onDragStart,
-        onDragUpdate,
-        onDragEnd,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { MeasuredDimensions } from "react-native-reanimated";
 
 export type NodeType = "draggable" | "droppable";
-export type Key = string;
+export type Key = number | string;
 
 export type Modifier = (props: {
   active: Key | null;

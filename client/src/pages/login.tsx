@@ -23,6 +23,7 @@ import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
 import { useFormikValidation } from "@hooks/use-formik-validation";
 import { passwordSchema } from "@schemas";
+import Animated from "react-native-reanimated";
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
@@ -57,21 +58,6 @@ export const Login = () => {
     () => dispatch(StackActions.replace("signUp")),
     [dispatch]
   );
-
-  const transitions = useTransition(error, {
-    from: {
-      scaleY: 0,
-      height: 0,
-    },
-    enter: {
-      scaleY: 1,
-      height: 20,
-    },
-    leave: {
-      scaleY: 0,
-      height: 0,
-    },
-  });
 
   return (
     <Formik
@@ -121,16 +107,12 @@ export const Login = () => {
                   >
                     <Typography weight="bold">log in</Typography>
                   </SubmitButton>
-                  {transitions(
-                    ({ scaleY, height }, error) =>
-                      error && (
-                        <AnimatedTypography
-                          className="text-danger text-sm text-center"
-                          style={{ height, transform: [{ scaleY }] }}
-                        >
-                          {error.message}
-                        </AnimatedTypography>
-                      )
+                  {error && (
+                    <Animated.View>
+                      <Typography className="text-danger text-sm text-center">
+                        {error.message}
+                      </Typography>
+                    </Animated.View>
                   )}
                 </Paper>
                 <View className="flex flex-row justify-center mt-5 mb-10">
