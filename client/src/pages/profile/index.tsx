@@ -20,7 +20,6 @@ export const ProfileRoutes = () => {
           headerRight: () => (
             <Icon
               color="white"
-              size="lg"
               name="settings-outline"
               onPress={() => navigate("settings")}
             />

@@ -1,9 +1,5 @@
 import { Collapsable, Button } from "@components/common";
-import {
-  DndContext,
-  useDraggable,
-  useDroppable,
-} from "@components/common/new-dnd";
+import { DndContext, useDraggable, useDroppable } from "@components/common/dnd";
 import clsx from "clsx";
 import { useState } from "react";
 import { View } from "react-native";

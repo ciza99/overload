@@ -12,6 +12,7 @@ import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Training } from "./training/training";
 import { TrainingRoutes } from "./training";
+import { SortExample } from "@components/sort-example";
 
 export type NavigationParamMap = {
   login: undefined;
@@ -134,7 +135,7 @@ export const ProtectedRoutes = () => {
           ),
         }}
         name={screens.statistics.key}
-        component={Training}
+        component={SortExample}
       />
     </Tab.Navigator>
   );

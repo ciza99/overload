@@ -69,7 +69,7 @@ export const Login = () => {
       validate={validate}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View className="grow mx-3">
+        <View className="grow px-7">
           <View className="my-auto">
             <KeyboardAvoidingView
               behavior="padding"
@@ -77,67 +77,48 @@ export const Login = () => {
               enabled
               className="grow"
             >
-              <View className="grow justify-end">
-                <Typography
-                  weight="bold"
-                  className="text-3xl my-10 text-center"
-                >
-                  Overload
-                </Typography>
-                <Paper elevation={1} className="p-4">
-                  <TextField
-                    label="Email:"
-                    name="email"
-                    textContentType="emailAddress"
-                    placeholder="johndoe@gmail.com"
-                    className="mb-5"
-                  />
-                  <TextField
-                    label="Password:"
-                    name="password"
-                    placeholder="************"
-                    className="mb-10"
-                    secureTextEntry={true}
-                  />
-                  <SubmitButton
-                    onPress={Keyboard.dismiss}
-                    beforeIcon={<Icon name="log-in-outline" />}
-                    className="mb-5"
-                    loading={isLoading}
-                  >
-                    <Typography weight="bold">log in</Typography>
-                  </SubmitButton>
-                  {error && (
-                    <Animated.View>
-                      <Typography className="text-danger text-sm text-center">
-                        {error.message}
-                      </Typography>
-                    </Animated.View>
-                  )}
-                </Paper>
-                <View className="flex flex-row justify-center mt-5 mb-10">
-                  <Typography>Dont have an account yet?</Typography>
-                  <TextButton onPress={navigateToSignUp} className="ml-2">
-                    Sign up
-                  </TextButton>
-                </View>
-                <View className="grow" />
+              <Typography weight="bold" className="text-3xl text-center">
+                Overload
+              </Typography>
+              <Typography weight="bold" className="text-lg mb-10 text-center">
+                Track your progress and see results.
+              </Typography>
+              <TextField
+                label="Email:"
+                name="email"
+                textContentType="emailAddress"
+                placeholder="johndoe@gmail.com"
+                className="mb-5"
+              />
+              <TextField
+                label="Password:"
+                name="password"
+                placeholder="************"
+                className="mb-8"
+                secureTextEntry={true}
+              />
+              <SubmitButton
+                onPress={Keyboard.dismiss}
+                beforeIcon={<Icon name="log-in-outline" />}
+                className="mb-5"
+                loading={isLoading}
+              >
+                <Typography weight="bold">Log in</Typography>
+              </SubmitButton>
+              {error && (
+                <Animated.View>
+                  <Typography className="text-danger text-sm text-center">
+                    {error.message}
+                  </Typography>
+                </Animated.View>
+              )}
+              <View className="flex flex-row justify-center mt-5">
+                <Typography>Dont have an account yet?</Typography>
+                <TextButton onPress={navigateToSignUp} className="ml-2">
+                  Sign up
+                </TextButton>
               </View>
             </KeyboardAvoidingView>
-          </View>
-          <View className="mb-7">
-            <View className="flex flex-row items-center">
-              <Divider className="grow w-0" />
-              <Typography className="mx-3 text-base-200">
-                Or log in with
-              </Typography>
-              <Divider className="grow w-0" />
-            </View>
-            <Button
-              beforeIcon={<Icon name="ios-logo-google" />}
-              variant="outlined"
-              className="my-4"
-            />
           </View>
         </View>
       </TouchableWithoutFeedback>

@@ -43,6 +43,7 @@ type TextFieldProps = Omit<
   inputStyle?: StyleProp<TextStyle>;
   containerClassName?: string;
   containerStyle?: StyleProp<ViewStyle>;
+  rightContent?: ReactNode;
 };
 
 export const TextField = ({
@@ -54,6 +55,7 @@ export const TextField = ({
   inputClassName,
   containerStyle,
   containerClassName,
+  rightContent,
   ...rest
 }: TextFieldProps) => {
   const [field, meta, helpers] = useField<string>(name);
@@ -90,7 +92,7 @@ export const TextField = ({
       )}
       <View
         className={clsx(
-          "px-2 py-1 bg-transparent bg-base-900 border border-base-500 w-full flex rounded",
+          "px-2 py-1 bg-transparent bg-base-600 w-full flex flex-row items-center rounded-lg",
           containerClassName
         )}
         style={containerStyle}
@@ -98,14 +100,15 @@ export const TextField = ({
         <TextInput
           selectionColor={colors.primary}
           keyboardAppearance="dark"
-          placeholderTextColor={colors.base[300]}
+          placeholderTextColor={colors.base[200]}
           onChangeText={handleChange}
           onBlur={handleBlur}
           value={field.value}
-          className={clsx("text-white h-8", inputClassName)}
+          className={clsx("text-white h-7 grow", inputClassName)}
           style={inputStyle}
           {...rest}
         />
+        {rightContent}
       </View>
 
       {meta.touched && meta.error && (
@@ -113,6 +116,7 @@ export const TextField = ({
           entering={StretchInY}
           exiting={StretchOutY}
           layout={Layout.springify()}
+          className="mt-1"
         >
           <Typography className="text-danger text-xs">{meta.error}</Typography>
         </Animated.View>

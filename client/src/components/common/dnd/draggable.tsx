@@ -1,22 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { ViewStyle } from "react-native";
 import Animated, {
   runOnJS,
   useAnimatedReaction,
   useAnimatedRef,
   useAnimatedStyle,
+  useDerivedValue,
   withSpring,
 } from "react-native-reanimated";
 import { useDndContext } from "./DndContext";
 
 import { NodeId } from "./types";
-
-const createStyles = ({ tx, ty }: { tx: number; ty: number }): ViewStyle => {
-  "worklet";
-  return {
-    transform: [{ translateX: tx }, { translateY: ty }],
-  };
-};
 
 export const useDraggable = (id: NodeId) => {
   const ref = useAnimatedRef<Animated.View>();
@@ -30,7 +23,17 @@ export const useDraggable = (id: NodeId) => {
     [id]
   );
 
-  const style = useAnimatedStyle(() => ({}), [id]);
+  const isActive = useDerivedValue(() => active.value === id, [id]);
+
+  const style = useAnimatedStyle(
+    () => ({
+      transform: [
+        { translateX: isActive.value ? tx.value : withSpring(0) },
+        { translateY: isActive.value ? ty.value : withSpring(0) },
+      ],
+    }),
+    [id]
+  );
 
   useEffect(() => {
     register(id, "draggable", ref);

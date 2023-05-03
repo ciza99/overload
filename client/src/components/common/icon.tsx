@@ -1,16 +1,17 @@
 import { ComponentProps } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
+type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Props = Omit<ComponentProps<typeof Ionicons>, "size"> & {
   size?: Size | number;
 };
-type Size = "sm" | "md" | "lg" | "xl";
 
 const sizes: Record<Size, number> = {
-  sm: 16,
-  md: 20,
-  lg: 24,
-  xl: 28,
+  xs: 16,
+  sm: 20,
+  md: 24,
+  lg: 28,
+  xl: 32,
 };
 
 export const Icon = ({ size = "md", ...props }: Props) => {

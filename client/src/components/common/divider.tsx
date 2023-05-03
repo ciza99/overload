@@ -18,7 +18,7 @@ export const Divider = ({
 }: DividerProps) => (
   <View
     className={clsx(
-      "bg-base-500 rounded",
+      "bg-base-500 rounded-lg",
       {
         "w-full": direction === "horizontal",
         "h-full": direction === "vertical",

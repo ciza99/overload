@@ -96,68 +96,65 @@ export const SignUp = () => {
       >
         <View className="grow">
           <TouchableWithoutFeedback className="grow" onPress={Keyboard.dismiss}>
-            <View className="mx-3 my-auto">
-              <Typography weight="bold" className="text-3xl my-10 text-center">
+            <View className="px-7 my-auto">
+              <Typography weight="bold" className="text-3xl text-center">
                 Overload
               </Typography>
-              <Paper elevation={1} className="p-4">
-                <TextField
-                  label="Username:"
-                  name="username"
-                  textContentType="username"
-                  placeholder="johndoe@gmail.com"
-                  className="mb-5"
-                />
-                <TextField
-                  label="Email:"
-                  name="email"
-                  textContentType="emailAddress"
-                  placeholder="johndoe@gmail.com"
-                  className="mb-5"
-                  onLayout={(e) => e.nativeEvent.layout.x}
-                />
-                <TextField
-                  label="Password:"
-                  name="password"
-                  textContentType="newPassword"
-                  placeholder="************"
-                  className="mb-5"
-                  secureTextEntry={true}
-                />
-                <TextField
-                  label="Repeat password:"
-                  name="repeatPassword"
-                  textContentType="newPassword"
-                  placeholder="************"
-                  className="mb-10"
-                  secureTextEntry={true}
-                />
-                <SubmitButton
-                  onPress={Keyboard.dismiss}
-                  beforeIcon={<Icon name="create-outline" />}
-                  className="mb-5"
-                  loading={isLoading}
-                >
-                  sign up
-                </SubmitButton>
-                {transitions(
-                  ({ scaleY, height }, error) =>
-                    error && (
-                      <AnimatedTypography
-                        className="text-danger text-sm text-center"
-                        style={{ height, transform: [{ scaleY }] }}
-                      >
-                        {error.message}
-                      </AnimatedTypography>
-                    )
-                )}
-              </Paper>
-              <View className="flex flex-row justify-center mt-5">
+              <Typography weight="bold" className="text-lg mb-10 text-center">
+                Track your progress and see results.
+              </Typography>
+              <TextField
+                label="Username:"
+                name="username"
+                textContentType="username"
+                placeholder="johndoe@gmail.com"
+                className="mb-5"
+              />
+              <TextField
+                label="Email:"
+                name="email"
+                textContentType="emailAddress"
+                placeholder="johndoe@gmail.com"
+                className="mb-5"
+              />
+              <TextField
+                label="Password:"
+                name="password"
+                textContentType="newPassword"
+                placeholder="************"
+                className="mb-5"
+                secureTextEntry={true}
+              />
+              <TextField
+                label="Repeat password:"
+                name="repeatPassword"
+                textContentType="newPassword"
+                placeholder="************"
+                className="mb-8"
+                secureTextEntry={true}
+              />
+              <SubmitButton
+                onPress={Keyboard.dismiss}
+                beforeIcon={<Icon name="create-outline" />}
+                className="mb-2"
+                loading={isLoading}
+              >
+                Sign up
+              </SubmitButton>
+              {transitions(
+                ({ scaleY, height }, error) =>
+                  error && (
+                    <AnimatedTypography
+                      className="text-danger text-sm text-center"
+                      style={{ height, transform: [{ scaleY }] }}
+                    >
+                      {error.message}
+                    </AnimatedTypography>
+                  )
+              )}
+              <View className="flex flex-row justify-center pt-8 gap-2">
                 <Typography>Already have an account?</Typography>
-                <TextButton
-                  onPress={navigateToLogin}
-                  className="ml-2 text-primary"
-                >
+                <TextButton onPress={navigateToLogin} className="text-primary">
                   Log in
                 </TextButton>
               </View>

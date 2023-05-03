@@ -17,6 +17,8 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export type ButtonProps = {
   children?: ReactNode;
   onPress?: PressableProps["onPress"];
@@ -69,53 +71,50 @@ export const Button = ({
   );
 
   return (
-    <Pressable
+    <AnimatedPressable
       disabled={loading || disabled}
       onPress={onPress}
       onPressIn={onPressIn}
       onPressOut={onPressOut}
+      className={clsx(
+        "flex flex-row items-center justify-center py-1 px-4 mx-0 rounded-lg h-9",
+        {
+          "bg-primary": variant === "primary",
+          "bg-base-600": variant === "secondary",
+          "bg-transparent border border-base-200": variant === "outlined",
+        },
+        className
+      )}
+      style={[buttonStyle, style]}
     >
-      <Animated.View
-        className={clsx(
-          "flex flex-row items-center justify-center py-2 px-4 w-full mx-0 rounded h-10",
-          {
-            "bg-primary": variant === "primary",
-            "bg-base-600": variant === "secondary",
-            "bg-transparent border border-base-200": variant === "outlined",
-          },
-          className
-        )}
-        style={[buttonStyle, style]}
-      >
-        {loading && (
-          <Animated.View
-            entering={FadeIn}
-            exiting={FadeOut}
-            className="top-0 left-0 right-0 bottom-0 flex items-center justify-center"
-          >
-            <Spinner color="white" />
-          </Animated.View>
-        )}
+      {loading && (
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          className="top-0 left-0 right-0 bottom-0 flex items-center justify-center"
+        >
+          <Spinner color="white" />
+        </Animated.View>
+      )}
 
-        {!loading && (
-          <Animated.View
-            className="flex flex-row items-center"
-            entering={FadeIn}
-            exiting={FadeOut}
+      {!loading && (
+        <Animated.View
+          className="flex flex-row items-center"
+          entering={FadeIn}
+          exiting={FadeOut}
+        >
+          <Typography>{beforeIcon}</Typography>
+          <View
+            className={clsx({
+              "ml-2": !!beforeIcon,
+              "mr-2": !!afterIcon,
+            })}
           >
-            <Typography>{beforeIcon}</Typography>
-            <View
-              className={clsx({
-                "ml-2": !!beforeIcon,
-                "mr-2": !!afterIcon,
-              })}
-            >
-              {content}
-            </View>
-            <Typography>{afterIcon}</Typography>
-          </Animated.View>
-        )}
-      </Animated.View>
-    </Pressable>
+            {content}
+          </View>
+          <Typography>{afterIcon}</Typography>
+        </Animated.View>
+      )}
+    </AnimatedPressable>
   );
 };

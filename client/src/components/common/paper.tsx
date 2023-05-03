@@ -18,7 +18,7 @@ export const Paper = ({
   return (
     <View
       className={clsx(
-        "rounded",
+        "rounded-lg",
         {
           "bg-base-700": elevation === 1,
           "bg-base-600": elevation === 2,

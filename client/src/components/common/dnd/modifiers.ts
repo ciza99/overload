@@ -1,6 +1,8 @@
-import { Modifier } from "./types";
+import { Transform } from "./types";
 
-export const restrictToYAxis: Modifier = ({ translateY }) => {
+export type ModifierFnc = (props: Transform) => Transform;
+
+export const restrictToYAxis: ModifierFnc = ({ ty }) => {
   "worklet";
-  return { translateY, translateX: 0 };
+  return { tx: 0, ty };
 };

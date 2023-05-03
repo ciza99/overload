@@ -22,7 +22,7 @@ export const rectIntersection = (
   );
   const top = Math.max(source.pageY, target.pageY);
   const bottom = Math.min(
-    source.pageY + target.height,
+    source.pageY + source.height,
     target.pageY + target.height
   );
 
@@ -45,8 +45,7 @@ export const rectIntersections: CollisionDetectionFnc = ({
   droppableRects,
 }) => {
   "worklet";
-  const entries = [...Object.entries(droppableRects)];
-  const ratios = entries.map(([id, targetRect]) => {
+  const ratios = Object.entries(droppableRects).map(([id, targetRect]) => {
     const ratio = rectIntersection(activeRect, targetRect);
     return { id, ratio };
   });
