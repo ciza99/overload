@@ -4,6 +4,7 @@ import {
   createTemplateSchema,
   createTrainingSchema,
 } from "./training-schema";
+import z from "zod";
 
 import { TrainingService } from "./training-service";
 
@@ -18,6 +19,12 @@ export const trainingProducersFactory = ({
     .input(createTemplateGroupSchema)
     .mutation(async ({ input }) => {
       return await trainingService.createTemplateGroup(input);
+    }),
+
+  deleteTemplateGroup: t.procedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      return await trainingService.deleteTemplateGroup(input.id);
     }),
 
   createTemplate: t.procedure

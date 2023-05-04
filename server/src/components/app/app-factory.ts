@@ -48,6 +48,9 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   const trpc = createExpressMiddleware({
     router,
     createContext: createContextFactory({ config, db, sessionService }),
+    onError: ({ path, ctx, error, input }) => {
+      console.log(`error at ${path}\n`, { error, input, ctx });
+    },
   });
 
   app.use(json());

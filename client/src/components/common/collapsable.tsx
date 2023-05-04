@@ -1,10 +1,6 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { View } from "react-native";
 import Animated, {
-  measure,
-  runOnUI,
-  useAnimatedReaction,
-  useAnimatedRef,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
@@ -20,31 +16,26 @@ export const Collapsable = ({
   children: ReactNode;
 }) => {
   const height = useSharedValue(0);
-  const aRef = useAnimatedRef<View>();
 
   const progress = useDerivedValue(
     () => (open ? withSpring(1) : withTiming(0)),
     [open]
   );
 
-  useEffect(() => {
-    runOnUI(() => {
-      "worklet";
-      height.value = measure(aRef)?.height ?? 0;
-    })();
-  }, [open]);
-
-  const style = useAnimatedStyle(
-    () => ({
-      height: height.value * progress.value + 1,
-      opacity: progress.value === 0 ? 0 : 1,
-    }),
-    [open]
-  );
+  const style = useAnimatedStyle(() => ({
+    height: height.value * progress.value + 1,
+    opacity: progress.value === 0 ? 0 : 1,
+  }));
 
   return (
     <Animated.View className="overflow-hidden" style={style}>
-      <View ref={aRef}>{children}</View>
+      <View
+        onLayout={({ nativeEvent }) => {
+          height.value = nativeEvent.layout.height;
+        }}
+      >
+        {children}
+      </View>
     </Animated.View>
   );
 };

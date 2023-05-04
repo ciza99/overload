@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
 } from "react-native";
-import { animated, useTransition } from "@react-spring/native";
 import { Formik } from "formik";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import { z } from "zod";
@@ -14,13 +13,13 @@ import { trpc } from "@utils/trpc";
 import { useFormikValidation } from "@hooks/use-formik-validation";
 import {
   Typography,
-  Paper,
   TextField,
   TextButton,
   SubmitButton,
   Icon,
 } from "@components/common";
 import { passwordSchema } from "@schemas";
+import Animated, { StretchInY, StretchOutY } from "react-native-reanimated";
 
 type SignupSchema = z.infer<typeof signUpSchema>;
 
@@ -42,8 +41,6 @@ const signUpSchema = z
     });
   });
 
-const AnimatedTypography = animated(Typography);
-
 export const SignUp = () => {
   const { dispatch } = useNavigation();
   const validate = useFormikValidation(signUpSchema);
@@ -61,21 +58,6 @@ export const SignUp = () => {
     () => dispatch(StackActions.replace("login")),
     [dispatch]
   );
-
-  const transitions = useTransition(error, {
-    from: {
-      scaleY: 0,
-      height: 0,
-    },
-    enter: {
-      scaleY: 1,
-      height: 20,
-    },
-    leave: {
-      scaleY: 0,
-      height: 0,
-    },
-  });
 
   return (
     <Formik
@@ -141,16 +123,12 @@ export const SignUp = () => {
               >
                 Sign up
               </SubmitButton>
-              {transitions(
-                ({ scaleY, height }, error) =>
-                  error && (
-                    <AnimatedTypography
-                      className="text-danger text-sm text-center"
-                      style={{ height, transform: [{ scaleY }] }}
-                    >
-                      {error.message}
-                    </AnimatedTypography>
-                  )
+              {error && (
+                <Animated.View entering={StretchInY} exiting={StretchOutY}>
+                  <Typography className="text-danger text-sm text-center">
+                    {error.message}
+                  </Typography>
+                </Animated.View>
               )}
               <View className="flex flex-row justify-center pt-8 gap-2">
                 <Typography>Already have an account?</Typography>

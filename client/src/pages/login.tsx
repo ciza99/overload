@@ -11,19 +11,16 @@ import { z } from "zod";
 
 import {
   Typography,
-  Paper,
   TextField,
-  Button,
   TextButton,
   SubmitButton,
-  Divider,
   Icon,
 } from "@components/common";
 import { tokenHandler } from "@utils/token-handler";
 import { trpc } from "@utils/trpc";
 import { useFormikValidation } from "@hooks/use-formik-validation";
 import { passwordSchema } from "@schemas";
-import Animated from "react-native-reanimated";
+import Animated, { StretchInY, StretchOutY } from "react-native-reanimated";
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
@@ -106,7 +103,7 @@ export const Login = () => {
                 <Typography weight="bold">Log in</Typography>
               </SubmitButton>
               {error && (
-                <Animated.View>
+                <Animated.View entering={StretchInY} exiting={StretchOutY}>
                   <Typography className="text-danger text-sm text-center">
                     {error.message}
                   </Typography>

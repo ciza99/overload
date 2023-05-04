@@ -21,6 +21,13 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     return await db.templateGroup.create({ data: templateGroup });
   };
 
+  const deleteTemplateGroup = async (id: number) => {
+    return await db.templateGroup.delete({
+      where: { id },
+      include: { templates: true },
+    });
+  };
+
   const createTraining = async (training: CreateTrainingSchema) => {
     return await db.training.create({ data: training });
   };
@@ -35,6 +42,7 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
 
   return {
     createTemplateGroup,
+    deleteTemplateGroup,
     createTemplate,
     createTraining,
     getTemplates,

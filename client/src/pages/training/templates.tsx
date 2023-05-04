@@ -7,10 +7,15 @@ import {
   Collapsable,
   Icon,
   TextField,
+  Paper,
 } from "@components/common";
 import { AppRouter, trpc } from "@utils/trpc";
 import { CreateGroupDialog } from "@components/dialog/create-group-dialog";
-import Animated from "react-native-reanimated";
+import Animated, {
+  Layout,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 import { GestureDetector } from "react-native-gesture-handler";
 import {
   DndContext,
@@ -100,48 +105,84 @@ export const Item = ({
   group: inferRouterOutputs<AppRouter>["training"]["getTemplates"][number];
 }) => {
   const [open, setOpen] = useState(false);
+  const utils = trpc.useContext();
   const { panGesture, draggableRef, droppableRef, style } = useSortable(
     group.id
   );
+  const { mutate: deleteTemplateGroup } =
+    trpc.training.deleteTemplateGroup.useMutation({
+      onSuccess: () => {
+        utils.training.getTemplates.invalidate();
+      },
+    });
+
+  const { mutate: createTemplate } = trpc.training.createTemplate.useMutation({
+    onSuccess: () => {
+      utils.training.getTemplates.invalidate();
+    },
+  });
+
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        rotate: withSpring(`${open ? 180 : 0}deg`, {
+          mass: 0.5,
+          stiffness: 75,
+        }),
+      },
+    ],
+  }));
 
   return (
     <Animated.View ref={draggableRef} style={style} className="mb-5">
       <Animated.View ref={droppableRef}>
-        <View className="flex flex-row items-center gap-2 p-2">
-          <GestureDetector gesture={panGesture}>
-            <Typography className="text-primary">
-              <Icon name="reorder-three-outline" />
-            </Typography>
-          </GestureDetector>
+        <Animated.View
+          layout={Layout}
+          className="flex flex-row items-center gap-2 p-2"
+        >
+          <View>
+            <GestureDetector gesture={panGesture}>
+              <Typography className="text-primary">
+                <Icon size="lg" name="reorder-three-outline" />
+              </Typography>
+            </GestureDetector>
+          </View>
           <Typography className="mr-auto text-lg" weight="bold">
             {group.name}
           </Typography>
-          <Icon
-            onPress={() => setOpen((prev) => !prev)}
-            size="lg"
-            color="white"
-            name="chevron-down"
-          />
-        </View>
+          <Animated.View style={chevronStyle}>
+            <Icon
+              onPress={() => setOpen((prev) => !prev)}
+              color="white"
+              name="chevron-down"
+            />
+          </Animated.View>
+        </Animated.View>
         <Collapsable open={open}>
           {group.templates.map((template) => (
-            <View className="flex flex-row">
-              <Icon name="reorder-three-outline" />
-              <Typography>{template.name}</Typography>
-              <Icon name="ellipsis-horizontal-outline" />
-            </View>
+            <Paper className="flex flex-row items-center p-2 gap-2 mb-5">
+              <Icon size="lg" color="white" name="reorder-three-outline" />
+              <Typography weight="bold" className="mr-auto text-lg">
+                {template.name}
+              </Typography>
+              <Icon color="white" name="ellipsis-horizontal-outline" />
+            </Paper>
           ))}
           <View className="flex flex-row">
             <Button
               className="grow mr-2"
               variant="outlined"
               beforeIcon={<Icon color="white" name="add" />}
+              onPress={() =>
+                createTemplate({ templateGroupId: group.id, name: "test" })
+              }
             >
-              Add training
+              Add template
             </Button>
             <Button
               className="grow bg-danger ml-2"
               beforeIcon={<Icon color="white" name="trash-outline" />}
+              onPress={() => deleteTemplateGroup({ id: group.id })}
             >
               Delete group
             </Button>
