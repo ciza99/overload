@@ -33,6 +33,12 @@ export const trainingProducersFactory = ({
       return await trainingService.createTemplate(input);
     }),
 
+  deleteTemplate: t.procedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      return await trainingService.deleteTemplate(input.id);
+    }),
+
   createTraining: t.procedure
     .input(createTrainingSchema)
     .mutation(async ({ input }) => {

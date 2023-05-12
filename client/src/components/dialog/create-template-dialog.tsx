@@ -6,9 +6,12 @@ import { Formik } from "formik";
 import { useFormikValidation } from "@hooks/use-formik-validation";
 import { z } from "zod";
 
-export const CreateGroupDialog = ({ close }: DialogProps) => {
+export const CreateTemplateDialog = ({
+  close,
+  templateGroupId,
+}: DialogProps<{ templateGroupId: number }>) => {
   const utils = trpc.useContext();
-  const { mutate } = trpc.training.createTemplateGroup.useMutation({
+  const { mutate } = trpc.training.createTemplate.useMutation({
     onSuccess: () => {
       utils.training.getTemplates.invalidate();
     },
@@ -25,13 +28,13 @@ export const CreateGroupDialog = ({ close }: DialogProps) => {
     <View className="w-full">
       <Formik
         initialValues={{ name: "" }}
-        onSubmit={(values) => mutate(values)}
+        onSubmit={({ name }) => mutate({ name, templateGroupId })}
         validate={validate}
       >
         <View className="gap-y-4">
           <TextField name="name" placeholder="Enter name" autoFocus={true} />
           <SubmitButton beforeIcon={<Icon name="add" />}>
-            Create group
+            Create template
           </SubmitButton>
         </View>
       </Formik>

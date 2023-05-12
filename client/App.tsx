@@ -22,6 +22,9 @@ import { StatusBar } from "expo-status-bar";
 import { colors } from "@constants/theme";
 import { View } from "react-native";
 import { Dialog } from "@components/dialog/dialog";
+import { PortalProvider } from "@gorhom/portal";
+import { Popover } from "@components/common/popover";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const { manifest } = Constants;
 
@@ -92,23 +95,27 @@ const App = () => {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <View className="grow bg-base-800">
-          <NavigationContainer
-            theme={{
-              dark: true,
-              colors: {
-                background: colors.base[800],
-                card: colors.base[700],
-                text: "white",
-                primary: colors.primary,
-                border: "rgba(255, 255, 255, 0)",
-                notification: colors.primary,
-              },
-            }}
-          >
-            <StatusBar style="light" />
-            <Dialog />
-            <Router />
-          </NavigationContainer>
+          <GestureHandlerRootView className="grow">
+            <NavigationContainer
+              theme={{
+                dark: true,
+                colors: {
+                  background: colors.base[800],
+                  card: colors.base[700],
+                  text: "white",
+                  primary: colors.primary,
+                  border: "rgba(255, 255, 255, 0)",
+                  notification: colors.primary,
+                },
+              }}
+            >
+              <StatusBar style="light" />
+              <Dialog />
+              <PortalProvider>
+                <Router />
+              </PortalProvider>
+            </NavigationContainer>
+          </GestureHandlerRootView>
         </View>
       </QueryClientProvider>
     </trpc.Provider>

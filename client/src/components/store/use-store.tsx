@@ -1,4 +1,6 @@
 import { User } from "@models/user";
+import { ReactNode } from "react";
+import { View } from "react-native";
 import { v4 } from "uuid";
 
 import { create } from "zustand";
@@ -27,9 +29,23 @@ type DialogSlice = {
   open: <T extends {} = {}>(props: Omit<Dialog<T>, "id">) => void;
 };
 
+export type Popover<T> = {
+  ref: React.RefObject<View>;
+  Component: React.FC<T>;
+  props: T;
+  position: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+};
+
+type PopoverSlice = {
+  data?: Popover<any>;
+  close: () => void;
+  open: <T extends {} = {}>(props: Popover<T>) => void;
+};
+
 type Store = {
   auth: AuthSlice;
   dialog: DialogSlice;
+  popover: PopoverSlice;
 };
 
 export const useStore = create<Store>((set) => ({
@@ -54,5 +70,12 @@ export const useStore = create<Store>((set) => ({
         },
       })),
     dialogs: [],
+  },
+  popover: {
+    data: undefined,
+    open: (popover) =>
+      set((state) => ({ popover: { ...state.popover, data: popover } })),
+    close: () =>
+      set((state) => ({ popover: { ...state.popover, data: undefined } })),
   },
 }));

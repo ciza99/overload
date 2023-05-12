@@ -9,12 +9,6 @@ import {
 export type TrainingService = ReturnType<typeof trainingServiceFactory>;
 
 export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
-  const createTemplate = async (template: CreateTemplateSchema) => {
-    return await db.template.create({
-      data: template,
-    });
-  };
-
   const createTemplateGroup = async (
     templateGroup: CreateTemplateGroupSchema
   ) => {
@@ -24,8 +18,17 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
   const deleteTemplateGroup = async (id: number) => {
     return await db.templateGroup.delete({
       where: { id },
-      include: { templates: true },
     });
+  };
+
+  const createTemplate = async (template: CreateTemplateSchema) => {
+    return await db.template.create({
+      data: template,
+    });
+  };
+
+  const deleteTemplate = async (id: number) => {
+    return await db.template.delete({ where: { id } });
   };
 
   const createTraining = async (training: CreateTrainingSchema) => {
@@ -35,7 +38,23 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
   const getTemplates = async () => {
     return await db.templateGroup.findMany({
       include: {
-        templates: true,
+        templates: {
+          include: {
+            trainings: {
+              include: {
+                exercises: {
+                  include: {
+                    sets: {
+                      include: {
+                        trainingExercise: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
   };
@@ -44,6 +63,7 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     createTemplateGroup,
     deleteTemplateGroup,
     createTemplate,
+    deleteTemplate,
     createTraining,
     getTemplates,
   };

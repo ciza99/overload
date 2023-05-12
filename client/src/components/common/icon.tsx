@@ -1,9 +1,11 @@
 import { ComponentProps } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import { Typography } from "./typography";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Props = Omit<ComponentProps<typeof Ionicons>, "size"> & {
   size?: Size | number;
+  typographyClassName?: string;
 };
 
 const sizes: Record<Size, number> = {
@@ -14,8 +16,13 @@ const sizes: Record<Size, number> = {
   xl: 32,
 };
 
-export const Icon = ({ size = "md", ...props }: Props) => {
+export const Icon = ({ size = "md", typographyClassName, ...props }: Props) => {
   return (
-    <Ionicons {...props} size={typeof size === "string" ? sizes[size] : size} />
+    <Typography className={typographyClassName}>
+      <Ionicons
+        {...props}
+        size={typeof size === "string" ? sizes[size] : size}
+      />
+    </Typography>
   );
 };
