@@ -70,6 +70,8 @@ model TrainingExercise {
   name       String
   training   Training      @relation(fields: [trainingId], references: [id], onDelete: Cascade)
   trainingId Int
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exerciseId Int
   sets       ExerciseSet[]
   order      Int           @default(autoincrement())
 }
@@ -91,6 +93,7 @@ model Exercise {
   updatedAt DateTime           @updatedAt
   name      String
   bodyParts ExerciseBodyPart[]
+  trainingExercises TrainingExercise[]
 }
 
 model ExerciseBodyPart {

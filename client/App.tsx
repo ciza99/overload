@@ -1,7 +1,7 @@
 import "react-native-get-random-values";
 import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, TRPCLink } from "@trpc/client";
+import { httpBatchLink, loggerLink, TRPCLink } from "@trpc/client";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   useFonts,
@@ -23,12 +23,11 @@ import { colors } from "@constants/theme";
 import { View } from "react-native";
 import { Dialog } from "@components/dialog/dialog";
 import { PortalProvider } from "@gorhom/portal";
-import { Popover } from "@components/common/popover";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const { manifest } = Constants;
 
-const isDevelompent = manifest?.packagerOpts?.dev;
+const isDevelompent = !!manifest?.packagerOpts?.dev;
 const url = isDevelompent
   ? `http://192.168.1.114:8080`
   : `http://overload-api.com`;
@@ -74,6 +73,12 @@ const App = () => {
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
+        loggerLink({
+          enabled: (opts) =>
+            isDevelompent &&
+            opts.direction === "down" &&
+            opts.result instanceof Error,
+        }),
         authTokenLink,
         httpBatchLink({
           url,

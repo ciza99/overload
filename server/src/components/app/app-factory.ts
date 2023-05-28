@@ -23,9 +23,6 @@ type AppFactoryProps = {
 
 export const appFactory = ({ config }: AppFactoryProps) => {
   const app = express();
-
-  const corsMiddleware = cors();
-
   const db = prismaFactory();
 
   const userService = userServiceFactory({ db });
@@ -45,6 +42,7 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   const trainingRouter = trainingRouterFactory({ trainingProcedures });
 
   const router = routerFactory({ userRouter, sessionRouter, trainingRouter });
+
   const trpc = createExpressMiddleware({
     router,
     createContext: createContextFactory({ config, db, sessionService }),
@@ -54,7 +52,7 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   });
 
   app.use(json());
-  app.use(corsMiddleware);
+  app.use(cors());
   app.use(cookieParser());
   app.use(trpc);
 

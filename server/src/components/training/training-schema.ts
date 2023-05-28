@@ -27,7 +27,6 @@ export type CreateTrainingSchema = z.infer<typeof createTrainingSchema>;
 export const createTrainingSchema = z.object({
   name: z.string().min(4).max(20),
   templateId: z.number(),
-  exercises: z.array(trainingExerciseSchema).optional(),
 });
 
 export const getTemplatesSchema = z.object({});

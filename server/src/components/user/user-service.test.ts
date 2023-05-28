@@ -4,8 +4,8 @@ import { DeepMockProxy, mockDeep } from "jest-mock-extended";
 import { userServiceFactory } from "./user-service";
 import { UserService } from "./user-service";
 
-describe("UserService", () => {
-  describe("checkUsernameOrEmailTaken", () => {
+describe("user service", () => {
+  describe("check username or email taken", () => {
     let db: DeepMockProxy<PrismaClient>;
     let userService: UserService;
 

@@ -1,5 +1,5 @@
 import { Button, Icon, Paper, Typography } from "@components/common";
-import { Popover, usePopover } from "@components/common/popover";
+import { Popover } from "@components/common/popover";
 import { useStore } from "@components/store/use-store";
 import { colors } from "@constants/theme";
 import { offset, shift, useFloating } from "@floating-ui/react-native";

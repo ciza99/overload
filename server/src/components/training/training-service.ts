@@ -31,8 +31,17 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     return await db.template.delete({ where: { id } });
   };
 
-  const createTraining = async (training: CreateTrainingSchema) => {
-    return await db.training.create({ data: training });
+  const createTraining = async ({ name, templateId }: CreateTrainingSchema) => {
+    return await db.training.create({
+      data: {
+        name,
+        templateId,
+      },
+    });
+  };
+
+  const deleteTraining = async (id: number) => {
+    return await db.training.delete({ where: { id } });
   };
 
   const getTemplates = async () => {
@@ -59,12 +68,18 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     });
   };
 
+  const getExercises = async () => {
+    return await db.exercise.findMany({ include: { bodyParts: true } });
+  };
+
   return {
     createTemplateGroup,
     deleteTemplateGroup,
     createTemplate,
     deleteTemplate,
     createTraining,
+    deleteTraining,
     getTemplates,
+    getExercises,
   };
 };

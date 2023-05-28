@@ -4,6 +4,7 @@ import { screens } from "@constants/screens";
 import { TemplateScreen } from "./templates";
 import { Training } from "./training";
 import { Sessions } from "./templates/sessions";
+import { Session } from "./session";
 
 const TrainingStack = createNativeStackNavigator();
 
@@ -19,6 +20,11 @@ export const TrainingRoutes = () => {
         name={screens.training.key}
         options={{ title: screens.training.title }}
         component={Sessions}
+      />
+      <TrainingStack.Screen
+        name={screens.session.key}
+        options={{ title: screens.session.title }}
+        component={Session}
       />
     </TrainingStack.Navigator>
   );

@@ -45,7 +45,34 @@ export const trainingProducersFactory = ({
       return await trainingService.createTraining(input);
     }),
 
+  deleteTraining: t.procedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      return await trainingService.deleteTraining(input.id);
+    }),
+
+  updateTemplate: t.procedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string(),
+        exercises: z.array(
+          z.object({
+            id: z.number(),
+            sets: z.array(z.object({ weight: z.number(), reps: z.number() })),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return true;
+    }),
+
   getTemplates: t.procedure.query(async () => {
     return await trainingService.getTemplates();
+  }),
+
+  getExercises: t.procedure.query(async () => {
+    return await trainingService.getExercises();
   }),
 });
