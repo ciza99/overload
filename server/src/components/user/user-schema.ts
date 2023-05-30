@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export type AddUserSchema = z.infer<typeof addUserSchema>;
+export type CreateUserSchema = z.infer<typeof createUserSchema>;
 
-export const addUserSchema = z
+export const createUserSchema = z
   .object({
     username: z.string().min(4),
     email: z.string().email(),

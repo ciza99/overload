@@ -1,10 +1,9 @@
 import { z } from "zod";
 
-import { t } from "utils/trpc";
+import { procedure, authProcedure } from "utils/procedures";
 import { createUserDto } from "components/user/user-utils";
 import { UserService } from "components/user/user-service";
 import { AppConfig } from "config/config-types";
-import { authMiddleware } from "middlewares/auth-middleware";
 
 import { createLoginError } from "./session-errors";
 import { SessionService } from "./session-service";
@@ -20,13 +19,13 @@ export const sessionProceduresFactory = ({
   sessionService: SessionService;
   userService: UserService;
 }) => ({
-  get: t.procedure.use(authMiddleware).query(({ ctx }) => {
+  get: authProcedure.query(({ ctx }) => {
     const { user } = ctx;
 
     return { user: createUserDto(user) };
   }),
 
-  login: t.procedure
+  login: procedure
     .input(
       z
         .object({
@@ -60,7 +59,7 @@ export const sessionProceduresFactory = ({
       return { user: createUserDto(user), token };
     }),
 
-  logout: t.procedure.use(authMiddleware).mutation(async ({ ctx }) => {
+  logout: authProcedure.mutation(async ({ ctx }) => {
     const { user } = ctx;
     await sessionService.revokeRefreshTokens(user);
 
@@ -72,7 +71,7 @@ export const sessionProceduresFactory = ({
     return { message: "logged out" };
   }),
 
-  refreshAuthToken: t.procedure.mutation(async ({ ctx }) => {
+  refreshAuthToken: procedure.mutation(async ({ ctx }) => {
     const {
       user,
       token: refreshToken,

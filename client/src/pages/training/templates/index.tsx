@@ -1,38 +1,23 @@
 import { ScrollView, View } from "react-native";
 
 import { useStore } from "@components/store/use-store";
-import {
-  Typography,
-  Button,
-  Collapsable,
-  Icon,
-  TextField,
-  Paper,
-} from "@components/common";
-import { AppRouter, trpc } from "@utils/trpc";
+import { Typography, Button, Icon, TextField } from "@components/common";
+import { trpc } from "@utils/trpc";
 import { CreateGroupDialog } from "@components/dialog/create-group-dialog";
-import Animated, {
-  Layout,
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
-import { GestureDetector } from "react-native-gesture-handler";
 import {
   DndContext,
-  useSortable,
   SortableContext,
   arrayMove,
   restrictToYAxis,
 } from "@components/common/dnd";
-import { useMemo, useState } from "react";
-import { inferRouterOutputs } from "@trpc/server";
-import { Formik } from "formik";
+import { useMemo } from "react";
 import { TemplateGroup } from "./template-group";
+import { useForm } from "react-hook-form";
 
 export const TemplateScreen = () => {
   const utils = trpc.useContext();
   const { data } = trpc.training.getTemplates.useQuery();
-  console.log(JSON.stringify(data, null, 2));
+  const { control } = useForm({});
   const open = useStore((state) => state.dialog.open);
 
   const items = useMemo(() => data?.map(({ id }) => id) ?? [], [data]);
@@ -66,18 +51,17 @@ export const TemplateScreen = () => {
             <Typography weight="bold" className="text-2xl mb-5">
               Trainings
             </Typography>
-            <Formik initialValues={{}} onSubmit={() => {}}>
-              <TextField
-                name="search"
-                placeholder="search"
-                className="mb-5"
-                rightContent={
-                  <Typography className="text-white">
-                    <Icon name="search" />
-                  </Typography>
-                }
-              />
-            </Formik>
+            <TextField
+              name="search"
+              placeholder="search"
+              className="mb-5"
+              rightContent={
+                <Typography className="text-white">
+                  <Icon name="search" />
+                </Typography>
+              }
+              control={control}
+            />
             {data?.length === 0 && (
               <View className="p-2 bg-base-700 rounded-lg mb-5">
                 <Typography

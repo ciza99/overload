@@ -47,7 +47,7 @@ export const appFactory = ({ config }: AppFactoryProps) => {
     router,
     createContext: createContextFactory({ config, db, sessionService }),
     onError: ({ path, ctx, error, input }) => {
-      console.log(`error at ${path}\n`, { error, input, ctx });
+      console.error(`error at ${path}\n`, { error, input, ctx });
     },
   });
 

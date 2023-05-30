@@ -1,6 +1,6 @@
 import { t } from "utils/trpc";
 
-export const loggingMiddlewareFactory = (enabled = true) =>
+export const loggingMiddleware = ({ enabled = true }) =>
   t.middleware(async ({ ctx, next, path }) => {
     const res = await next();
 

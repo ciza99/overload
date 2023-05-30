@@ -1,8 +1,8 @@
-import { t } from "utils/trpc";
+import { procedure } from "utils/procedures";
 import { createUserDto } from "components/user/user-utils";
 import { UserService } from "components/user/user-service";
 
-import { addUserSchema } from "./user-schema";
+import { createUserSchema } from "./user-schema";
 
 export type UserProcedures = ReturnType<typeof userProceduresFactory>;
 
@@ -11,7 +11,7 @@ export const userProceduresFactory = ({
 }: {
   userService: UserService;
 }) => ({
-  add: t.procedure.input(addUserSchema).mutation(async ({ input }) => {
+  create: procedure.input(createUserSchema).mutation(async ({ input }) => {
     await userService.checkUsernameOrEmailTaken(input);
     const user = await userService.registerUser(input);
 

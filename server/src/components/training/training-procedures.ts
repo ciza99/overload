@@ -1,4 +1,4 @@
-import { t } from "utils/trpc";
+import { authProcedure } from "utils/procedures";
 import {
   createTemplateGroupSchema,
   createTemplateSchema,
@@ -15,43 +15,43 @@ export const trainingProducersFactory = ({
 }: {
   trainingService: TrainingService;
 }) => ({
-  createTemplateGroup: t.procedure
+  createTemplateGroup: authProcedure
     .input(createTemplateGroupSchema)
-    .mutation(async ({ input }) => {
-      return await trainingService.createTemplateGroup(input);
+    .mutation(async ({ input, ctx }) => {
+      return await trainingService.createTemplateGroup(input, ctx.user);
     }),
 
-  deleteTemplateGroup: t.procedure
+  deleteTemplateGroup: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       return await trainingService.deleteTemplateGroup(input.id);
     }),
 
-  createTemplate: t.procedure
+  createTemplate: authProcedure
     .input(createTemplateSchema)
-    .mutation(async ({ input }) => {
-      return await trainingService.createTemplate(input);
+    .mutation(async ({ input, ctx }) => {
+      return await trainingService.createTemplate(input, ctx.user);
     }),
 
-  deleteTemplate: t.procedure
+  deleteTemplate: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       return await trainingService.deleteTemplate(input.id);
     }),
 
-  createTraining: t.procedure
+  createTraining: authProcedure
     .input(createTrainingSchema)
     .mutation(async ({ input }) => {
       return await trainingService.createTraining(input);
     }),
 
-  deleteTraining: t.procedure
+  deleteTraining: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       return await trainingService.deleteTraining(input.id);
     }),
 
-  updateTemplate: t.procedure
+  updateTemplate: authProcedure
     .input(
       z.object({
         id: z.number(),
@@ -68,11 +68,11 @@ export const trainingProducersFactory = ({
       return true;
     }),
 
-  getTemplates: t.procedure.query(async () => {
-    return await trainingService.getTemplates();
+  getTemplates: authProcedure.query(async ({ ctx }) => {
+    return await trainingService.getTemplates(ctx.user);
   }),
 
-  getExercises: t.procedure.query(async () => {
+  getExercises: authProcedure.query(async () => {
     return await trainingService.getExercises();
   }),
 });

@@ -10,18 +10,21 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { trpc } from "@utils/trpc";
 import { useState } from "react";
 import { View } from "react-native";
-import { TemplateType, TrainingType } from "./types";
+import { TrainingType } from "./types";
 
 type Props = NativeStackScreenProps<NavigationParamMap, "training">;
 
 export const Sessions = () => {
   const open = useStore((state) => state.dialog.open);
-  const { data: templates } = trpc.training.getTemplates.useQuery();
+  const { data: group } = trpc.training.getTemplates.useQuery();
   const {
     params: { templateId },
   } = useRoute<Props["route"]>();
 
-  const template = templates?.find((t) => t.id === templateId);
+  const template = group
+    ?.map((g) => g.templates)
+    .flat()
+    .find((t) => t.id == templateId);
 
   if (!template) return null;
 
@@ -71,7 +74,7 @@ export const Sessions = () => {
 
 const Session = ({ session }: { session: TrainingType }) => {
   const { navigate } = useNavigation();
-  const { floatingStyles, refs, scrollProps } = useFloating({
+  const { floatingStyles, refs } = useFloating({
     sameScrollView: false,
     placement: "bottom-end",
     middleware: [

@@ -2,7 +2,7 @@ import { hash } from "argon2";
 import { PrismaClient, User } from "@prisma/client";
 
 import { createEmailTakenError, createUsernameTakenError } from "./user-errors";
-import { AddUserSchema } from "./user-schema";
+import { CreateUserSchema } from "./user-schema";
 
 export type UserService = ReturnType<typeof userServiceFactory>;
 
@@ -62,7 +62,7 @@ export const userServiceFactory = ({ db }: { db: PrismaClient }) => {
     repeatPassword,
     password,
     ...rest
-  }: AddUserSchema) => {
+  }: CreateUserSchema) => {
     const hashedPassword = await hash(password);
 
     const user = await db.user.create({

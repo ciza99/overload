@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from "react";
+import { ReactNode } from "react";
 import {
   StyleProp,
   TextInput,
@@ -7,35 +7,23 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import { useField } from "formik";
 import clsx from "clsx";
 
 import { NativeNode } from "@components/common/native-node";
 import { Typography } from "@components/common/typography";
 import { colors } from "@constants/theme";
 import Animated, {
-  BaseAnimationBuilder,
-  EntryAnimationsValues,
-  EntryExitAnimationFunction,
-  FadeIn,
-  FadeOut,
-  Keyframe,
   Layout,
-  LayoutAnimation,
-  LayoutAnimationFunction,
   StretchInY,
   StretchOutY,
-  useAnimatedStyle,
-  useDerivedValue,
-  withSpring,
-  withTiming,
 } from "react-native-reanimated";
+import { Control, FieldValues, Path, useController } from "react-hook-form";
 
-type TextFieldProps = Omit<
+type TextFieldProps<TFormValues extends FieldValues> = Omit<
   TextInputProps,
   "value" | "onChangeText" | "onChange" | "onBlur" | "style"
 > & {
-  name: string;
+  name: Path<TFormValues>;
   label?: ReactNode;
   className?: string;
   style?: StyleProp<ViewStyle>;
@@ -44,9 +32,10 @@ type TextFieldProps = Omit<
   containerClassName?: string;
   containerStyle?: StyleProp<ViewStyle>;
   rightContent?: ReactNode;
+  control: Control<TFormValues>;
 };
 
-export const TextField = ({
+export const TextField = <TFormValues extends FieldValues>({
   name,
   label,
   style,
@@ -56,32 +45,13 @@ export const TextField = ({
   containerStyle,
   containerClassName,
   rightContent,
+  control,
   ...rest
-}: TextFieldProps) => {
-  const [field, meta, helpers] = useField<string>(name);
-
-  const transition = useDerivedValue(() => {
-    return meta.touched && meta.error
-      ? withSpring(1, { damping: 20 })
-      : withTiming(0);
-  }, [meta.touched, meta.error]);
-
-  const errorStyle = useAnimatedStyle(
-    () => ({
-      height: transition.value * 15,
-      opacity: transition.value,
-      marginTop: transition.value * 4,
-      transform: [{ scaleY: transition.value }],
-    }),
-    []
-  );
-
-  const handleChange = useCallback(
-    (text: string) => helpers.setValue(text),
-    [helpers]
-  );
-
-  const handleBlur = useCallback(() => helpers.setTouched(true), [helpers]);
+}: TextFieldProps<TFormValues>) => {
+  const {
+    field,
+    fieldState: { isTouched, error },
+  } = useController({ name, control });
 
   return (
     <View className={className} style={style}>
@@ -101,8 +71,8 @@ export const TextField = ({
           selectionColor={colors.primary}
           keyboardAppearance="dark"
           placeholderTextColor={colors.base[200]}
-          onChangeText={handleChange}
-          onBlur={handleBlur}
+          onChangeText={field.onChange}
+          onBlur={field.onBlur}
           value={field.value}
           className={clsx("text-white h-7 grow", inputClassName)}
           style={inputStyle}
@@ -111,14 +81,16 @@ export const TextField = ({
         {rightContent}
       </View>
 
-      {meta.touched && meta.error && (
+      {isTouched && error && (
         <Animated.View
           entering={StretchInY}
           exiting={StretchOutY}
           layout={Layout.springify()}
           className="mt-1"
         >
-          <Typography className="text-danger text-xs">{meta.error}</Typography>
+          <Typography className="text-danger text-xs">
+            {error.message}
+          </Typography>
         </Animated.View>
       )}
     </View>
