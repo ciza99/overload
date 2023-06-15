@@ -20,10 +20,12 @@ import { tokenHandler } from "@utils/token-handler";
 import { Router } from "@pages";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "@constants/theme";
-import { View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import { Dialog } from "@components/dialog/dialog";
 import { PortalProvider } from "@gorhom/portal";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { Toast } from "@components/common";
 
 const { manifest } = Constants;
 
@@ -99,7 +101,7 @@ const App = () => {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <View className="grow bg-base-800">
+        <SafeAreaView className="grow bg-base-800">
           <GestureHandlerRootView className="grow">
             <NavigationContainer
               theme={{
@@ -114,14 +116,17 @@ const App = () => {
                 },
               }}
             >
-              <StatusBar style="light" />
-              <Dialog />
-              <PortalProvider>
-                <Router />
-              </PortalProvider>
+              <BottomSheetModalProvider>
+                <StatusBar style="light" />
+                <Dialog />
+                <PortalProvider>
+                  <Router />
+                </PortalProvider>
+              </BottomSheetModalProvider>
             </NavigationContainer>
           </GestureHandlerRootView>
-        </View>
+        </SafeAreaView>
+        <Toast />
       </QueryClientProvider>
     </trpc.Provider>
   );

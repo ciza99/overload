@@ -11,3 +11,7 @@ export { Icon } from "./icon";
 
 // Input components
 export { TextField } from "./text-field";
+
+// Other
+export { toast, Toast } from "./toast";
+export { BottomSheetModal, BottomSheetModalType } from "./bottom-sheet-modal";

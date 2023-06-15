@@ -25,10 +25,11 @@ export const CreateGroupDialog = ({ close }: DialogProps) => {
 
   return (
     <View className="w-full">
-      <View className="gap-y-4">
+      <View>
         <TextField
           name="name"
           placeholder="Enter name"
+          className="mb-4"
           autoFocus={true}
           control={control}
         />

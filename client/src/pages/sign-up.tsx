@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import {
   View,
   Keyboard,
@@ -128,8 +127,8 @@ export const SignUp = () => {
                 </Typography>
               </Animated.View>
             )}
-            <View className="flex flex-row justify-center pt-8 gap-2">
-              <Typography>Already have an account?</Typography>
+            <View className="flex flex-row justify-center pt-8">
+              <Typography className="mr-2">Already have an account?</Typography>
               <TextButton onPress={navigateToLogin} className="text-primary">
                 Log in
               </TextButton>

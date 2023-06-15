@@ -1,16 +1,9 @@
 import { useState } from "react";
 import { View } from "react-native";
-import {
-  Collapsable,
-  Icon,
-  Paper,
-  Typography,
-  Button,
-} from "@components/common";
+import { Collapsable, Icon, Typography, Button } from "@components/common";
 import { useStore } from "@components/store/use-store";
 import { useSortable } from "@components/common/dnd";
-import { inferRouterOutputs } from "@trpc/server";
-import { AppRouter, trpc } from "@utils/trpc";
+import { trpc } from "@utils/trpc";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
@@ -20,6 +13,7 @@ import { Template } from "./template";
 import { TemplateGroupType } from "./types";
 import { colors } from "@constants/theme";
 import { CreateTemplateDialog } from "@components/dialog/create-template-dialog";
+import { toast } from "@components/common/toast";
 
 export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
   const [collapsed, setCollapsed] = useState(true);
@@ -32,6 +26,12 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
     trpc.training.deleteTemplateGroup.useMutation({
       onSuccess: () => {
         utils.training.getTemplates.invalidate();
+      },
+      onError: () => {
+        toast.show({
+          type: "error",
+          text1: "Failed to remove group",
+        });
       },
     });
 
@@ -50,9 +50,9 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
     <Animated.View ref={draggableRef} style={style} className="mb-5">
       <Animated.View
         ref={droppableRef}
-        className="flex flex-row items-center gap-x-2 p-2"
+        className="flex flex-row items-center p-2"
       >
-        <View>
+        <View className="mr-2">
           <GestureDetector gesture={panGesture}>
             <Icon
               color={colors.primary}

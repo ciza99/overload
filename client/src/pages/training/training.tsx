@@ -11,7 +11,7 @@ export const Training = () => {
 
   return (
     <DndContext>
-      <View className="gap-y-4">
+      <View>
         <Droppable />
         <Draggable />
       </View>
@@ -29,7 +29,7 @@ const Droppable = () => {
   return (
     <Animated.View
       ref={ref}
-      className={clsx("border border-base-300 h-12 w-full", {
+      className={clsx("border border-base-300 h-12 w-full mb-4", {
         "border-red-300": isOver,
       })}
     />
@@ -37,7 +37,7 @@ const Droppable = () => {
 };
 
 const Draggable = () => {
-  const { ref, style, panGesture, isDragging } = useDraggable(0);
+  const { ref, style, panGesture } = useDraggable(0);
 
   return (
     <GestureDetector gesture={panGesture}>

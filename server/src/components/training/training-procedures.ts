@@ -39,19 +39,19 @@ export const trainingProducersFactory = ({
       return await trainingService.deleteTemplate(input.id);
     }),
 
-  createTraining: authProcedure
+  createSession: authProcedure
     .input(createTrainingSchema)
     .mutation(async ({ input }) => {
-      return await trainingService.createTraining(input);
+      return await trainingService.createSession(input);
     }),
 
-  deleteTraining: authProcedure
+  deleteSession: authProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
-      return await trainingService.deleteTraining(input.id);
+      return await trainingService.deleteSession(input.id);
     }),
 
-  updateTemplate: authProcedure
+  updateSession: authProcedure
     .input(
       z.object({
         id: z.number(),

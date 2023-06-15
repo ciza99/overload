@@ -19,7 +19,7 @@ export const CreateSessionDialog = ({
     resolver: zodResolver(createSessionSchema),
     defaultValues: { name: "" },
   });
-  const { mutate } = trpc.training.createTraining.useMutation({
+  const { mutate } = trpc.training.createSession.useMutation({
     onSuccess: () => {
       utils.training.getTemplates.invalidate();
     },
@@ -28,9 +28,10 @@ export const CreateSessionDialog = ({
 
   return (
     <View className="w-full">
-      <View className="gap-y-4">
+      <View>
         <TextField
           name="name"
+          className="mb-4"
           placeholder="Enter name"
           autoFocus={true}
           control={control}

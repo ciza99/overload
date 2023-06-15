@@ -3,8 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { screens } from "@constants/screens";
 import { TemplateScreen } from "./templates";
 import { Training } from "./training";
-import { Sessions } from "./templates/sessions";
-import { Session } from "./session";
+import { Sessions } from "./session/sessions";
+import { Session } from "./session/session";
 
 const TrainingStack = createNativeStackNavigator();
 

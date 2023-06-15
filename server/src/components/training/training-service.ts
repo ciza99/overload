@@ -34,8 +34,8 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     return await db.template.delete({ where: { id } });
   };
 
-  const createTraining = async ({ name, templateId }: CreateTrainingSchema) => {
-    return await db.training.create({
+  const createSession = async ({ name, templateId }: CreateTrainingSchema) => {
+    return await db.session.create({
       data: {
         name,
         templateId,
@@ -43,8 +43,8 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     });
   };
 
-  const deleteTraining = async (id: number) => {
-    return await db.training.delete({ where: { id } });
+  const deleteSession = async (id: number) => {
+    return await db.session.delete({ where: { id } });
   };
 
   const getTemplates = async (user: User) => {
@@ -53,13 +53,13 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
       include: {
         templates: {
           include: {
-            trainings: {
+            sessions: {
               include: {
                 exercises: {
                   include: {
                     sets: {
                       include: {
-                        trainingExercise: true,
+                        sessionExercise: true,
                       },
                     },
                   },
@@ -81,8 +81,8 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     deleteTemplateGroup,
     createTemplate,
     deleteTemplate,
-    createTraining,
-    deleteTraining,
+    createSession,
+    deleteSession,
     getTemplates,
     getExercises,
   };
