@@ -2,7 +2,6 @@
   "compilerOptions": {
     "strict": true,
     "module": "commonjs",
-    "jsx": "react",
     "paths": {
       "@components": ["./src/components"],
       "@constants": ["./src/constants"],

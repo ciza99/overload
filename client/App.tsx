@@ -20,7 +20,7 @@ import { tokenHandler } from "@utils/token-handler";
 import { Router } from "@pages";
 import { StatusBar } from "expo-status-bar";
 import { colors } from "@constants/theme";
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView } from "react-native";
 import { Dialog } from "@components/dialog/dialog";
 import { PortalProvider } from "@gorhom/portal";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
