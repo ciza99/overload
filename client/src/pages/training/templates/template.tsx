@@ -1,11 +1,5 @@
-import {
-  Button,
-  Icon,
-  Paper,
-  Typography,
-  BottomSheetModal,
-  Divider,
-} from "@components/common";
+import { BottomSheetActions } from "@components/bottom-sheet-actions";
+import { Icon, Paper, Typography, BottomSheetModal } from "@components/common";
 import { BottomSheetModalType } from "@components/common/bottom-sheet-modal";
 import { colors } from "@constants/theme";
 import { useNavigation } from "@react-navigation/native";
@@ -40,74 +34,32 @@ export const Template = ({ template }: { template: TemplateType }) => {
       />
 
       <BottomSheetModal ref={bottomSheet} snapPoints={["50%"]}>
-        <Button
-          className="justify-start bg-transparent mb-2"
-          beforeIcon={<Icon color={colors.primary} name="create-outline" />}
-          onPress={() => {
-            navigate("training", { templateId: template.id });
-            bottomSheet.current?.close();
-          }}
-        >
-          Edit
-        </Button>
-        <Divider className="my-1" />
-        <Button
-          beforeIcon={<Icon color={colors.primary} name="checkbox-outline" />}
-          className="justify-start bg-transparent"
-        >
-          Make current routine
-        </Button>
-        <Divider className="my-1" />
-        <Button
-          onPress={() => {
-            deleteTemplate({ id: template.id });
-            bottomSheet.current?.close();
-          }}
-          className="justify-start bg-transparent"
-          beforeIcon={<Icon color={colors.danger} name="trash-outline" />}
-        >
-          Delete
-        </Button>
+        <BottomSheetActions
+          actions={[
+            {
+              label: "Edit",
+              icon: <Icon color={colors.primary} name="create-outline" />,
+              onPress: () => {
+                navigate("training", { templateId: template.id });
+                bottomSheet.current?.close();
+              },
+            },
+            {
+              label: "Make current routine",
+              icon: <Icon color={colors.primary} name="checkbox-outline" />,
+              onPress: () => {},
+            },
+            {
+              label: "Delete",
+              icon: <Icon color={colors.danger} name="trash-outline" />,
+              onPress: () => {
+                deleteTemplate({ id: template.id });
+                bottomSheet.current?.close();
+              },
+            },
+          ]}
+        />
       </BottomSheetModal>
-
-      {
-        // <Popover
-        //   style={floatingStyles}
-        //   ref={refs.setFloating}
-        //   visible={open}
-        //   showOverlay
-        //   onDismiss={() => setOpen(false)}
-        // >
-        //   <View className="bg-base-700 rounded-lg gap-y-1">
-        //     <Button
-        //       className="justify-start bg-transparent"
-        //       beforeIcon={<Icon color={colors.primary} name="create-outline" />}
-        //       onPress={() => {
-        //         navigate("training", { template });
-        //         setOpen(false);
-        //       }}
-        //     >
-        //       Edit
-        //     </Button>
-        //     <Button
-        //       beforeIcon={<Icon color={colors.primary} name="checkbox-outline" />}
-        //       className="justify-start bg-transparent"
-        //     >
-        //       Make current routine
-        //     </Button>
-        //     <Button
-        //       onPress={() => {
-        //         deleteTemplate({ id: template.id });
-        //         setOpen(false);
-        //       }}
-        //       className="justify-start bg-transparent"
-        //       beforeIcon={<Icon color={colors.danger} name="trash-outline" />}
-        //     >
-        //       Delete
-        //     </Button>
-        //   </View>
-        // </Popover>
-      }
     </Paper>
   );
 };

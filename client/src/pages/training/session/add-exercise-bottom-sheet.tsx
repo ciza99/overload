@@ -1,9 +1,17 @@
-import { Divider, Icon, TextField, Typography } from "@components/common";
+import {
+  BottomSheetModalType,
+  Divider,
+  Icon,
+  TextField,
+  Typography,
+} from "@components/common";
 import { colors } from "@constants/theme";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
+import { useDebounce } from "@hooks/use-debounce";
 import { trpc } from "@utils/trpc";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, View } from "react-native";
+import { Keyboard, Pressable, View } from "react-native";
 import { ExerciseType } from "./types";
 
 export const AddExerciseBottomSheetContent = ({
@@ -12,7 +20,27 @@ export const AddExerciseBottomSheetContent = ({
   onAdd: (exercise: ExerciseType) => void;
 }) => {
   const { data: exercises } = trpc.training.getExercises.useQuery();
-  const { control } = useForm({ defaultValues: { search: "" } });
+  const { control, watch } = useForm({ defaultValues: { search: "" } });
+  const search = useDebounce(watch("search"), 500);
+  const { snapToIndex } = useBottomSheet();
+
+  const filteredExercises = useMemo(
+    () =>
+      exercises?.filter((exercise) =>
+        exercise.name.toLowerCase().includes(search.toLowerCase())
+      ),
+    [exercises, search]
+  );
+
+  useEffect(() => {
+    const subscription = Keyboard.addListener("keyboardWillShow", () => {
+      snapToIndex(1);
+    });
+
+    return () => {
+      Keyboard.removeSubscription(subscription);
+    };
+  }, [snapToIndex]);
 
   return (
     <BottomSheetScrollView>
@@ -24,7 +52,7 @@ export const AddExerciseBottomSheetContent = ({
           control={control}
           rightContent={<Icon name="search-outline" />}
         />
-        {exercises?.map((exercise) => (
+        {filteredExercises?.map((exercise) => (
           <>
             <Pressable onPress={() => onAdd(exercise)}>
               <View className="flex flex-row items-center">

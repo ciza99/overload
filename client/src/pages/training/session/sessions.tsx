@@ -1,3 +1,4 @@
+import { BottomSheetActions } from "@components/bottom-sheet-actions";
 import {
   BottomSheetModal,
   Button,
@@ -60,7 +61,7 @@ export const Sessions = () => {
           </Paper>
         )}
         {template.sessions.map((session) => (
-          <Session
+          <TemplateSession
             key={session.id}
             session={session}
             bottomSheetRef={bottomSheet}
@@ -87,39 +88,32 @@ export const Sessions = () => {
       <BottomSheetModal ref={bottomSheet} snapPoints={["50%"]}>
         {({ data }: { data: SessionType }) => {
           return (
-            <>
-              <Button
-                className="justify-start bg-transparent"
-                beforeIcon={
-                  <Icon color={colors.primary} name="create-outline" />
-                }
-                onPress={() => {
-                  navigate("session", { session: { ...data } });
-                  bottomSheet.current?.close();
-                }}
-              >
-                Edit
-              </Button>
-              <Divider className="my-1" />
-              <Button
-                beforeIcon={
-                  <Icon color={colors.primary} name="caret-forward-outline" />
-                }
-                className="justify-start bg-transparent"
-              >
-                Start session
-              </Button>
-              <Divider className="my-1" />
-              <Button
-                onPress={() => {
-                  bottomSheet.current?.close();
-                }}
-                className="justify-start bg-transparent"
-                beforeIcon={<Icon color={colors.danger} name="trash-outline" />}
-              >
-                Delete
-              </Button>
-            </>
+            <BottomSheetActions
+              actions={[
+                {
+                  label: "Edit",
+                  icon: <Icon color={colors.primary} name="create-outline" />,
+                  onPress: () => {
+                    navigate("session", { session: { ...data } });
+                    bottomSheet.current?.close();
+                  },
+                },
+                {
+                  label: "Start session",
+                  icon: (
+                    <Icon color={colors.primary} name="caret-forward-outline" />
+                  ),
+                  onPress: () => {},
+                },
+                {
+                  label: "Delete",
+                  icon: <Icon color={colors.danger} name="trash-outline" />,
+                  onPress: () => {
+                    bottomSheet.current?.close();
+                  },
+                },
+              ]}
+            />
           );
         }}
       </BottomSheetModal>
@@ -127,7 +121,7 @@ export const Sessions = () => {
   );
 };
 
-const Session = ({
+const TemplateSession = ({
   session,
   bottomSheetRef,
 }: {
