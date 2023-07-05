@@ -4,6 +4,7 @@ import {
   CreateTemplateSchema,
   CreateTemplateGroupSchema,
   CreateTrainingSchema,
+  UpdateSessionSchema,
 } from "./training-schema";
 
 export type TrainingService = ReturnType<typeof trainingServiceFactory>;
@@ -76,6 +77,33 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     return await db.exercise.findMany({ include: { bodyParts: true } });
   };
 
+  const updateSession = async (session: UpdateSessionSchema) => {
+    const deleteExercises = db.sessionExercise.deleteMany({
+      where: { sessionId: session.id },
+    });
+    const updateSession = db.session.update({
+      where: { id: session.id },
+      data: {
+        name: session.name,
+        exercises: {
+          create: session.exercises.map(({ exerciseId, sets }) => ({
+            exerciseId,
+            sets: {
+              create: sets.map(({ weight, reps }) => ({ weight, reps })),
+            },
+          })),
+        },
+      },
+    });
+
+    const [, updatedSession] = await db.$transaction([
+      deleteExercises,
+      updateSession,
+    ]);
+
+    return updatedSession;
+  };
+
   return {
     createTemplateGroup,
     deleteTemplateGroup,
@@ -85,5 +113,6 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     deleteSession,
     getTemplates,
     getExercises,
+    updateSession,
   };
 };

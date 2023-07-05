@@ -13,9 +13,14 @@ import { NativeNode } from "@components/common/native-node";
 import { Typography } from "@components/common/typography";
 import { colors } from "@constants/theme";
 import Animated, {
+  interpolateColor,
   Layout,
   StretchInY,
   StretchOutY,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
 } from "react-native-reanimated";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 
@@ -31,6 +36,7 @@ type TextFieldProps<TFormValues extends FieldValues> = Omit<
   inputStyle?: StyleProp<TextStyle>;
   containerClassName?: string;
   containerStyle?: StyleProp<ViewStyle>;
+  precision?: number;
   rightContent?: ReactNode;
   control: Control<TFormValues>;
 };
@@ -45,13 +51,55 @@ export const TextField = <TFormValues extends FieldValues>({
   containerStyle,
   containerClassName,
   rightContent,
+  keyboardType,
+  precision = 2,
   control,
   ...rest
 }: TextFieldProps<TFormValues>) => {
+  const focused = useSharedValue(false);
+  const colorTransition = useDerivedValue(() =>
+    withTiming(focused.value ? 1 : 0, { duration: 150 })
+  );
   const {
     field,
     fieldState: { isTouched, error },
   } = useController({ name, control });
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      borderColor: interpolateColor(
+        colorTransition.value,
+        [0, 1],
+        ["rgba(0,0,0,0)", colors.primary]
+      ),
+    };
+  }, []);
+
+  const onChange = (value: string) => {
+    if (
+      keyboardType === "numbers-and-punctuation" ||
+      keyboardType === "numeric" ||
+      keyboardType === "number-pad" ||
+      keyboardType === "decimal-pad"
+    ) {
+      console.log({ value });
+      const digitsAndPunctuation = value.replace(/[^0-9.,]/g, "");
+      console.log({ digitsAndPunctuation });
+      //TODO: clean the number from multiple dots
+      const dotIndex = digitsAndPunctuation.search(/[.,]/g);
+      console.log({ dotIndex });
+      if (dotIndex === -1) return field.onChange(digitsAndPunctuation);
+
+      const cleanNumber =
+        digitsAndPunctuation.slice(0, dotIndex + 1) +
+        digitsAndPunctuation
+          .slice(dotIndex + 1)
+          .replace(/[,.]/g, "")
+          .slice(0, precision);
+      return field.onChange(cleanNumber);
+    }
+
+    field.onChange(value);
+  };
 
   return (
     <View className={className} style={style}>
@@ -60,26 +108,34 @@ export const TextField = <TFormValues extends FieldValues>({
           <NativeNode textClassName="text-base-100">{label}</NativeNode>
         </View>
       )}
-      <View
+      <Animated.View
         className={clsx(
-          "px-2 py-1 bg-transparent bg-base-600 w-full flex flex-row items-center rounded-lg",
+          "px-2 py-1 border bg-transparent bg-base-600 w-full flex flex-row items-center rounded-lg",
           containerClassName
         )}
-        style={containerStyle}
+        style={[animatedStyle, containerStyle]}
       >
         <TextInput
           selectionColor={colors.primary}
           keyboardAppearance="dark"
           placeholderTextColor={colors.base[200]}
-          onChangeText={field.onChange}
-          onBlur={field.onBlur}
+          onChangeText={onChange}
           value={field.value}
           className={clsx("text-white h-7 grow", inputClassName)}
           style={inputStyle}
+          keyboardType={keyboardType}
+          onBlur={() => {
+            focused.value = false;
+            field.onBlur();
+          }}
+          onFocus={(e) => {
+            focused.value = true;
+            rest.onFocus?.(e);
+          }}
           {...rest}
         />
         {rightContent}
-      </View>
+      </Animated.View>
 
       {isTouched && error && (
         <Animated.View

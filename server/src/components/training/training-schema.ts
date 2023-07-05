@@ -30,3 +30,20 @@ export const createTrainingSchema = z.object({
 });
 
 export const getTemplatesSchema = z.object({});
+
+export type UpdateSessionSchema = z.infer<typeof updateSessionSchema>;
+export const updateSessionSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  exercises: z.array(
+    z.object({
+      exerciseId: z.number().positive(),
+      sets: z.array(
+        z.object({
+          weight: z.number().nonnegative().nullable(),
+          reps: z.number().positive().nullable(),
+        })
+      ),
+    })
+  ),
+});

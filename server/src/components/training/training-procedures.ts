@@ -3,6 +3,8 @@ import {
   createTemplateGroupSchema,
   createTemplateSchema,
   createTrainingSchema,
+  updateSessionSchema,
+  UpdateSessionSchema,
 } from "./training-schema";
 import z from "zod";
 
@@ -52,20 +54,9 @@ export const trainingProducersFactory = ({
     }),
 
   updateSession: authProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        name: z.string(),
-        exercises: z.array(
-          z.object({
-            id: z.number(),
-            sets: z.array(z.object({ weight: z.number(), reps: z.number() })),
-          })
-        ),
-      })
-    )
+    .input(updateSessionSchema)
     .mutation(async ({ input }) => {
-      return true;
+      return await trainingService.updateSession(input);
     }),
 
   getTemplates: authProcedure.query(async ({ ctx }) => {

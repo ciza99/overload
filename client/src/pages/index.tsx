@@ -13,7 +13,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Training } from "./training/training";
 import { TrainingRoutes } from "./training";
 import { SortExample } from "@components/sort-example";
-import { SessionType } from "./training/templates/types";
+import { SessionType } from "./training/session/types";
 
 export type NavigationParamMap = {
   login: undefined;
