@@ -81,12 +81,8 @@ export const TextField = <TFormValues extends FieldValues>({
       keyboardType === "number-pad" ||
       keyboardType === "decimal-pad"
     ) {
-      console.log({ value });
       const digitsAndPunctuation = value.replace(/[^0-9.,]/g, "");
-      console.log({ digitsAndPunctuation });
-      //TODO: clean the number from multiple dots
       const dotIndex = digitsAndPunctuation.search(/[.,]/g);
-      console.log({ dotIndex });
       if (dotIndex === -1) return field.onChange(digitsAndPunctuation);
 
       const cleanNumber =

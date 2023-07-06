@@ -24,7 +24,7 @@ export const SortableContext = ({
   items: NodeId[];
   children: ReactNode;
 }) => {
-  const { dragging, active, over, droppableRects } = useDndContext();
+  const { active, over, droppableRects } = useDndContext();
 
   const activeIndex = useDerivedValue(
     () => (active.value ? items.indexOf(active.value) : -1),
@@ -40,9 +40,9 @@ export const SortableContext = ({
     [items]
   );
 
-  useEffect(() => {
-    console.log({ items, dragging });
-  }, [items, dragging]);
+  // useEffect(() => {
+  //   console.log({ items, dragging });
+  // }, [items, dragging]);
 
   const ctx: SortableContextType = {
     items,

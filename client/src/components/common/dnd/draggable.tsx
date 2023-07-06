@@ -13,7 +13,7 @@ import { NodeId } from "./types";
 
 export const useDraggable = (id: NodeId) => {
   const ref = useAnimatedRef<Animated.View>();
-  const { active, register, unregister, panGestureFactory, tx, ty } =
+  const { active, register, unregister, panGestureFactory, position } =
     useDndContext();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -28,8 +28,8 @@ export const useDraggable = (id: NodeId) => {
   const style = useAnimatedStyle(
     () => ({
       transform: [
-        { translateX: isActive.value ? tx.value : withSpring(0) },
-        { translateY: isActive.value ? ty.value : withSpring(0) },
+        { translateX: isActive.value ? position.value.x : withSpring(0) },
+        { translateY: isActive.value ? position.value.y : withSpring(0) },
       ],
     }),
     [id]
