@@ -9,19 +9,17 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { Template } from "./template";
+import { TemplateTraining } from "./template-training";
 import { TemplateGroupType } from "./types";
 import { colors } from "@constants/theme";
 import { CreateTemplateDialog } from "@components/dialog/create-template-dialog";
 import { toast } from "@components/common/toast";
 
 export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const open = useStore((state) => state.dialog.open);
   const utils = trpc.useContext();
-  const { panGesture, draggableRef, droppableRef, style } = useSortable(
-    group.id
-  );
+  const { panGesture, refs, style } = useSortable(group.id);
   const { mutate: deleteTemplateGroup } =
     trpc.training.deleteTemplateGroup.useMutation({
       onSuccess: () => {
@@ -47,9 +45,9 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
   }));
 
   return (
-    <Animated.View ref={draggableRef} style={style} className="mb-5">
+    <Animated.View ref={refs.draggable} style={style} className="mb-5">
       <Animated.View
-        ref={droppableRef}
+        ref={refs.droppable}
         className="flex flex-row items-center p-2"
       >
         <View className="mr-2">
@@ -84,7 +82,7 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
           </View>
         )}
         {group.templates.map((template) => (
-          <Template key={template.id} template={template} />
+          <TemplateTraining key={template.id} template={template} />
         ))}
         <View className="flex flex-row">
           <Button

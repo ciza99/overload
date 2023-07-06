@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Icon, Spinner } from "@components/common";
+import { Icon, Spinner, Typography } from "@components/common";
 import { Login } from "@pages/login";
 import { screens } from "@constants/screens";
 import { ProfileRoutes } from "@pages/profile";
@@ -10,7 +10,6 @@ import { useStore } from "@components/store/use-store";
 import { tokenHandler } from "@utils/token-handler";
 import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Training } from "./training/training";
 import { TrainingRoutes } from "./training";
 import { SortExample } from "@components/sort-example";
 import { SessionType } from "./training/session/types";
@@ -126,7 +125,7 @@ export const ProtectedRoutes = () => {
           ),
         }}
         name={screens.history.key}
-        component={Training}
+        component={SortExample}
       />
       <Tab.Screen
         options={{

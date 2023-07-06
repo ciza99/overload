@@ -8,7 +8,7 @@ import { useRef } from "react";
 import { View } from "react-native";
 import { TemplateType } from "./types";
 
-export const Template = ({ template }: { template: TemplateType }) => {
+export const TemplateTraining = ({ template }: { template: TemplateType }) => {
   const utils = trpc.useContext();
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);

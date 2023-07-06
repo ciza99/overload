@@ -19,6 +19,7 @@ import Animated, {
 import { rectIntersections } from "./collision-detection";
 import { ModifierFnc } from "./modifiers";
 import { Draggable, Droppable, NodeId, NodeType } from "./types";
+
 const DndCtx = createContext<DndContextType>(undefined as never);
 export const useDndContext = () => useContext(DndCtx);
 

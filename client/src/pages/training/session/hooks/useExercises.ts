@@ -1,17 +1,15 @@
 import { useMemo } from "react";
-import { trpc } from "@utils/trpc";
+import { ExerciseType } from "../types";
 
-export const useExercises = () => {
-  const { data: exerciseOptions } = trpc.training.getExercises.useQuery();
-
+export const useIdToExercise = (exercises: ExerciseType[]) => {
   const idToExercise = useMemo(() => {
     return (
-      exerciseOptions?.reduce<Record<number, (typeof exerciseOptions)[number]>>(
+      exercises?.reduce<Record<number, ExerciseType>>(
         (acc, opt) => ({ ...acc, [opt.id]: opt }),
         {}
       ) ?? {}
     );
-  }, [exerciseOptions]);
+  }, [exercises]);
 
   return idToExercise;
 };
