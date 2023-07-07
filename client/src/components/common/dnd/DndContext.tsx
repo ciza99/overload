@@ -4,6 +4,7 @@ import {
   RefObject,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { Gesture, PanGesture } from "react-native-gesture-handler";
@@ -19,6 +20,8 @@ import Animated, {
 import { rectIntersections } from "./collision-detection";
 import { ModifierFnc } from "./modifiers";
 import { Draggable, Droppable, NodeId, NodeType } from "./types";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { unstable_batchedUpdates } from "react-native";
 
 const DndCtx = createContext<DndContextType>(undefined as never);
 export const useDndContext = () => useContext(DndCtx);
@@ -148,6 +151,16 @@ export const DndContext = ({
     [droppables]
   );
 
+  useAnimatedReaction(
+    () => [over.value, active.value],
+    ([over, active]) => {
+      if (over === null || over === active) return;
+
+      runOnJS(impactAsync)(ImpactFeedbackStyle.Light);
+    },
+    []
+  );
+
   // useAnimatedReaction(
   //   () => ({
   //     active: active.value,
@@ -162,33 +175,48 @@ export const DndContext = ({
   //   }
   // );
 
-  const handleEnd = useCallback(
-    ({
-      active: activeProp,
-      over: overProp,
-    }: {
-      active: Draggable | null;
-      over: Droppable | null;
-    }) => {
-      if (activeProp !== null) {
-        onDragEnd?.({ active: activeProp, over: overProp });
+  const handleDragEnd = ({
+    active: activeNode,
+    over: overNode,
+  }: {
+    active: Draggable | null;
+    over: Droppable | null;
+  }) => {
+    unstable_batchedUpdates(() => {
+      if (activeNode) {
+        onDragEnd?.({ active: activeNode, over: overNode });
       }
-      setTimeout(() => {
-        active.value = null;
-        over.value = null;
-        transform.value = { x: 0, y: 0 };
-      });
-    },
-    [onDragEnd]
-  );
+      setDragging(false);
+    });
+  };
+
+  useEffect(() => {
+    if (dragging) return;
+
+    requestAnimationFrame(() => {
+      active.value = null;
+      over.value = null;
+      transform.value = { x: 0, y: 0 };
+    });
+  }, [dragging]);
+
+  // useAnimatedReaction(
+  //   () => {},
+  //   () => {
+  //     if (!dragging) {
+  //       runOnJS(reset)();
+  //     }
+  //   },
+  //   [dragging]
+  // );
 
   const panGestureFactory = useCallback(
     (id: NodeId) =>
       Gesture.Pan()
         .onBegin(() => {
-          console.log("BEGIN");
           runOnJS(setDragging)(true);
           active.value = id;
+          runOnJS(impactAsync)(ImpactFeedbackStyle.Medium);
         })
         .onUpdate((event) => {
           const { tx: mTx, ty: mTy } = modifiers.value.reduce(
@@ -199,14 +227,12 @@ export const DndContext = ({
           transform.value = { x: mTx, y: mTy };
         })
         .onEnd(() => {
-          console.log("END");
-          runOnJS(setDragging)(false);
-          runOnJS(handleEnd)({
+          runOnJS(handleDragEnd)({
             active: activeNode.value,
             over: overNode.value,
           });
         }),
-    [handleEnd]
+    [onDragEnd, handleDragEnd]
   );
 
   const ctx: DndContextType = {

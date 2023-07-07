@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BottomSheetModal,
   BottomSheetModalType,
@@ -33,6 +33,15 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/ty
 import { trpc } from "@utils/trpc";
 import { localeInfo } from "@constants/locale";
 import { Exercise } from "./exercise";
+import {
+  arrayMove,
+  DndContext,
+  restrictToYAxis,
+  SortableContext,
+} from "@components/common/dnd";
+import { BottomSheetActions } from "@components/bottom-sheet-actions";
+import { colors } from "@constants/theme";
+import { ScrollContainer } from "@components/common/dnd/scroll-container";
 
 type Props = NativeStackScreenProps<NavigationParamMap, "session">;
 
@@ -106,17 +115,10 @@ const SessionForm = ({ exercises }: { exercises: ExerciseType[] }) => {
   } = useRoute<Props["route"]>();
   const defaultValues = useFormDefaultValues({ session, exercises });
   const methods = useForm({ defaultValues });
-  const name = methods.watch("name");
 
   return (
     <FormProvider {...methods}>
-      <ScrollView className="p-4">
-        <Typography weight="bold" className="text-xl mb-4">
-          {name}
-        </Typography>
-        <Exercises />
-        <View className="h-12" />
-      </ScrollView>
+      <Exercises />
     </FormProvider>
   );
 };
@@ -127,11 +129,13 @@ type ExercisesScreenProps = NativeStackNavigationProp<
 >;
 
 const Exercises = () => {
-  const { control, handleSubmit } = useFormContext<SessionFormType>();
-  const { fields, append, remove } = useFieldArray({
+  const [reordering, setReordering] = useState(false);
+  const { watch, control, handleSubmit } = useFormContext<SessionFormType>();
+  const { fields, append, remove, replace } = useFieldArray({
     control,
     name: "exercises",
   });
+  const name = watch("name");
   const navigation = useNavigation<ExercisesScreenProps>();
   const utils = trpc.useContext();
   const { mutate: updateSession } = trpc.training.updateSession.useMutation({
@@ -145,7 +149,12 @@ const Exercises = () => {
       toast.show({ type: "error", text1: "Session could not be saved" });
     },
   });
-  const bottomSheet = useRef<BottomSheetModalType>(null);
+  const addExerciseBottomSheet = useRef<BottomSheetModalType>(null);
+  const exerciseActionsBottomSheet = useRef<BottomSheetModalType>(null);
+
+  const sortableItems = useMemo(() => {
+    return fields.map(({ id }) => id);
+  }, [fields]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -165,35 +174,106 @@ const Exercises = () => {
 
   return (
     <>
-      {!fields.length && (
-        <View className="p-2 bg-base-700 rounded-lg mb-4">
-          <Typography
-            weight="bold"
-            className="text-base-300 text-center text-lg"
-          >
-            No exercises
-          </Typography>
-        </View>
-      )}
-      {fields.map((sessionExercise, exerciseIndex) => (
-        <Exercise
-          key={sessionExercise.id}
-          exercise={sessionExercise}
-          exerciseIndex={exerciseIndex}
-          removeSelf={() => remove(exerciseIndex)}
-        />
-      ))}
-      <Animated.View layout={Layout}>
-        <Button
-          variant="outlined"
-          beforeIcon={<Icon name="add-outline" />}
-          onPress={() => bottomSheet.current?.present()}
-        >
-          Add exercise
-        </Button>
-      </Animated.View>
+      <DndContext
+        modifiers={[restrictToYAxis]}
+        onDragEnd={({ active, over }) => {
+          if (!over) return;
 
-      <BottomSheetModal ref={bottomSheet} snapPoints={["75%", "100%"]}>
+          const activeIndex = fields.findIndex(({ id }) => id == active.id);
+          const overIndex = fields.findIndex(({ id }) => id == over.id);
+
+          if (activeIndex === -1 || overIndex === -1) return;
+          replace(arrayMove(fields, activeIndex, overIndex));
+        }}
+      >
+        <ScrollContainer>
+          <Typography weight="bold" className="text-xl mb-4">
+            {name}
+          </Typography>
+          {!fields.length && (
+            <View className="p-2 bg-base-700 rounded-lg mb-4">
+              <Typography
+                weight="bold"
+                className="text-base-300 text-center text-lg"
+              >
+                No exercises
+              </Typography>
+            </View>
+          )}
+          <SortableContext items={sortableItems}>
+            <ScrollContainer>
+              {fields.map((sessionExercise, exerciseIndex) => (
+                <Exercise
+                  id={sessionExercise.id}
+                  key={exerciseIndex}
+                  exercise={sessionExercise}
+                  exerciseIndex={exerciseIndex}
+                  removeSelf={() => remove(exerciseIndex)}
+                  exerciseActionsBottomSheet={exerciseActionsBottomSheet}
+                  reordering={reordering}
+                />
+              ))}
+            </ScrollContainer>
+          </SortableContext>
+          <Animated.View layout={Layout}>
+            {reordering && (
+              <Button
+                variant="primary"
+                beforeIcon={<Icon name="checkmark-outline" />}
+                onPress={() => setReordering(false)}
+              >
+                Done
+              </Button>
+            )}
+
+            {!reordering && (
+              <Button
+                variant="outlined"
+                beforeIcon={<Icon name="add-outline" />}
+                onPress={() => addExerciseBottomSheet.current?.present()}
+              >
+                Add exercise
+              </Button>
+            )}
+          </Animated.View>
+          <View className="h-12" />
+        </ScrollContainer>
+      </DndContext>
+
+      <BottomSheetModal
+        snapPoints={["75%", "100%"]}
+        ref={exerciseActionsBottomSheet}
+      >
+        {({ data: exerciseIndex }: { data: number }) => (
+          <BottomSheetActions
+            actions={[
+              {
+                label: "Delete",
+                icon: <Icon color={colors.danger} name="trash-outline" />,
+                onPress: () => {
+                  remove(exerciseIndex);
+                  exerciseActionsBottomSheet.current?.close();
+                },
+              },
+              {
+                label: "Reorder exercises",
+                icon: (
+                  <Icon color={colors.primary} name="swap-vertical-outline" />
+                ),
+                onPress: () => {
+                  setReordering(true);
+                  exerciseActionsBottomSheet.current?.close();
+                },
+              },
+            ]}
+          />
+        )}
+      </BottomSheetModal>
+
+      <BottomSheetModal
+        ref={addExerciseBottomSheet}
+        snapPoints={["75%", "100%"]}
+      >
         <AddExerciseBottomSheetContent
           onAdd={(exercise) => {
             append({
@@ -201,7 +281,7 @@ const Exercises = () => {
               name: exercise.name,
               sets: [{ reps: "", weight: "" }],
             });
-            bottomSheet.current?.close();
+            addExerciseBottomSheet.current?.close();
           }}
         />
       </BottomSheetModal>

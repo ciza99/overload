@@ -18,7 +18,7 @@ export const Collapsable = ({
   const height = useSharedValue(0);
 
   const progress = useDerivedValue(
-    () => (open ? withSpring(1) : withTiming(0)),
+    () => (open ? withSpring(1, { stiffness: 75, mass: 0.85 }) : withTiming(0)),
     [open]
   );
 

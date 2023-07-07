@@ -1,9 +1,4 @@
 import { User } from "@models/user";
-import {
-  SessionExerciseType,
-  SessionType,
-} from "@pages/training/templates/types";
-import { ReactNode } from "react";
 import { View } from "react-native";
 import { v4 } from "uuid";
 

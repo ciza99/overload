@@ -66,4 +66,15 @@ export const trainingProducersFactory = ({
   getExercises: authProcedure.query(async () => {
     return await trainingService.getExercises();
   }),
+
+  dragSwapTemplateGroups: authProcedure
+    .input(
+      z.object({
+        firstId: z.number().nonnegative(),
+        secondId: z.number().nonnegative(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      //TODO
+    }),
 });

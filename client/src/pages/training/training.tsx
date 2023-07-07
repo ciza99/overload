@@ -33,7 +33,7 @@ export const Training = () => {
   const template = group
     ?.map((g) => g.templates)
     .flat()
-    .find((t) => t.id == templateId);
+    .find((t) => t.id === templateId);
 
   if (!template) return null;
 

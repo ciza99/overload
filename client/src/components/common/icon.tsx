@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Typography } from "./typography";
+import { PlatformColor } from "react-native";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Props = Omit<ComponentProps<typeof Ionicons>, "size"> & {
@@ -18,11 +18,6 @@ const sizes: Record<Size, number> = {
 
 export const Icon = ({ size = "md", typographyClassName, ...props }: Props) => {
   return (
-    <Typography className={typographyClassName}>
-      <Ionicons
-        {...props}
-        size={typeof size === "string" ? sizes[size] : size}
-      />
-    </Typography>
+    <Ionicons {...props} size={typeof size === "string" ? sizes[size] : size} />
   );
 };

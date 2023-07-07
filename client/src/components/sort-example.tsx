@@ -40,8 +40,6 @@ export const SortExample = () => {
         const activeIndex = items.findIndex((id) => active.id === id);
         const overIndex = items.findIndex((id) => over?.id === id);
 
-        console.log({ active, over });
-
         if (
           overIndex === -1 ||
           activeIndex === -1 ||
@@ -54,13 +52,11 @@ export const SortExample = () => {
       }}
     >
       <SortableContext items={items}>
-        <ScrollContainer>
-          <View className="p-4 flex">
-            {items.map((item) => (
-              <Item key={item} id={item} />
-            ))}
-          </View>
-        </ScrollContainer>
+        <View className="p-4 flex">
+          {items.map((item) => (
+            <Item key={item} id={item} />
+          ))}
+        </View>
       </SortableContext>
     </DndContext>
   );

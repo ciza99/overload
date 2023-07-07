@@ -10,3 +10,6 @@ export { arrayMove } from "./sorting-strategy";
 
 // Modifiers
 export { restrictToYAxis, ModifierFnc } from "./modifiers";
+
+// Other
+export { ScrollContainer } from "./scroll-container";

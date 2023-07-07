@@ -1,6 +1,12 @@
-import { useState } from "react";
-import { View } from "react-native";
-import { Collapsable, Icon, Typography, Button } from "@components/common";
+import { RefObject, useState } from "react";
+import { Pressable, View } from "react-native";
+import {
+  Collapsable,
+  Icon,
+  Typography,
+  Button,
+  BottomSheetModalType,
+} from "@components/common";
 import { useStore } from "@components/store/use-store";
 import { useSortable } from "@components/common/dnd";
 import { trpc } from "@utils/trpc";
@@ -14,12 +20,21 @@ import { TemplateGroupType } from "./types";
 import { colors } from "@constants/theme";
 import { CreateTemplateDialog } from "@components/dialog/create-template-dialog";
 import { toast } from "@components/common/toast";
+import {
+  ReorderDialog,
+  ReorderDialogProps,
+} from "@components/dialog/reorder-dialog";
 
-export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
+export const TemplateGroup = ({
+  group,
+  groupBottomSheetActions,
+}: {
+  group: TemplateGroupType;
+  groupBottomSheetActions: RefObject<BottomSheetModalType>;
+}) => {
   const [collapsed, setCollapsed] = useState(false);
   const open = useStore((state) => state.dialog.open);
   const utils = trpc.useContext();
-  const { panGesture, refs, style } = useSortable(group.id);
   const { mutate: deleteTemplateGroup } =
     trpc.training.deleteTemplateGroup.useMutation({
       onSuccess: () => {
@@ -36,7 +51,7 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        rotate: withSpring(`${collapsed ? 180 : 0}deg`, {
+        rotate: withSpring(`${!collapsed ? 90 : 0}deg`, {
           mass: 0.5,
           stiffness: 75,
         }),
@@ -45,31 +60,25 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
   }));
 
   return (
-    <Animated.View ref={refs.draggable} style={style} className="mb-5">
-      <Animated.View
-        ref={refs.droppable}
-        className="flex flex-row items-center p-2"
-      >
-        <View className="mr-2">
-          <GestureDetector gesture={panGesture}>
-            <Icon
-              color={colors.primary}
-              size="lg"
-              name="reorder-three-outline"
-            />
-          </GestureDetector>
-        </View>
-        <Typography className="mr-auto text-lg" weight="bold">
-          {group.name}
-        </Typography>
-        <Animated.View style={chevronStyle}>
-          <Icon
-            color="white"
-            name="chevron-down"
-            onPress={() => setCollapsed((prev) => !prev)}
-          />
-        </Animated.View>
-      </Animated.View>
+    <View className="mb-5">
+      <View className="flex flex-row items-center p-2">
+        <Pressable
+          className="flex flex-row items-center grow"
+          onPress={() => setCollapsed((prev) => !prev)}
+        >
+          <Animated.View style={chevronStyle} className="mr-2">
+            <Icon color="white" name="chevron-forward-outline" />
+          </Animated.View>
+          <Typography className="text-lg" weight="bold">
+            {group.name}
+          </Typography>
+        </Pressable>
+        <Icon
+          color="white"
+          name="ellipsis-horizontal-outline"
+          onPress={() => groupBottomSheetActions.current?.present(group.id)}
+        />
+      </View>
       <Collapsable open={!collapsed}>
         {group.templates.length === 0 && (
           <View className="p-2 bg-base-700 rounded-lg mb-5">
@@ -110,6 +119,6 @@ export const TemplateGroup = ({ group }: { group: TemplateGroupType }) => {
           </Button>
         </View>
       </Collapsable>
-    </Animated.View>
+    </View>
   );
 };

@@ -9,10 +9,10 @@ import { useDraggable } from "./draggable";
 import { useDroppable } from "./droppable";
 import { rectSortingStrategy } from "./sorting-strategy";
 import { NodeId } from "./types";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export const useSortable = (id: NodeId) => {
-  const { active, position } = useDndContext();
+  const { dragging, active, position, transform } = useDndContext();
   const { items, rects, activeIndex, overIndex } = useSortableContext();
   const { ref: draggableRef, panGesture, isDragging } = useDraggable(id);
   const { ref: droppableRef, isOver } = useDroppable(id);
@@ -29,6 +29,17 @@ export const useSortable = (id: NodeId) => {
       }),
     []
   );
+
+  useEffect(() => {
+    if (dragging) return;
+
+    const timeout = setTimeout(() => {
+      active.value = null;
+      transform.value = { x: 0, y: 0 };
+    });
+
+    return () => clearTimeout(timeout);
+  }, [dragging]);
 
   const style = useAnimatedStyle(() => {
     if (active.value === id) {
@@ -48,16 +59,16 @@ export const useSortable = (id: NodeId) => {
 
     return {
       transform: [
-        { translateX: withTiming(sortDisplace.value.tx) },
-        { translateY: withTiming(sortDisplace.value.ty) },
+        { translateX: withTiming(sortDisplace.value.tx, { duration: 250 }) },
+        { translateY: withTiming(sortDisplace.value.ty, { duration: 250 }) },
       ],
     };
-  }, []);
+  }, [dragging]);
 
   const refs = useMemo(
     () => ({ draggable: draggableRef, droppable: droppableRef }),
     [draggableRef, droppableRef]
   );
 
-  return { isDragging, isOver, refs, panGesture, style };
+  return { dragging, isDragging, isOver, refs, panGesture, style };
 };

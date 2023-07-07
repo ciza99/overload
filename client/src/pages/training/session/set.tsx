@@ -76,8 +76,6 @@ export const Set = ({
     };
   });
 
-  console.log({ set });
-
   return (
     <Animated.View
       entering={animateEntrance ? SlideInLeft : undefined}
