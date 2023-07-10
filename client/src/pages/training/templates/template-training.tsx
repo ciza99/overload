@@ -20,18 +20,18 @@ export const TemplateTraining = ({ template }: { template: TemplateType }) => {
   });
 
   return (
-    <Paper className="flex flex-row p-2 items-center mb-3">
-      <View className="mr-2">
-        <Icon size="lg" color="white" name="reorder-three-outline" />
+    <>
+      <View className="ml-8 flex flex-row p-2 items-center">
+        <View className="mr-2">
+          <Icon size="lg" color={colors.primary} name="reorder-three-outline" />
+        </View>
+        <Typography className="mr-auto text-lg">{template.name}</Typography>
+        <Icon
+          onPress={() => bottomSheet.current?.present()}
+          color="white"
+          name="ellipsis-horizontal-outline"
+        />
       </View>
-      <Typography weight="bold" className="mr-auto text-lg">
-        {template.name}
-      </Typography>
-      <Icon
-        onPress={() => bottomSheet.current?.present()}
-        color="white"
-        name="ellipsis-horizontal-outline"
-      />
 
       <BottomSheetModal ref={bottomSheet} snapPoints={["50%"]}>
         <BottomSheetActions
@@ -60,6 +60,6 @@ export const TemplateTraining = ({ template }: { template: TemplateType }) => {
           ]}
         />
       </BottomSheetModal>
-    </Paper>
+    </>
   );
 };

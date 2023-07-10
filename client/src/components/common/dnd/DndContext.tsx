@@ -152,10 +152,9 @@ export const DndContext = ({
   );
 
   useAnimatedReaction(
-    () => [over.value, active.value],
-    ([over, active]) => {
-      if (over === null || over === active) return;
-
+    () => over.value,
+    (_, prev) => {
+      if (prev === null) return;
       runOnJS(impactAsync)(ImpactFeedbackStyle.Light);
     },
     []
@@ -216,7 +215,7 @@ export const DndContext = ({
         .onBegin(() => {
           runOnJS(setDragging)(true);
           active.value = id;
-          runOnJS(impactAsync)(ImpactFeedbackStyle.Medium);
+          runOnJS(impactAsync)(ImpactFeedbackStyle.Light);
         })
         .onUpdate((event) => {
           const { tx: mTx, ty: mTy } = modifiers.value.reduce(

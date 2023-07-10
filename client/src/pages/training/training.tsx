@@ -2,11 +2,18 @@ import { BottomSheetActions } from "@components/bottom-sheet-actions";
 import {
   BottomSheetModal,
   Button,
+  Divider,
   Icon,
   Paper,
   Typography,
 } from "@components/common";
 import { BottomSheetModalType } from "@components/common/bottom-sheet-modal";
+import {
+  DndContext,
+  restrictToYAxis,
+  SortableContext,
+  useSortable,
+} from "@components/common/dnd";
 import { CreateSessionDialog } from "@components/dialog/create-session-dialog";
 import { useStore } from "@components/store/use-store";
 import { colors } from "@constants/theme";
@@ -14,9 +21,11 @@ import { NavigationParamMap } from "@pages";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { trpc } from "@utils/trpc";
-import { RefObject, useRef } from "react";
+import { RefObject, useMemo, useRef } from "react";
 import { View } from "react-native";
+import { GestureDetector } from "react-native-gesture-handler";
 import { SessionType } from "./session/types";
+import Animated from "react-native-reanimated";
 
 type Props = NativeStackScreenProps<NavigationParamMap, "training">;
 
@@ -30,10 +39,20 @@ export const Training = () => {
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);
 
-  const template = group
-    ?.map((g) => g.templates)
-    .flat()
-    .find((t) => t.id === templateId);
+  const template = useMemo(
+    () =>
+      group
+        ?.map((g) => g.templates)
+        .flat()
+        .find((t) => t.id === templateId),
+    [group]
+  );
+
+  const items = useMemo(
+    () => template?.sessions.map(({ id }) => id) ?? [],
+    [template]
+  );
+  console.log({ items });
 
   if (!template) return null;
 
@@ -44,31 +63,34 @@ export const Training = () => {
           <Typography weight="bold" className="text-2xl">
             {template.name}
           </Typography>
-          <Icon name="ellipsis-horizontal-outline" />
+          <Icon color="white" name="ellipsis-horizontal-outline" />
         </View>
+        <Divider className="my-2" />
         <Typography weight="bold" className="text-lg mb-2">
           Sessions:
         </Typography>
         {template.sessions.length === 0 && (
           <Paper className="p-3">
-            <Typography
-              weight="bold"
-              className="text-lg text-center text-base-300"
-            >
+            <Typography className="text-lg text-center text-base-300">
               No sessions yet
             </Typography>
           </Paper>
         )}
-        {template.sessions.map((session) => (
-          <TrainingSession
-            key={session.id}
-            session={session}
-            bottomSheetRef={bottomSheet}
-          />
-        ))}
+        <DndContext modifiers={[restrictToYAxis]}>
+          <SortableContext items={items}>
+            {template.sessions.map((session) => (
+              <TrainingSession
+                key={session.id}
+                session={session}
+                bottomSheetRef={bottomSheet}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
         <Button
+          className="mt-2"
           variant="outlined"
-          beforeIcon={<Icon name="add-outline" />}
+          beforeIcon={<Icon color="white" name="add-outline" />}
           onPress={() =>
             open({
               Component: CreateSessionDialog,
@@ -127,20 +149,25 @@ const TrainingSession = ({
   session: SessionType;
   bottomSheetRef: RefObject<BottomSheetModalType>;
 }) => {
+  const { refs, style, panGesture } = useSortable(session.id);
+
   return (
-    <>
-      <Paper className="p-3 flex flex-row items-center mb-2">
-        <View className="mr-2">
-          <Icon name="reorder-three-outline" />
-        </View>
-        <Typography weight="bold" className="text-lg mr-auto">
-          {session.name}
-        </Typography>
-        <Icon
-          onPress={() => bottomSheetRef.current?.present(session)}
-          name="ellipsis-horizontal-outline"
-        />
-      </Paper>
-    </>
+    <GestureDetector gesture={panGesture}>
+      <Animated.View ref={refs.droppable} style={style}>
+        <Animated.View ref={refs.draggable}>
+          <Paper className="p-2 flex flex-row items-center mb-2">
+            <View className="mr-2">
+              <Icon color="white" name="reorder-three-outline" />
+            </View>
+            <Typography className="text-lg mr-auto">{session.name}</Typography>
+            <Icon
+              color="white"
+              onPress={() => bottomSheetRef.current?.present(session)}
+              name="ellipsis-horizontal-outline"
+            />
+          </Paper>
+        </Animated.View>
+      </Animated.View>
+    </GestureDetector>
   );
 };

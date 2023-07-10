@@ -71,6 +71,7 @@ export const Exercise = ({
             {!reordering && (
               <Animated.View entering={FadeIn} exiting={FadeOut}>
                 <Icon
+                  color="white"
                   name="ellipsis-horizontal-outline"
                   onPress={() =>
                     exerciseActionsBottomSheet.current?.present(exerciseIndex)
@@ -125,7 +126,7 @@ export const Exercise = ({
             <Animated.View layout={Layout}>
               <Button
                 variant="primary"
-                beforeIcon={<Icon name="add-outline" />}
+                beforeIcon={<Icon color="white" name="add-outline" />}
                 className="bg-base-600"
                 onPress={() => append({ reps: "", weight: "" })}
               >

@@ -28,7 +28,7 @@ export const Dialog = () => {
                 exiting={ZoomOut}
                 className="w-full"
               >
-                <Paper className="p-4 w-full rounded-xl">
+                <Paper className="p-4 w-full rounded-lg">
                   {dialog.title && (
                     <Typography weight="bold" className="pb-4 text-base-200">
                       {dialog.title}

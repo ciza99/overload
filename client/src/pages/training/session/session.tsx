@@ -186,7 +186,7 @@ const Exercises = () => {
           replace(arrayMove(fields, activeIndex, overIndex));
         }}
       >
-        <ScrollContainer>
+        <ScrollContainer className="p-4">
           <Typography weight="bold" className="text-xl mb-4">
             {name}
           </Typography>
@@ -219,7 +219,7 @@ const Exercises = () => {
             {reordering && (
               <Button
                 variant="primary"
-                beforeIcon={<Icon name="checkmark-outline" />}
+                beforeIcon={<Icon color="white" name="checkmark-outline" />}
                 onPress={() => setReordering(false)}
               >
                 Done
@@ -229,7 +229,7 @@ const Exercises = () => {
             {!reordering && (
               <Button
                 variant="outlined"
-                beforeIcon={<Icon name="add-outline" />}
+                beforeIcon={<Icon color="white" name="add-outline" />}
                 onPress={() => addExerciseBottomSheet.current?.present()}
               >
                 Add exercise

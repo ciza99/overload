@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { ScrollViewProps, useWindowDimensions, View } from "react-native";
 import Animated, {
   cancelAnimation,
   measure,
@@ -13,7 +13,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useDndContext } from "./DndContext";
 
-export const ScrollContainer = ({ children }: { children: ReactNode }) => {
+export const ScrollContainer = ({
+  children,
+  ...rest
+}: Omit<ScrollViewProps, "onScroll" | "ref"> & { children: ReactNode }) => {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const contentRef = useAnimatedRef<View>();
   const scrollY = useSharedValue(0);
@@ -108,7 +111,7 @@ export const ScrollContainer = ({ children }: { children: ReactNode }) => {
   );
 
   return (
-    <Animated.ScrollView ref={scrollRef} onScroll={handler}>
+    <Animated.ScrollView ref={scrollRef} onScroll={handler} {...rest}>
       <View ref={contentRef}>{children}</View>
     </Animated.ScrollView>
   );

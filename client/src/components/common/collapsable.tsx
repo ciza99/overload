@@ -1,5 +1,6 @@
+import clsx from "clsx";
 import { ReactNode } from "react";
-import { View } from "react-native";
+import { View, ViewProps } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useDerivedValue,
@@ -11,7 +12,10 @@ import Animated, {
 export const Collapsable = ({
   open,
   children,
-}: {
+  className,
+  style,
+  ...rest
+}: ViewProps & {
   open: boolean;
   children: ReactNode;
 }) => {
@@ -22,13 +26,17 @@ export const Collapsable = ({
     [open]
   );
 
-  const style = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     height: height.value * progress.value + 1,
     opacity: progress.value === 0 ? 0 : 1,
   }));
 
   return (
-    <Animated.View className="overflow-hidden" style={style}>
+    <Animated.View
+      className={clsx("overflow-hidden", className)}
+      style={[animatedStyle, style]}
+      {...rest}
+    >
       <View
         onLayout={({ nativeEvent }) => {
           height.value = nativeEvent.layout.height;

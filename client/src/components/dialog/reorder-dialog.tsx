@@ -11,7 +11,7 @@ import { NodeId } from "@components/common/dnd/types";
 import { DialogProps } from "@components/store/use-store";
 import { colors } from "@constants/theme";
 import clsx from "clsx";
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -68,6 +68,7 @@ export const ReorderDialog = <TItem,>({
             ))}
           </ScrollContainer>
           <Button
+            className="mt-4"
             beforeIcon={<Icon name="checkmark-done-outline" />}
             onPress={() => {
               onDone(items);
@@ -111,7 +112,7 @@ const Item = ({ id, label }: { id: NodeId; label: string }) => {
         ref={refs.droppable}
         style={style}
         className={clsx(
-          "flex flex-row items-center mr-auto py-2",
+          "flex flex-row items-center mr-auto py-1",
           isDragging && "z-10"
         )}
       >

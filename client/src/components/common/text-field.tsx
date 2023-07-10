@@ -117,7 +117,7 @@ export const TextField = <TFormValues extends FieldValues>({
           placeholderTextColor={colors.base[200]}
           onChangeText={onChange}
           value={field.value}
-          className={clsx("text-white h-7 grow", inputClassName)}
+          className={clsx("text-white h-6 grow", inputClassName)}
           style={inputStyle}
           keyboardType={keyboardType}
           onBlur={() => {

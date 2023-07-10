@@ -92,17 +92,17 @@ export const Set = ({
             className=" flex flex-row items-center justify-stretch"
             style={rowStyle}
           >
-            <View className="flex-[1] rounded-xl">
-              <View className="bg-base-600 rounded-xl">
+            <View className="flex-[1] rounded-lg">
+              <View className="bg-base-600 rounded-lg">
                 <Typography className="py-2 text-center">{setIndex}</Typography>
               </View>
             </View>
-            <View className="flex-[3] rounded-xl">
-              <View className="rounded-xl">
+            <View className="flex-[3] rounded-lg">
+              <View className="rounded-lg">
                 <Typography className="py-2 text-center">no data</Typography>
               </View>
             </View>
-            <View className="flex-[3] rounded-xl">
+            <View className="flex-[3] rounded-lg">
               <TextField
                 control={control}
                 name={`exercises.${exerciseIndex}.sets.${setIndex}.weight`}
@@ -111,7 +111,7 @@ export const Set = ({
                 keyboardType="numeric"
               />
             </View>
-            <View className="flex-[3] rounded-xl">
+            <View className="flex-[3] rounded-lg">
               <TextField
                 control={control}
                 maxLength={6}
