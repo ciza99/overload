@@ -15,6 +15,10 @@ export const createAppConfig = (): AppConfig => {
       key: "PORT",
       processValue: processNumberFactory(8080),
     }),
+    databaseUrl: processEnvVariable({
+      key: "DATABASE_URL",
+      required: true,
+    }),
     jwtSecret: processEnvVariable({ key: "JWT_SECRET", required: true }),
     jwtAuthTokenExpTime: processEnvVariable({
       key: "JWT_AUTH_TOKEN_EXP_TIME",

@@ -7,6 +7,7 @@ export type AppConfig = {
   refreshTokenExpTime: number;
   refreshTokenSalt: string;
   environment: NodeEnvironment;
+  databaseUrl: string;
 };
 
 export type ProcessValueProps<T> = {
