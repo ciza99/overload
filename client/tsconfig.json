@@ -3,25 +3,8 @@
     "strict": true,
     "module": "commonjs",
     "paths": {
-      "@components": ["./src/components"],
-      "@constants": ["./src/constants"],
-      "@hooks": ["./src/hooks"],
-      "@pages": ["./src/pages"],
-      "@models": ["./src/models"],
-      "@api": ["./src/api"],
-      "@utils": ["./src/utils"],
-      "@schemas": ["./src/schemas"],
-      "@src": ["./src"],
-
-      "@components/*": ["./src/components/*"],
-      "@constants/*": ["./src/constants/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@models/*": ["./src/models/*"],
-      "@api/*": ["./src/api/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@schemas/*": ["./src/schemas/*"],
-      "@src/*": ["./src/*"]
+      "@features": ["./src/features"],
+      "@features/*": ["./src/features/*"]
     }
   },
   "references": [{ "path": "../server" }],

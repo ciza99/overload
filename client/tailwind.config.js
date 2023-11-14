@@ -1,4 +1,4 @@
-const { colors } = require("./src/constants/theme");
+const { colors } = require("./src/features/ui/theme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

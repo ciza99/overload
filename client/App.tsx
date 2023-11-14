@@ -1,31 +1,32 @@
 import "react-native-get-random-values";
+
 import React, { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, loggerLink, TRPCLink } from "@trpc/client";
-import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaView } from "react-native";
 import {
-  useFonts,
   Poppins_300Light,
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
   Poppins_800ExtraBold,
+  useFonts,
 } from "@expo-google-fonts/poppins";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { PortalProvider } from "@gorhom/portal";
+import { NavigationContainer } from "@react-navigation/native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { httpBatchLink, loggerLink, TRPCLink } from "@trpc/client";
 import { observable } from "@trpc/server/observable";
 import Constants from "expo-constants";
-
-import { AppRouter, trpc } from "@utils/trpc";
-import { tokenHandler } from "@utils/token-handler";
-import { Router } from "@pages";
 import { StatusBar } from "expo-status-bar";
-import { colors } from "@constants/theme";
-import { SafeAreaView } from "react-native";
-import { Dialog } from "@components/dialog/dialog";
-import { PortalProvider } from "@gorhom/portal";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { Toast } from "@components/common";
+
+import { Router } from "@features/core/components/router";
+import { AppRouter, trpc } from "@features/api/trpc";
+import { Toast } from "@features/ui/components";
+import { Dialog } from "@features/ui/components/dialog";
+import { colors } from "@features/ui/theme";
+import { tokenHandler } from "@features/auth/lib/token-handler";
 
 const { manifest } = Constants;
 
