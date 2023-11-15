@@ -15,7 +15,7 @@ export const CreateTemplateDialog = ({
   close,
   templateGroupId,
 }: DialogProps<{ templateGroupId: number }>) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(createTemplateSchema),
     defaultValues: { name: "" },

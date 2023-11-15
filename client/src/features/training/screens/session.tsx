@@ -138,7 +138,7 @@ const Exercises = () => {
   });
   const name = watch("name");
   const navigation = useNavigation<ExercisesScreenProps>();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutate: updateSession } = trpc.training.updateSession.useMutation({
     onSuccess: () => {
       utils.training.getTemplates.invalidate();
@@ -186,14 +186,14 @@ const Exercises = () => {
         }}
       >
         <ScrollContainer className="p-4">
-          <Typography weight="bold" className="text-xl mb-4">
+          <Typography weight="bold" className="mb-4 text-xl">
             {name}
           </Typography>
           {!fields.length && (
-            <View className="p-2 bg-base-700 rounded-lg mb-4">
+            <View className="mb-4 rounded-lg bg-base-700 p-2">
               <Typography
                 weight="bold"
-                className="text-base-300 text-center text-lg"
+                className="text-center text-lg text-base-300"
               >
                 No exercises
               </Typography>

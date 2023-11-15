@@ -12,7 +12,7 @@ const createGroupSchema = z.object({
 });
 
 export const CreateGroupDialog = ({ close }: DialogProps) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(createGroupSchema),
     defaultValues: { name: "" },

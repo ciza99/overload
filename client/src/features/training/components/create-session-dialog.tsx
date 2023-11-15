@@ -15,7 +15,7 @@ export const CreateSessionDialog = ({
   close,
   templateId,
 }: DialogProps<{ templateId: number }>) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(createSessionSchema),
     defaultValues: { name: "" },

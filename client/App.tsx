@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { SafeAreaView } from "react-native";
 import {
   Poppins_300Light,
@@ -17,7 +17,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink, TRPCLink } from "@trpc/client";
 import { observable } from "@trpc/server/observable";
-import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -28,12 +27,7 @@ import { Dialog } from "@features/ui/components/dialog";
 import { colors } from "@features/ui/theme";
 import { tokenHandler } from "@features/auth/lib/token-handler";
 
-const { manifest } = Constants;
-
-const isDevelompent = !!manifest?.packagerOpts?.dev;
-const url = isDevelompent
-  ? `http://192.168.68.102:8080`
-  : `http://overload-api.com`;
+const url = __DEV__ ? `http://192.168.68.102:8080` : `http://overload-api.com`;
 
 type Response = {
   headers?: {
@@ -78,7 +72,7 @@ const App = () => {
       links: [
         loggerLink({
           enabled: (opts) =>
-            isDevelompent &&
+            __DEV__ &&
             opts.direction === "down" &&
             opts.result instanceof Error,
         }),

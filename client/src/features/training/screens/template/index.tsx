@@ -25,7 +25,7 @@ import { TemplateGroupType } from "../../types/template";
 import { TemplateGroup } from "./parts/template-group";
 
 export const Templates = () => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { data: templateGroups } = trpc.training.getTemplates.useQuery();
   const { control } = useForm({});
   const open = useStore((state) => state.dialog.open);
@@ -50,7 +50,7 @@ export const Templates = () => {
     <>
       <ScrollView>
         <View className="p-4">
-          <Typography weight="bold" className="text-2xl mb-5">
+          <Typography weight="bold" className="mb-5 text-2xl">
             Trainings
           </Typography>
           <TextField
@@ -61,8 +61,8 @@ export const Templates = () => {
             control={control}
           />
           {templateGroups?.length === 0 && (
-            <View className="px-2 py-8 bg-base-700 rounded-lg mb-5">
-              <Typography className="text-base-300 text-center text-lg">
+            <View className="mb-5 rounded-lg bg-base-700 px-2 py-8">
+              <Typography className="text-center text-lg text-base-300">
                 No template groups
               </Typography>
             </View>

@@ -33,7 +33,7 @@ const loginSchema = z
 
 export const Login = () => {
   const { dispatch } = useNavigation();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {

@@ -11,7 +11,7 @@ import { colors } from "@features/ui/theme";
 import { TemplateType } from "../../../types/template";
 
 export const TemplateTraining = ({ template }: { template: TemplateType }) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);
 
@@ -23,7 +23,7 @@ export const TemplateTraining = ({ template }: { template: TemplateType }) => {
 
   return (
     <>
-      <View className="ml-8 flex flex-row p-2 items-center">
+      <View className="ml-8 flex flex-row items-center p-2">
         <View className="mr-2">
           <Icon size="lg" color={colors.primary} name="reorder-three-outline" />
         </View>
