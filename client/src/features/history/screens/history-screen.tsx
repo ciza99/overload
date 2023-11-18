@@ -45,7 +45,7 @@ export const HistoryScreen = () => {
               <View className="flex flex-row justify-between">
                 <Typography weight="bold">{session.name}</Typography>
                 <Typography>
-                  {format(new Date(session.startedAt), "dd.mm.yyyy")}
+                  {format(new Date(session.startedAt), "dd.MM.yyyy")}
                 </Typography>
               </View>
               <View className="flex flex-row justify-between">
