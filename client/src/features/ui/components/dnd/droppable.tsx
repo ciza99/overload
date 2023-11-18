@@ -25,7 +25,7 @@ export const useDroppable = (id: NodeId) => {
     return () => {
       unregister(id, "droppable");
     };
-  }, [id]);
+  }, [id, ref, register, unregister]);
 
   return {
     isOver,

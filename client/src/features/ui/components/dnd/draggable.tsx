@@ -41,7 +41,7 @@ export const useDraggable = (id: NodeId) => {
     return () => {
       unregister(id, "draggable");
     };
-  }, [id]);
+  }, [id, ref, register, unregister]);
 
   const panGesture = useMemo(
     () => panGestureFactory(id),

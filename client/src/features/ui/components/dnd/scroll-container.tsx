@@ -28,7 +28,9 @@ export const ScrollContainer = ({
   const initialScroll = useSharedValue({ x: 0, y: 0 });
 
   useAnimatedReaction(
-    () => {},
+    () => {
+      // noop
+    },
     () => {
       if (!dragging) return;
       containerMeasurement.value = measure(scrollRef);
@@ -40,7 +42,6 @@ export const ScrollContainer = ({
   const handler = useAnimatedScrollHandler(
     (e) => {
       if (dragging) return;
-      console.log("scrolling manually");
       scrollY.value = e.contentOffset.y;
       initialScroll.value = { x: e.contentOffset.x, y: e.contentOffset.y };
     },
@@ -56,21 +57,12 @@ export const ScrollContainer = ({
   );
 
   useAnimatedReaction(
-    () => scrollOffset.value,
-    (props) => {
-      console.log(props);
-    },
-    []
-  );
-
-  useAnimatedReaction(
     () => ({
       absolute: absolute.value,
       containerMeasurement: containerMeasurement.value,
       contentMesurement: contentMesurement.value,
     }),
     ({ absolute, containerMeasurement, contentMesurement }) => {
-      // console.log({ absoluteY, scrollY: scrollY.value, containerMeasurement });
       if (!dragging || !containerMeasurement || !contentMesurement) {
         cancelAnimation(scrollY);
         return;
@@ -78,13 +70,11 @@ export const ScrollContainer = ({
 
       const positionY = absolute.y + scrollY.value;
       if (positionY < scrollY.value + 150) {
-        console.log("scrolling up");
         scrollY.value = withTiming(0, { duration: 1500 });
         return;
       }
 
       if (positionY > scrollY.value + dimensions.height - 150) {
-        console.log("scrolling down");
         scrollY.value = withTiming(
           contentMesurement.height - containerMeasurement.height,
           {
@@ -102,7 +92,6 @@ export const ScrollContainer = ({
   useAnimatedReaction(
     () => scrollY.value,
     (scrollY) => {
-      // console.log("updated scrollY", scrollY);
       scrollTo(scrollRef, 0, scrollY, false);
 
       if (dragging) return;
@@ -112,7 +101,12 @@ export const ScrollContainer = ({
   );
 
   return (
-    <Animated.ScrollView ref={scrollRef} onScroll={handler} {...rest}>
+    <Animated.ScrollView
+      scrollEventThrottle={16}
+      ref={scrollRef}
+      onScroll={handler}
+      {...rest}
+    >
       <View ref={contentRef}>{children}</View>
     </Animated.ScrollView>
   );

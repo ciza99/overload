@@ -8,6 +8,7 @@ import {
   arrayMove,
   DndContext,
   restrictToYAxis,
+  ScrollContainer,
   SortableContext,
   useSortable,
 } from "./dnd";
@@ -52,11 +53,11 @@ export const SortExample = () => {
       }}
     >
       <SortableContext items={items}>
-        <View className="p-4 flex">
+        <ScrollContainer className="flex p-4">
           {items.map((item) => (
             <Item key={item} id={item} />
           ))}
-        </View>
+        </ScrollContainer>
       </SortableContext>
     </DndContext>
   );
@@ -70,7 +71,7 @@ const Item = ({ id }: { id: string }) => {
       <Animated.View
         ref={refs.draggable}
         style={style}
-        className="p-4 bg-base-600 mt-4 w-1/2 rounded-lg"
+        className="mt-4 w-1/2 rounded-lg bg-base-600 p-4"
       >
         <Animated.View ref={refs.droppable}>
           <Typography weight="bold" className="text-center">
