@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { screens } from "@features/core/constants/screens";
 
-import { Session } from "../screens/session";
+import { SessionEditor } from "../screens/session";
 import { Templates } from "../screens/template";
 import { Training } from "../screens/training";
 
@@ -24,7 +24,7 @@ export const TrainingRouter = () => {
       <TrainingStack.Screen
         name={screens.session.key}
         options={{ title: screens.session.title }}
-        component={Session}
+        component={SessionEditor}
       />
     </TrainingStack.Navigator>
   );

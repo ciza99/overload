@@ -1,7 +1,6 @@
 import "react-native-get-random-values";
 
 import { useState } from "react";
-import { SafeAreaView } from "react-native";
 import {
   Poppins_300Light,
   Poppins_400Regular,
@@ -19,6 +18,7 @@ import { httpBatchLink, loggerLink, TRPCLink } from "@trpc/client";
 import { observable } from "@trpc/server/observable";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Router } from "@features/core/components/router";
 import { AppRouter, trpc } from "@features/api/trpc";
@@ -26,6 +26,7 @@ import { Toast } from "@features/ui/components";
 import { Dialog } from "@features/ui/components/dialog";
 import { colors } from "@features/ui/theme";
 import { tokenHandler } from "@features/auth/lib/token-handler";
+import { TrainingBottomSheet } from "@features/training/components/training-bottom-sheet";
 
 const url = __DEV__ ? `http://192.168.68.102:8080` : `http://overload-api.com`;
 
@@ -96,31 +97,32 @@ const App = () => {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <SafeAreaView className="grow bg-base-800">
-          <GestureHandlerRootView className="grow">
-            <NavigationContainer
-              theme={{
-                dark: true,
-                colors: {
-                  background: colors.base[800],
-                  card: colors.base[700],
-                  text: "white",
-                  primary: colors.primary,
-                  border: "rgba(255, 255, 255, 0)",
-                  notification: colors.primary,
-                },
-              }}
-            >
-              <BottomSheetModalProvider>
+        <GestureHandlerRootView className="grow">
+          <SafeAreaProvider>
+            <BottomSheetModalProvider>
+              <NavigationContainer
+                theme={{
+                  dark: true,
+                  colors: {
+                    background: colors.base[800],
+                    card: colors.base[700],
+                    text: "white",
+                    primary: colors.primary,
+                    border: "rgba(255, 255, 255, 0)",
+                    notification: colors.primary,
+                  },
+                }}
+              >
+                <TrainingBottomSheet />
                 <StatusBar style="light" />
                 <Dialog />
                 <PortalProvider>
                   <Router />
                 </PortalProvider>
-              </BottomSheetModalProvider>
-            </NavigationContainer>
-          </GestureHandlerRootView>
-        </SafeAreaView>
+              </NavigationContainer>
+            </BottomSheetModalProvider>
+          </SafeAreaProvider>
+        </GestureHandlerRootView>
         <Toast />
       </QueryClientProvider>
     </trpc.Provider>

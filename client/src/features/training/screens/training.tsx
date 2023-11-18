@@ -27,6 +27,7 @@ import {
 import { colors } from "@features/ui/theme";
 
 import { CreateSessionDialog } from "../components/create-session-dialog";
+import { sessionToFormValues } from "../lib/session-to-form-values";
 import { SessionType } from "../types/training";
 
 type Props = NativeStackScreenProps<NavigationParamMap, "training">;
@@ -34,12 +35,14 @@ type Props = NativeStackScreenProps<NavigationParamMap, "training">;
 export const Training = () => {
   const open = useStore((state) => state.dialog.open);
   const { data: group } = trpc.training.getTemplates.useQuery();
+  const { data: exercises } = trpc.training.getExercises.useQuery();
   const {
     params: { templateId },
   } = useRoute<Props["route"]>();
 
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);
+  const startSession = useStore((state) => state.session.startSession);
 
   const template = useMemo(
     () =>
@@ -55,7 +58,7 @@ export const Training = () => {
     [template]
   );
 
-  if (!template) return null;
+  if (!template || !exercises) return null;
 
   return (
     <>
@@ -67,17 +70,23 @@ export const Training = () => {
           <Icon color="white" name="ellipsis-horizontal-outline" />
         </View>
         <Divider className="my-2" />
-        <Typography weight="bold" className="text-lg mb-2">
+        <Typography weight="bold" className="mb-2 text-lg">
           Sessions:
         </Typography>
         {template.sessions.length === 0 && (
           <Paper className="p-3">
-            <Typography className="text-lg text-center text-base-300">
+            <Typography className="text-center text-lg text-base-300">
               No sessions yet
             </Typography>
           </Paper>
         )}
-        <DndContext modifiers={[restrictToYAxis]}>
+        <DndContext
+          modifiers={[restrictToYAxis]}
+          onDragEnd={({ active, over }) => {
+            if (!over) return;
+            console.log({ active, over });
+          }}
+        >
           <SortableContext items={items}>
             {template.sessions.map((session) => (
               <TrainingSession
@@ -102,7 +111,7 @@ export const Training = () => {
         >
           Add session
         </Button>
-        <Typography className="text-center pt-2">
+        <Typography className="pt-2 text-center">
           The training pattern will repeat every {template.sessions.length} days
         </Typography>
       </View>
@@ -126,7 +135,12 @@ export const Training = () => {
                     <Icon color={colors.primary} name="caret-forward-outline" />
                   ),
                   onPress: () => {
-                    // TODO
+                    startSession({
+                      startedAt: new Date(),
+                      templateId: template.id,
+                      initialFormValues: sessionToFormValues(data, exercises),
+                    });
+                    bottomSheet.current?.close();
                   },
                 },
                 {
@@ -158,11 +172,11 @@ const TrainingSession = ({
     <GestureDetector gesture={panGesture}>
       <Animated.View ref={refs.droppable} style={style}>
         <Animated.View ref={refs.draggable}>
-          <Paper className="p-2 flex flex-row items-center mb-2">
+          <Paper className="mb-2 flex flex-row items-center p-2">
             <View className="mr-2">
               <Icon color="white" name="reorder-three-outline" />
             </View>
-            <Typography className="text-lg mr-auto">{session.name}</Typography>
+            <Typography className="mr-auto text-lg">{session.name}</Typography>
             <Icon
               color="white"
               onPress={() => bottomSheetRef.current?.present(session)}

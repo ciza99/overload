@@ -1,17 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { Keyboard, Pressable, View } from "react-native";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 import { useForm } from "react-hook-form";
 
 import { useDebounce } from "@features/core/hooks/use-debounce";
 import { trpc } from "@features/api/trpc";
-import {
-  BottomSheetModalType,
-  Divider,
-  Icon,
-  TextField,
-  Typography,
-} from "@features/ui/components";
+import { Divider, Icon, TextField, Typography } from "@features/ui/components";
 import { colors } from "@features/ui/theme";
 
 import { ExerciseType } from "../types/training";
@@ -39,9 +33,7 @@ export const AddExerciseBottomSheetContent = ({
       snapToIndex(1);
     });
 
-    return () => {
-      Keyboard.removeSubscription(subscription);
-    };
+    return () => subscription.remove();
   }, [snapToIndex]);
 
   return (
@@ -55,7 +47,7 @@ export const AddExerciseBottomSheetContent = ({
           rightContent={<Icon name="search-outline" />}
         />
         {filteredExercises?.map((exercise) => (
-          <>
+          <Fragment key={exercise.id}>
             <Pressable onPress={() => onAdd(exercise)}>
               <View className="flex flex-row items-center">
                 <View className="mr-auto">
@@ -74,7 +66,7 @@ export const AddExerciseBottomSheetContent = ({
               </View>
             </Pressable>
             <Divider className="my-2" />
-          </>
+          </Fragment>
         ))}
       </View>
     </BottomSheetScrollView>

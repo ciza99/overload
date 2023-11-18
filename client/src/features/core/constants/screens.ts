@@ -54,6 +54,10 @@ export const screens: ScreensMap = {
     key: "history",
     title: "History",
   },
+  historyRoutes: {
+    key: "historyRoutes",
+    title: "",
+  },
   settings: {
     key: "settings",
     title: "Settings",

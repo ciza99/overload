@@ -3,8 +3,8 @@ import {
   createTemplateGroupSchema,
   createTemplateSchema,
   createTrainingSchema,
-  updateSessionSchema,
-  UpdateSessionSchema,
+  sessionLogSchema,
+  sessionSchema,
 } from "./training-schema";
 import z from "zod";
 
@@ -54,7 +54,7 @@ export const trainingProducersFactory = ({
     }),
 
   updateSession: authProcedure
-    .input(updateSessionSchema)
+    .input(sessionSchema)
     .mutation(async ({ input }) => {
       return await trainingService.updateSession(input);
     }),
@@ -65,6 +65,16 @@ export const trainingProducersFactory = ({
 
   getExercises: authProcedure.query(async () => {
     return await trainingService.getExercises();
+  }),
+
+  logSession: authProcedure
+    .input(sessionLogSchema)
+    .mutation(async ({ ctx, input }) => {
+      return await trainingService.logSession(ctx.user, input);
+    }),
+
+  listSessionLogs: authProcedure.query(async ({ ctx }) => {
+    return await trainingService.listSessionLogs(ctx.user);
   }),
 
   dragSwapTemplateGroups: authProcedure

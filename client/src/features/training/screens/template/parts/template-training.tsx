@@ -29,7 +29,7 @@ export const TemplateTraining = ({ template }: { template: TemplateType }) => {
         </View>
         <Typography
           className="mr-auto text-lg"
-          onPress={() => bottomSheet.current?.present()}
+          onPress={() => navigate("training", { templateId: template.id })}
         >
           {template.name}
         </Typography>

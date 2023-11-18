@@ -1,4 +1,4 @@
-import { RouterOutputs } from "@features/api/trpc";
+import { RouterInputs, RouterOutputs } from "@features/api/trpc";
 
 import { TemplateType } from "./template";
 
@@ -10,6 +10,7 @@ export type ExerciseType = RouterOutputs["training"]["getExercises"][number];
 export type SetFormType = {
   reps: string;
   weight: string;
+  completed: boolean;
 };
 export type ExerciseFormType = {
   exerciseId: number;
@@ -21,3 +22,5 @@ export type SessionFormType = {
   exercises: ExerciseFormType[];
   name: string;
 };
+
+export type SessionLogInputType = RouterInputs["training"]["logSession"];

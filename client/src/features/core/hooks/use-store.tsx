@@ -3,6 +3,7 @@ import { v4 } from "uuid";
 import { create } from "zustand";
 
 import { User } from "@features/auth/types/user";
+import { SessionFormType } from "@features/training/types/training";
 
 type AuthSlice = {
   user?: User;
@@ -43,10 +44,23 @@ type PopoverSlice = {
   open: <T extends object = object>(props: Popover<T>) => void;
 };
 
+type SessionState = {
+  startedAt: Date;
+  templateId: number;
+  initialFormValues: SessionFormType;
+};
+
+type SessionSlice = SessionState & {
+  active: boolean;
+  startSession: (sessionData: SessionState) => void;
+  stopSession: () => void;
+};
+
 type Store = {
   auth: AuthSlice;
   dialog: DialogSlice;
   popover: PopoverSlice;
+  session: SessionSlice;
 };
 
 export const useStore = create<Store>((set) => ({
@@ -78,5 +92,17 @@ export const useStore = create<Store>((set) => ({
       set((state) => ({ popover: { ...state.popover, data: popover } })),
     close: () =>
       set((state) => ({ popover: { ...state.popover, data: undefined } })),
+  },
+  session: {
+    active: false,
+    startedAt: new Date(),
+    templateId: 0,
+    initialFormValues: { id: 0, name: "New session", exercises: [] },
+    startSession: (sessionData) =>
+      set((state) => ({
+        session: { ...state.session, ...sessionData, active: true },
+      })),
+    stopSession: () =>
+      set((state) => ({ session: { ...state.session, active: false } })),
   },
 }));

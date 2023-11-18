@@ -1,3 +1,4 @@
+import { isBefore, isPast } from "date-fns";
 import z from "zod";
 
 export type CreateTemplateGroupSchema = z.infer<
@@ -31,8 +32,8 @@ export const createTrainingSchema = z.object({
 
 export const getTemplatesSchema = z.object({});
 
-export type UpdateSessionSchema = z.infer<typeof updateSessionSchema>;
-export const updateSessionSchema = z.object({
+export type SessionSchema = z.infer<typeof sessionSchema>;
+export const sessionSchema = z.object({
   id: z.number(),
   name: z.string(),
   exercises: z.array(
@@ -47,3 +48,17 @@ export const updateSessionSchema = z.object({
     })
   ),
 });
+
+export type SessionLogSchema = z.infer<typeof sessionLogSchema>;
+export const sessionLogSchema = sessionSchema
+  .extend({
+    startedAt: z.coerce
+      .date()
+      .refine((date) => isPast(date), { message: "Date must be in the past" }),
+    endedAt: z.coerce
+      .date()
+      .refine((date) => isPast(date), { message: "Date must be in the past" }),
+  })
+  .refine(({ startedAt, endedAt }) => isBefore(startedAt, endedAt), {
+    message: "Ended at must be after started at",
+  });

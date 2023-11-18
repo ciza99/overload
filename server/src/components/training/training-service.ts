@@ -4,7 +4,8 @@ import {
   CreateTemplateSchema,
   CreateTemplateGroupSchema,
   CreateTrainingSchema,
-  UpdateSessionSchema,
+  SessionSchema,
+  SessionLogSchema,
 } from "./training-schema";
 
 export type TrainingService = ReturnType<typeof trainingServiceFactory>;
@@ -77,7 +78,7 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     return await db.exercise.findMany({ include: { bodyParts: true } });
   };
 
-  const updateSession = async (session: UpdateSessionSchema) => {
+  const updateSession = async (session: SessionSchema) => {
     const deleteExercises = db.sessionExercise.deleteMany({
       where: { sessionId: session.id },
     });
@@ -104,6 +105,48 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     return updatedSession;
   };
 
+  const logSession = async (user: User, session: SessionLogSchema) => {
+    return await db.sessionLog.create({
+      data: {
+        userId: user.id,
+        sessionId: session.id,
+        startedAt: session.startedAt,
+        endedAt: session.endedAt,
+        name: session.name,
+        exercises: {
+          create: session.exercises.map(({ exerciseId, sets }) => ({
+            exerciseId,
+            sets: {
+              create: sets.map(({ weight, reps }) => ({ weight, reps })),
+            },
+          })),
+        },
+      },
+    });
+  };
+
+  const listSessionLogs = async (user: User) => {
+    return await db.sessionLog.findMany({
+      where: { userId: user.id },
+      orderBy: { startedAt: "desc" },
+      include: {
+        exercises: {
+          include: {
+            sets: {
+              include: {
+                sessionExercise: {
+                  include: {
+                    exercise: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  };
+
   return {
     createTemplateGroup,
     deleteTemplateGroup,
@@ -114,5 +157,7 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     getTemplates,
     getExercises,
     updateSession,
+    logSession,
+    listSessionLogs,
   };
 };

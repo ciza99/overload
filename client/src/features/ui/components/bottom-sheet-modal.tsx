@@ -11,8 +11,9 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const BackdropComponent = ({
+export const BackdropComponent = ({
   animatedIndex,
   style,
 }: BottomSheetBackdropProps) => {
@@ -27,8 +28,9 @@ const BackdropComponent = ({
 
   return <Animated.View className="bg-black" style={[style, animatedStyle]} />;
 };
-const BackgroundComponent = ({ style }: BottomSheetBackgroundProps) => (
-  <View className="bg-base-700 rounded-tl-2xl rounded-tr-2xl" style={style} />
+
+export const BackgroundComponent = ({ style }: BottomSheetBackgroundProps) => (
+  <View className="rounded-tl-2xl rounded-tr-2xl bg-base-700" style={style} />
 );
 
 export type BottomSheetModalType = BottomSheetModalBase;
@@ -46,10 +48,17 @@ export const BottomSheetModal = forwardRef<
     },
     ref
   ) => {
+    const { top, bottom } = useSafeAreaInsets();
+
     return (
       <BottomSheetModalBase
         {...props}
         ref={ref}
+        containerStyle={{
+          marginTop: top,
+          zIndex: 10,
+          paddingBottom: bottom,
+        }}
         backdropComponent={backdropComponent}
         backgroundComponent={backgroundComponent}
         handleIndicatorStyle={handleIndicatorStyle}

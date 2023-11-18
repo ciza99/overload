@@ -10,10 +10,12 @@ import { SortExample } from "@features/ui/components/sort-example";
 import { tokenHandler } from "@features/auth/lib/token-handler";
 import { Login } from "@features/auth/screens/login";
 import { SignUp } from "@features/auth/screens/sign-up";
+import { HistoryRouter } from "@features/history/components/history-router";
 import { ProfileRouter } from "@features/profile/components/profile-router";
 
 import { TrainingRouter } from "../../training/components/training-router";
 import { SessionType } from "../../training/types/training";
+import { TabBar } from "./tab-bar";
 
 export type NavigationParamMap = {
   login: undefined;
@@ -31,6 +33,7 @@ export type NavigationParamMap = {
   session: { session: SessionType };
 
   history: undefined;
+  historyRoutes: undefined;
 
   statistics: undefined;
 };
@@ -54,8 +57,8 @@ export const Router = () => {
 
   if (isLoading)
     return (
-      <View className="grow justify-center items-center bg-base-800">
-        <Spinner className="w-14 h-14 border-8" />
+      <View className="grow items-center justify-center bg-base-800">
+        <Spinner className="h-14 w-14 border-8" />
       </View>
     );
 
@@ -97,6 +100,7 @@ const ProtectedRoutes = () => {
     <Tab.Navigator
       initialRouteName={screens.profile.key}
       screenOptions={{ tabBarShowLabel: false }}
+      tabBar={(props) => <TabBar {...props} />}
     >
       <Tab.Screen
         options={{
@@ -120,13 +124,13 @@ const ProtectedRoutes = () => {
       />
       <Tab.Screen
         options={{
-          title: screens.history.title,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Icon size="lg" name="reader-outline" color={color} />
           ),
         }}
-        name={screens.history.key}
-        component={SortExample}
+        name={screens.historyRoutes.key}
+        component={HistoryRouter}
       />
       <Tab.Screen
         options={{

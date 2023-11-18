@@ -55,7 +55,7 @@ export const Exercise = ({
     >
       <Animated.View ref={refs.draggable}>
         <GestureDetector gesture={panGesture.enabled(reordering)}>
-          <View className="flex flex-row items-center mb-2">
+          <View className="mb-2 flex flex-row items-center">
             {reordering && (
               <Animated.View
                 className="mr-2"
@@ -85,7 +85,7 @@ export const Exercise = ({
         </GestureDetector>
         {!reordering && (
           <Animated.View entering={FadeIn} exiting={FadeOut}>
-            <View className="flex flex-row mb-4">
+            <View className="mb-4 flex flex-row">
               <View className="flex-[1]">
                 <Typography weight="bold" className="text-center">
                   Set
@@ -108,8 +108,8 @@ export const Exercise = ({
               </View>
             </View>
             {!fields.length && (
-              <View className="p-2 bg-base-700 rounded-lg mb-4">
-                <Typography weight="bold" className="text-base-300 text-center">
+              <View className="mb-4 rounded-lg bg-base-700 p-2">
+                <Typography weight="bold" className="text-center text-base-300">
                   No sets
                 </Typography>
               </View>
@@ -130,7 +130,9 @@ export const Exercise = ({
                 variant="primary"
                 beforeIcon={<Icon color="white" name="add-outline" />}
                 className="bg-base-600"
-                onPress={() => append({ reps: "", weight: "" })}
+                onPress={() =>
+                  append({ reps: "", weight: "", completed: false })
+                }
               >
                 Add set
               </Button>

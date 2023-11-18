@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
@@ -10,7 +10,7 @@ import Animated, {
   SlideOutLeft,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
 } from "react-native-reanimated";
 
 import { useIsFirstRender } from "@features/core/hooks/use-is-first-render";
@@ -36,22 +36,30 @@ export const Set = ({
   setsLength: number;
   removeExercise: () => void;
 }) => {
-  const { control } = useFormContext<SessionFormType>();
+  const { control, setValue } = useFormContext<SessionFormType>();
   const isFirstRender = useIsFirstRender();
   const animateEntrance = !isFirstRender || setsLength !== 1;
   // TODO: remove on swipe left and check on swipe right if in training
+  const completed = useWatch({
+    name: `exercises.${exerciseIndex}.sets.${setIndex}.completed`,
+    control,
+  });
+
+  const toggleCompleted = () =>
+    setValue(
+      `exercises.${exerciseIndex}.sets.${setIndex}.completed`,
+      !completed
+    );
+
   const tx = useSharedValue(0);
   const panGesture = Gesture.Pan()
-    .onStart(() => {
-      console.log("drag start");
-    })
     .onUpdate(({ translationX }) => {
       tx.value = translationX;
     })
     .onEnd(({ translationX }) => {
-      tx.value = withSpring(0);
+      tx.value = withTiming(0);
       if (translationX > swipeThreshold) {
-        //TODO
+        runOnJS(toggleCompleted)();
       }
       if (translationX < -swipeThreshold) {
         runOnJS(setsLength === 1 ? removeExercise : removeSelf)();
@@ -63,20 +71,21 @@ export const Set = ({
       transform: [{ translateX: tx.value }],
     };
   });
+
   const backgroundStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
         tx.value,
         [-swipeThreshold, 0, swipeThreshold],
-        [0.5, 0, 0.5]
+        [0.5, completed ? 0.5 : 0, 0.5]
       ),
       backgroundColor: interpolateColor(
         tx.value,
         [-swipeThreshold, 0, swipeThreshold],
-        [colors.danger, colors.base[700], colors.primary]
+        [colors.danger, colors.primary, colors.primary]
       ),
     };
-  });
+  }, [completed]);
 
   return (
     <Animated.View
@@ -88,10 +97,10 @@ export const Set = ({
         <Animated.View className="relative mb-2">
           <Animated.View
             style={backgroundStyle}
-            className="absolute -bottom-1 -left-full -right-full -top-1 bg-danger"
+            className="absolute -bottom-1 -left-full -right-full -top-1"
           />
           <Animated.View
-            className=" flex flex-row items-center justify-stretch"
+            className=" justify-stretch flex flex-row items-center"
             style={rowStyle}
           >
             <View className="flex-[1] rounded-lg">
