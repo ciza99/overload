@@ -14,6 +14,7 @@ import {
   Divider,
   Icon,
   Paper,
+  TextButton,
   Typography,
 } from "@features/ui/components";
 import { BottomSheetActions } from "@features/ui/components/bottom-sheet-actions";
@@ -166,6 +167,7 @@ const TrainingSession = ({
   session: SessionType;
   bottomSheetRef: RefObject<BottomSheetModalType>;
 }) => {
+  const { navigate } = useNavigation();
   const { refs, style, panGesture } = useSortable(session.id);
 
   return (
@@ -176,7 +178,12 @@ const TrainingSession = ({
             <View className="mr-2">
               <Icon color="white" name="reorder-three-outline" />
             </View>
-            <Typography className="mr-auto text-lg">{session.name}</Typography>
+            <TextButton
+              className="mr-auto text-lg text-white"
+              onPress={() => navigate("session", { session })}
+            >
+              {session.name}
+            </TextButton>
             <Icon
               color="white"
               onPress={() => bottomSheetRef.current?.present(session)}

@@ -200,23 +200,14 @@ export const DndContext = ({
     });
   }, [dragging]);
 
-  // useAnimatedReaction(
-  //   () => {},
-  //   () => {
-  //     if (!dragging) {
-  //       runOnJS(reset)();
-  //     }
-  //   },
-  //   [dragging]
-  // );
-
   const panGestureFactory = useCallback(
     (id: NodeId) =>
       Gesture.Pan()
-        .onBegin(() => {
+        .activateAfterLongPress(250)
+        .onStart(() => {
+          runOnJS(impactAsync)(ImpactFeedbackStyle.Light);
           runOnJS(setDragging)(true);
           active.value = id;
-          runOnJS(impactAsync)(ImpactFeedbackStyle.Light);
         })
         .onUpdate((event) => {
           const { tx: mTx, ty: mTy } = modifiers.value.reduce(

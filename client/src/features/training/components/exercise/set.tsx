@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  Extrapolation,
   interpolate,
   interpolateColor,
   Layout,
@@ -53,6 +54,7 @@ export const Set = ({
 
   const tx = useSharedValue(0);
   const panGesture = Gesture.Pan()
+    .activeOffsetX([-10, 10])
     .onUpdate(({ translationX }) => {
       tx.value = translationX;
     })
@@ -77,7 +79,8 @@ export const Set = ({
       opacity: interpolate(
         tx.value,
         [-swipeThreshold, 0, swipeThreshold],
-        [0.5, completed ? 0.5 : 0, 0.5]
+        [0.5, completed ? 0.5 : 0, 0.5],
+        Extrapolation.CLAMP
       ),
       backgroundColor: interpolateColor(
         tx.value,
