@@ -22,7 +22,7 @@ export const CreateTemplateDialog = ({
   });
   const { mutate } = trpc.training.createTemplate.useMutation({
     onSuccess: () => {
-      utils.training.getTemplates.invalidate();
+      utils.training.getGroupedTemplates.invalidate();
     },
     onSettled: () => close(),
   });

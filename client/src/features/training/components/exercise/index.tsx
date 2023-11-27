@@ -53,7 +53,7 @@ export const Exercise = ({
       ref={refs.droppable}
       style={style}
     >
-      <Animated.View ref={refs.draggable}>
+      <Animated.View ref={refs.draggable} className="px-4">
         <GestureDetector gesture={panGesture.enabled(reordering)}>
           <View className="mb-2 flex flex-row items-center">
             {reordering && (

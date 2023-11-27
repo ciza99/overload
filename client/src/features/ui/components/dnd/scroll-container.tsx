@@ -16,6 +16,7 @@ import { useDndContext } from "./DndContext";
 
 export const ScrollContainer = ({
   children,
+  className,
   ...rest
 }: Omit<ScrollViewProps, "onScroll" | "ref"> & { children: ReactNode }) => {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -107,7 +108,9 @@ export const ScrollContainer = ({
       onScroll={handler}
       {...rest}
     >
-      <View ref={contentRef}>{children}</View>
+      <View ref={contentRef} className={className}>
+        {children}
+      </View>
     </Animated.ScrollView>
   );
 };

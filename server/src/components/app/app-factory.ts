@@ -16,6 +16,9 @@ import { userProceduresFactory } from "components/user/user-procedures";
 import { trainingRouterFactory } from "components/training/training-router";
 import { trainingProducersFactory } from "components/training/training-procedures";
 import { trainingServiceFactory } from "components/training/training-service";
+import { routineRouterFactory } from "components/routine/routine-router";
+import { routineProceduresFactory } from "components/routine/routine-procedures";
+import { routineServiceFactory } from "components/routine/routine-service";
 
 type AppFactoryProps = {
   config: AppConfig;
@@ -28,6 +31,7 @@ export const appFactory = ({ config }: AppFactoryProps) => {
   const userService = userServiceFactory({ db });
   const sessionService = sessionServiceFactory({ db, config });
   const trainingService = trainingServiceFactory({ db });
+  const routineService = routineServiceFactory({ db });
 
   const userProducers = userProceduresFactory({ userService });
   const sessionProcedures = sessionProceduresFactory({
@@ -36,12 +40,19 @@ export const appFactory = ({ config }: AppFactoryProps) => {
     userService,
   });
   const trainingProcedures = trainingProducersFactory({ trainingService });
+  const routineProcedures = routineProceduresFactory({ routineService });
 
   const userRouter = userRouterFactory({ userProcedures: userProducers });
   const sessionRouter = sessionRouterFactory({ sessionProcedures });
   const trainingRouter = trainingRouterFactory({ trainingProcedures });
+  const routineRouter = routineRouterFactory({ routineProcedures });
 
-  const router = routerFactory({ userRouter, sessionRouter, trainingRouter });
+  const router = routerFactory({
+    userRouter,
+    sessionRouter,
+    trainingRouter,
+    routineRouter,
+  });
 
   const trpc = createExpressMiddleware({
     router,

@@ -26,7 +26,7 @@ import { TemplateGroup } from "./parts/template-group";
 
 export const Templates = () => {
   const utils = trpc.useUtils();
-  const { data: templateGroups } = trpc.training.getTemplates.useQuery();
+  const { data: templateGroups } = trpc.training.getGroupedTemplates.useQuery();
   const { control } = useForm({});
   const open = useStore((state) => state.dialog.open);
   const groupBottomSheetActions = useRef<BottomSheetModalType>(null);
@@ -34,7 +34,7 @@ export const Templates = () => {
   const { mutate: deleteTemplateGroup } =
     trpc.training.deleteTemplateGroup.useMutation({
       onSuccess: () => {
-        utils.training.getTemplates.invalidate();
+        utils.training.getGroupedTemplates.invalidate();
       },
       onError: () => {
         toast.show({

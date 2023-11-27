@@ -1,4 +1,8 @@
-import { TouchableWithoutFeedback, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -21,26 +25,32 @@ export const Dialog = () => {
         exiting={FadeOut}
       >
         <TouchableWithoutFeedback onPressIn={() => close(dialog.id)}>
-          <View className="px-4 py-16 bg-black/50 flex-1 justify-center items-center">
+          <View className="flex-1 items-center justify-center bg-black/50 px-4 py-16">
             <TouchableWithoutFeedback>
-              <Animated.View
-                entering={ZoomIn}
-                exiting={ZoomOut}
+              <KeyboardAvoidingView
+                behavior="padding"
+                keyboardVerticalOffset={100}
                 className="w-full"
               >
-                <Paper className="p-4 w-full rounded-lg">
-                  {dialog.title && (
-                    <Typography weight="bold" className="pb-4 text-base-200">
-                      {dialog.title}
-                    </Typography>
-                  )}
-                  <dialog.Component
-                    {...dialog.props}
-                    id={dialog.id}
-                    close={() => close(dialog.id)}
-                  />
-                </Paper>
-              </Animated.View>
+                <Animated.View
+                  entering={ZoomIn}
+                  exiting={ZoomOut}
+                  className="w-full"
+                >
+                  <Paper className="w-full rounded-lg p-4">
+                    {dialog.title && (
+                      <Typography weight="bold" className="pb-4 text-base-200">
+                        {dialog.title}
+                      </Typography>
+                    )}
+                    <dialog.Component
+                      {...dialog.props}
+                      id={dialog.id}
+                      close={() => close(dialog.id)}
+                    />
+                  </Paper>
+                </Animated.View>
+              </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>

@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef } from "react";
-import { View } from "react-native";
+import { KeyboardAvoidingView, View } from "react-native";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { FormProvider, useForm } from "react-hook-form";
 import { SharedValue } from "react-native-reanimated";
@@ -65,6 +65,7 @@ export const TrainingBottomSheet: FC<{
         paddingBottom: bottom,
       }}
       snapPoints={[snapPointOffset + 25, "100%"]}
+      index={-1}
     >
       <FormProvider {...methods}>
         <BottomSheetScrollView stickyHeaderIndices={[0]}>
@@ -83,9 +84,9 @@ export const TrainingBottomSheet: FC<{
               Finish
             </Button>
           </View>
-          <View className=" p-4">
-            <SessionFormExercises />
-          </View>
+          <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+            <SessionFormExercises className="overflow-visible py-4" />
+          </KeyboardAvoidingView>
         </BottomSheetScrollView>
       </FormProvider>
     </BottomSheet>

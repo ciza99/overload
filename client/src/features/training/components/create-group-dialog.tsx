@@ -19,7 +19,7 @@ export const CreateGroupDialog = ({ close }: DialogProps) => {
   });
   const { mutate } = trpc.training.createTemplateGroup.useMutation({
     onSuccess: () => {
-      utils.training.getTemplates.invalidate();
+      utils.training.getGroupedTemplates.invalidate();
     },
     onSettled: () => close(),
   });

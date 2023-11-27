@@ -95,9 +95,10 @@ export const Set = ({
       entering={animateEntrance ? SlideInLeft : undefined}
       exiting={SlideOutLeft}
       layout={Layout}
+      className="overflow-visible"
     >
       <GestureDetector gesture={panGesture}>
-        <Animated.View className="relative mb-2">
+        <Animated.View className="relative mb-2 overflow-visible">
           <Animated.View
             style={backgroundStyle}
             className="absolute -bottom-1 -left-full -right-full -top-1"

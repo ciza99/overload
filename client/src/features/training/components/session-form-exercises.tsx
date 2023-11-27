@@ -1,6 +1,6 @@
 import { FC, useMemo, useRef, useState } from "react";
-import { View } from "react-native";
-import clsx from "clsx";
+import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Animated, { Layout } from "react-native-reanimated";
 
@@ -25,9 +25,10 @@ import { SessionFormType } from "../types/training";
 import { AddExerciseBottomSheetContent } from "./add-exercise-bottom-sheet";
 import { Exercise } from "./exercise";
 
-export const SessionFormExercises: FC<{ className?: string }> = ({
-  className,
-}) => {
+export const SessionFormExercises: FC<{
+  className?: string;
+  contentContainerStyle?: StyleProp<ViewStyle>;
+}> = ({ className, contentContainerStyle }) => {
   const [reordering, setReordering] = useState(false);
   const { watch, control } = useFormContext<SessionFormType>();
   const { fields, append, remove, replace } = useFieldArray({
@@ -56,20 +57,25 @@ export const SessionFormExercises: FC<{ className?: string }> = ({
           replace(arrayMove(fields, activeIndex, overIndex));
         }}
       >
-        <ScrollContainer className={clsx("p-4", className)}>
-          <Typography weight="bold" className="mb-4 text-xl">
-            {name}
-          </Typography>
-          {!fields.length && (
-            <View className="mb-4 rounded-lg bg-base-700 p-2">
-              <Typography
-                weight="bold"
-                className="text-center text-lg text-base-300"
-              >
-                No exercises
-              </Typography>
-            </View>
-          )}
+        <ScrollContainer
+          className={className}
+          contentContainerStyle={contentContainerStyle}
+        >
+          <View className={"px-4"}>
+            <Typography weight="bold" className="mb-4 text-xl">
+              {name}
+            </Typography>
+            {!fields.length && (
+              <View className="mb-4 rounded-lg bg-base-700 p-2">
+                <Typography
+                  weight="bold"
+                  className="text-center text-lg text-base-300"
+                >
+                  No exercises
+                </Typography>
+              </View>
+            )}
+          </View>
           <SortableContext items={sortableItems}>
             <ScrollContainer>
               {fields.map((sessionExercise, exerciseIndex) => (
@@ -85,7 +91,7 @@ export const SessionFormExercises: FC<{ className?: string }> = ({
               ))}
             </ScrollContainer>
           </SortableContext>
-          <Animated.View layout={Layout}>
+          <Animated.View layout={Layout} className="px-4">
             {reordering && (
               <Button
                 variant="primary"

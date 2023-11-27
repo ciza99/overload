@@ -25,10 +25,17 @@ const trainingExerciseSchema = z.object({
 });
 
 export type CreateTrainingSchema = z.infer<typeof createTrainingSchema>;
-export const createTrainingSchema = z.object({
-  name: z.string().min(4).max(20),
-  templateId: z.number(),
-});
+export const createTrainingSchema = z.discriminatedUnion("isRest", [
+  z.object({
+    isRest: z.literal(false),
+    name: z.string().min(4).max(20),
+    templateId: z.number(),
+  }),
+  z.object({
+    isRest: z.literal(true),
+    templateId: z.number(),
+  }),
+]);
 
 export const getTemplatesSchema = z.object({});
 
@@ -62,3 +69,13 @@ export const sessionLogSchema = sessionSchema
   .refine(({ startedAt, endedAt }) => isBefore(startedAt, endedAt), {
     message: "Ended at must be after started at",
   });
+
+export type HistoryFilterSchema = z.infer<typeof historyFilterSchema>;
+export const historyFilterSchema = z
+  .object({
+    lt: z.coerce.date().optional(),
+    lte: z.coerce.date().optional(),
+    gt: z.coerce.date().optional(),
+    gte: z.coerce.date().optional(),
+  })
+  .optional();

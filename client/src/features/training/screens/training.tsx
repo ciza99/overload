@@ -2,6 +2,7 @@ import { RefObject, useMemo, useRef } from "react";
 import { View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import clsx from "clsx";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
@@ -15,13 +16,16 @@ import {
   Icon,
   Paper,
   TextButton,
+  toast,
   Typography,
 } from "@features/ui/components";
 import { BottomSheetActions } from "@features/ui/components/bottom-sheet-actions";
 import { BottomSheetModalType } from "@features/ui/components/bottom-sheet-modal";
 import {
+  arrayMove,
   DndContext,
   restrictToYAxis,
+  ScrollContainer,
   SortableContext,
   useSortable,
 } from "@features/ui/components/dnd";
@@ -35,24 +39,45 @@ type Props = NativeStackScreenProps<NavigationParamMap, "training">;
 
 export const Training = () => {
   const open = useStore((state) => state.dialog.open);
-  const { data: group } = trpc.training.getTemplates.useQuery();
+  const utils = trpc.useUtils();
   const { data: exercises } = trpc.training.getExercises.useQuery();
   const {
     params: { templateId },
   } = useRoute<Props["route"]>();
+  const { data: template } = trpc.training.getTemplate.useQuery({
+    id: templateId,
+  });
 
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);
   const startSession = useStore((state) => state.session.startSession);
+  const { mutateAsync: swapSessions } =
+    trpc.training.dragSwapSession.useMutation({
+      onSuccess: (_, { fromId, toId }) => {
+        if (!template) return;
 
-  const template = useMemo(
-    () =>
-      group
-        ?.map((g) => g.templates)
-        .flat()
-        .find((t) => t.id === templateId),
-    [group, templateId]
-  );
+        const fromIndex = template.sessions.findIndex(
+          ({ id }) => id === fromId
+        );
+        const toIndex = template.sessions.findIndex(({ id }) => id === toId);
+        const newSessions = arrayMove(template.sessions, fromIndex, toIndex);
+
+        utils.training.getTemplate.setData(
+          { id: templateId },
+          { ...template, sessions: newSessions }
+        );
+        utils.training.getTemplate.invalidate();
+      },
+    });
+
+  const { mutate: deleteSession } = trpc.training.deleteSession.useMutation({
+    onSuccess: () => {
+      utils.training.getTemplate.invalidate({ id: templateId });
+    },
+    onError: () => {
+      toast.show({ type: "error", text1: "Something went wrong" });
+    },
+  });
 
   const items = useMemo(
     () => template?.sessions.map(({ id }) => id) ?? [],
@@ -63,31 +88,34 @@ export const Training = () => {
 
   return (
     <>
-      <View className="p-4">
-        <View className="flex flex-row items-center justify-between">
-          <Typography weight="bold" className="text-2xl">
-            {template.name}
-          </Typography>
-          <Icon color="white" name="ellipsis-horizontal-outline" />
-        </View>
-        <Divider className="my-2" />
-        <Typography weight="bold" className="mb-2 text-lg">
-          Sessions:
-        </Typography>
-        {template.sessions.length === 0 && (
-          <Paper className="p-3">
-            <Typography className="text-center text-lg text-base-300">
-              No sessions yet
+      <DndContext
+        modifiers={[restrictToYAxis]}
+        onDragEnd={async ({ active, over }) => {
+          if (!over || active.id === over.id) return;
+
+          await swapSessions({
+            fromId: active.id as number,
+            toId: over.id as number,
+          });
+        }}
+      >
+        <ScrollContainer className="p-4 pb-24">
+          <View className="mb-4 flex flex-row items-center justify-between">
+            <Typography weight="bold" className="text-2xl">
+              {template.name}
             </Typography>
-          </Paper>
-        )}
-        <DndContext
-          modifiers={[restrictToYAxis]}
-          onDragEnd={({ active, over }) => {
-            if (!over) return;
-            console.log({ active, over });
-          }}
-        >
+            <Icon color="white" name="ellipsis-horizontal-outline" />
+          </View>
+          <Typography weight="bold" className="mb-2 text-lg">
+            Sessions:
+          </Typography>
+          {template.sessions.length === 0 && (
+            <Paper className="p-3">
+              <Typography className="text-center text-lg text-base-300">
+                No sessions yet
+              </Typography>
+            </Paper>
+          )}
           <SortableContext items={items}>
             {template.sessions.map((session) => (
               <TrainingSession
@@ -97,57 +125,71 @@ export const Training = () => {
               />
             ))}
           </SortableContext>
-        </DndContext>
-        <Button
-          className="mt-2"
-          variant="outlined"
-          beforeIcon={<Icon color="white" name="add-outline" />}
-          onPress={() =>
-            open({
-              Component: CreateSessionDialog,
-              title: "Create session",
-              props: { templateId: template.id },
-            })
-          }
-        >
-          Add session
-        </Button>
-        <Typography className="pt-2 text-center">
-          The training pattern will repeat every {template.sessions.length} days
-        </Typography>
-      </View>
+          <Button
+            className="mt-2"
+            variant="outlined"
+            beforeIcon={<Icon color="white" name="add-outline" />}
+            onPress={() =>
+              open({
+                Component: CreateSessionDialog,
+                title: "Create session",
+                props: { templateId: template.id },
+              })
+            }
+          >
+            Add session
+          </Button>
+          <Typography className="pt-2 text-center">
+            The training pattern will repeat every {template.sessions.length}{" "}
+            days
+          </Typography>
+        </ScrollContainer>
+      </DndContext>
 
       <BottomSheetModal ref={bottomSheet} snapPoints={["50%"]}>
         {({ data }: { data: SessionType }) => {
           return (
             <BottomSheetActions
               actions={[
-                {
-                  label: "Edit",
-                  icon: <Icon color={colors.primary} name="create-outline" />,
-                  onPress: () => {
-                    navigate("session", { session: { ...data } });
-                    bottomSheet.current?.close();
-                  },
-                },
-                {
-                  label: "Start session",
-                  icon: (
-                    <Icon color={colors.primary} name="caret-forward-outline" />
-                  ),
-                  onPress: () => {
-                    startSession({
-                      startedAt: new Date(),
-                      templateId: template.id,
-                      initialFormValues: sessionToFormValues(data, exercises),
-                    });
-                    bottomSheet.current?.close();
-                  },
-                },
+                ...(!data.isRest
+                  ? [
+                      {
+                        label: "Edit",
+                        icon: (
+                          <Icon color={colors.primary} name="create-outline" />
+                        ),
+                        onPress: () => {
+                          navigate("session", { session: { ...data } });
+                          bottomSheet.current?.close();
+                        },
+                      },
+                      {
+                        label: "Start session",
+                        icon: (
+                          <Icon
+                            color={colors.primary}
+                            name="caret-forward-outline"
+                          />
+                        ),
+                        onPress: () => {
+                          startSession({
+                            startedAt: new Date(),
+                            templateId: template.id,
+                            initialFormValues: sessionToFormValues(
+                              data,
+                              exercises
+                            ),
+                          });
+                          bottomSheet.current?.close();
+                        },
+                      },
+                    ]
+                  : []),
                 {
                   label: "Delete",
                   icon: <Icon color={colors.danger} name="trash-outline" />,
                   onPress: () => {
+                    deleteSession({ id: data.id });
                     bottomSheet.current?.close();
                   },
                 },
@@ -170,19 +212,30 @@ const TrainingSession = ({
   const { navigate } = useNavigation();
   const { refs, style, panGesture } = useSortable(session.id);
 
+  const isRest = session.isRest;
+
+  console.log({ session });
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View ref={refs.droppable} style={style}>
         <Animated.View ref={refs.draggable}>
-          <Paper className="mb-2 flex flex-row items-center p-2">
+          <Paper
+            className={clsx(
+              "mb-2 flex flex-row items-center p-2",
+              isRest && "border-2 border-dashed border-base-400 bg-base-800"
+            )}
+          >
             <View className="mr-2">
               <Icon color="white" name="reorder-three-outline" />
             </View>
             <TextButton
-              className="mr-auto text-lg text-white"
+              className={clsx(
+                "mr-auto text-lg text-white",
+                isRest && "text-base-300"
+              )}
               onPress={() => navigate("session", { session })}
             >
-              {session.name}
+              {isRest ? "Rest day" : session.name}
             </TextButton>
             <Icon
               color="white"

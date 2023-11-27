@@ -54,6 +54,7 @@ export const TextField = <TFormValues extends FieldValues>({
   keyboardType,
   precision = 2,
   control,
+  editable,
   ...rest
 }: TextFieldProps<TFormValues>) => {
   const focused = useSharedValue(false);
@@ -106,7 +107,7 @@ export const TextField = <TFormValues extends FieldValues>({
       )}
       <Animated.View
         className={clsx(
-          "px-2 py-1 border bg-transparent bg-base-600 w-full flex flex-row items-center rounded-lg",
+          "flex w-full flex-row items-center rounded-lg border bg-transparent bg-base-600 px-2 py-1",
           containerClassName
         )}
         style={[animatedStyle, containerStyle]}
@@ -117,9 +118,10 @@ export const TextField = <TFormValues extends FieldValues>({
           placeholderTextColor={colors.base[200]}
           onChangeText={onChange}
           value={field.value}
-          className={clsx("text-white h-6 grow", inputClassName)}
+          className={clsx("h-6 grow text-white", inputClassName)}
           style={inputStyle}
           keyboardType={keyboardType}
+          editable={editable}
           onBlur={() => {
             focused.value = false;
             field.onBlur();
@@ -140,7 +142,7 @@ export const TextField = <TFormValues extends FieldValues>({
           layout={Layout.springify()}
           className="mt-1"
         >
-          <Typography className="text-danger text-xs">
+          <Typography className="text-xs text-danger">
             {error.message}
           </Typography>
         </Animated.View>

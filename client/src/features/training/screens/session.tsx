@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { KeyboardAvoidingView } from "react-native";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack/lib/typescript/src/types";
@@ -32,6 +34,7 @@ const SessionForm = ({ exercises }: { exercises: ExerciseType[] }) => {
   const {
     params: { session },
   } = useRoute<Props["route"]>();
+  const height = useBottomTabBarHeight();
   const methods = useForm({
     defaultValues: sessionToFormValues(session, exercises),
   });
@@ -41,7 +44,7 @@ const SessionForm = ({ exercises }: { exercises: ExerciseType[] }) => {
 
   const { mutate: updateSession } = trpc.training.updateSession.useMutation({
     onSuccess: () => {
-      utils.training.getTemplates.invalidate();
+      utils.training.getTemplate.invalidate({ id: session.templateId });
       navigation.goBack();
     },
     onError: () => {
@@ -69,7 +72,12 @@ const SessionForm = ({ exercises }: { exercises: ExerciseType[] }) => {
 
   return (
     <FormProvider {...methods}>
-      <SessionFormExercises />
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+        <SessionFormExercises
+          className="py-8"
+          contentContainerStyle={{ paddingBottom: height }}
+        />
+      </KeyboardAvoidingView>
     </FormProvider>
   );
 };

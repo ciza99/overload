@@ -77,11 +77,11 @@ export const Button = ({
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       className={clsx(
-        "flex flex-row items-center justify-center py-1 px-4 mx-0 rounded-lg h-9",
+        "mx-0 flex h-9 flex-row items-center justify-center rounded-lg py-1 px-4",
         {
           "bg-primary": variant === "primary",
           "bg-base-600": variant === "secondary",
-          "bg-transparent border border-base-200": variant === "outlined",
+          "border border-base-200 bg-transparent": variant === "outlined",
         },
         className
       )}

@@ -22,6 +22,7 @@ model User {
   templateGroups TemplateGroup[]
   templates      Template[]
   sessionLogs    SessionLog[]
+  routine        Routine?
 }
 
 model RefreshToken {
@@ -43,7 +44,7 @@ model TemplateGroup {
   templates Template[]
   user      User       @relation(fields: [userId], references: [id])
   userId    Int
-  order     Int        @default(autoincrement())
+  sort      Int
 }
 
 model Template {
@@ -56,19 +57,21 @@ model Template {
   templateGroup   TemplateGroup @relation(fields: [templateGroupId], references: [id])
   templateGroupId Int
   sessions        Session[]
-  order           Int           @default(autoincrement())
+  sort            Int
+  routines        Routine[]
 }
 
 model Session {
-  id         Int               @id @default(autoincrement())
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  name       String
-  template   Template          @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  templateId Int
-  exercises  SessionExercise[]
+  id          Int               @id @default(autoincrement())
+  isRest      Boolean           @default(false)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  name        String
+  template    Template          @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId  Int
+  exercises   SessionExercise[]
   sessionLogs SessionLog[]
-  order      Int               @default(autoincrement())
+  sort        Int
 }
 
 model SessionExercise {
@@ -80,7 +83,6 @@ model SessionExercise {
   exercise   Exercise      @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId Int
   sets       ExerciseSet[]
-  order      Int           @default(autoincrement())
 }
 
 model ExerciseSet {
@@ -91,7 +93,6 @@ model ExerciseSet {
   reps              Int?
   sessionExercise   SessionExercise @relation(fields: [sessionExerciseId], references: [id], onDelete: Cascade)
   sessionExerciseId Int
-  order             Int             @default(autoincrement())
 }
 
 model Exercise {
@@ -126,13 +127,13 @@ model SessionLog {
   id        Int                  @id @default(autoincrement())
   user      User                 @relation(fields: [userId], references: [id])
   userId    Int
-  name String
+  name      String
   createdAt DateTime             @default(now())
   updatedAt DateTime             @updatedAt
   startedAt DateTime
   endedAt   DateTime
-  session    Session?       @relation(fields: [sessionId], references: [id])
-  sessionId  Int?
+  session   Session?             @relation(fields: [sessionId], references: [id])
+  sessionId Int?
   exercises SessionExerciseLog[]
 }
 
@@ -144,7 +145,6 @@ model SessionExerciseLog {
   sessionId  Int
   exercise   Exercise         @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   exerciseId Int
-  order      Int              @default(autoincrement())
   sets       ExerciseSetLog[]
 }
 
@@ -156,5 +156,15 @@ model ExerciseSetLog {
   reps              Int?
   sessionExercise   SessionExerciseLog @relation(fields: [sessionExerciseId], references: [id], onDelete: Cascade)
   sessionExerciseId Int
-  order             Int                @default(autoincrement())
+}
+
+model Routine {
+  id         Int      @id @default(autoincrement())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @unique
+  template   Template @relation(fields: [templateId], references: [id])
+  templateId Int
+  startedAt  DateTime
+  shift      Int
 }
