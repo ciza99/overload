@@ -1,6 +1,15 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { View } from "react-native";
-import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
+import {
+  addMonths,
+  eachDayOfInterval,
+  eachWeekOfInterval,
+  endOfMonth,
+  endOfWeek,
+  format,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
 
 import { trpc } from "@features/api/trpc";
 import { Icon, Spinner, Typography } from "@features/ui/components";
@@ -8,39 +17,66 @@ import { Icon, Spinner, Typography } from "@features/ui/components";
 import { CalendarItem } from "./calendar-item";
 
 export const Calendar: FC = () => {
+  const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const { data: routine } = trpc.routine.getRoutine.useQuery();
   const { data: sessionLogs } = trpc.training.listSessionLogs.useQuery({
-    lte: endOfMonth(new Date()),
-    gte: startOfMonth(new Date()),
+    gte: month,
+    lt: endOfMonth(month),
   });
 
-  console.log({ routine, sessionLogs });
   if (routine === undefined || !sessionLogs) return <Spinner />;
 
-  const days = eachDayOfInterval({
-    start: startOfMonth(new Date()),
-    end: endOfMonth(new Date()),
+  console.log(month);
+
+  const weeks = eachWeekOfInterval({
+    start: startOfWeek(month),
+    end: endOfWeek(endOfMonth(month)),
   });
 
   return (
     <View>
-      <View className="flex flex-row justify-between">
-        <Icon color="white" name="chevron-back" />
+      <View className="mb-4 flex flex-row justify-between">
+        <Icon
+          color="white"
+          name="chevron-back"
+          onPress={() => setMonth((prev) => addMonths(prev, -1))}
+        />
         <Typography weight="bold" className="text-xl">
-          {format(new Date(), "MMMM yyyy")}
+          {format(month, "MMMM yyyy")}
         </Typography>
-        <Icon color="white" name="chevron-forward" />
+        <Icon
+          color="white"
+          name="chevron-forward"
+          onPress={() => setMonth((prev) => addMonths(prev, 1))}
+        />
       </View>
-      <View className="mt-4 flex flex-row flex-wrap items-center justify-center">
-        {days.map((date) => (
-          <CalendarItem
-            key={date.getTime()}
-            sessionLogs={sessionLogs}
-            routine={routine}
-            date={date}
-          />
+      <View className="flex flex-row items-center justify-between ">
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+          <Typography
+            key={day}
+            weight="semibold"
+            className="mx-1 my-2 flex-[1] text-center uppercase"
+          >
+            {day}
+          </Typography>
         ))}
       </View>
+      {weeks.map((week) => (
+        <View className="flex flex-row" key={week.getTime()}>
+          {eachDayOfInterval({
+            start: week,
+            end: endOfWeek(week),
+          }).map((day) => (
+            <CalendarItem
+              month={month}
+              key={day.getTime()}
+              routine={routine}
+              date={day}
+              sessionLogs={sessionLogs}
+            />
+          ))}
+        </View>
+      ))}
     </View>
   );
 };

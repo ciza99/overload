@@ -104,7 +104,7 @@ export const Set = ({
             className="absolute -bottom-1 -left-full -right-full -top-1"
           />
           <Animated.View
-            className=" justify-stretch flex flex-row items-center"
+            className="justify-stretch flex flex-row items-center"
             style={rowStyle}
           >
             <View className="flex-[1] rounded-lg">

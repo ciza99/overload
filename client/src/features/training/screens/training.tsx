@@ -210,40 +210,37 @@ const TrainingSession = ({
   bottomSheetRef: RefObject<BottomSheetModalType>;
 }) => {
   const { navigate } = useNavigation();
-  const { refs, style, panGesture } = useSortable(session.id);
+  const { ref, style, panGesture } = useSortable(session.id);
 
   const isRest = session.isRest;
 
-  console.log({ session });
   return (
     <GestureDetector gesture={panGesture}>
-      <Animated.View ref={refs.droppable} style={style}>
-        <Animated.View ref={refs.draggable}>
-          <Paper
+      <Animated.View ref={ref} style={style}>
+        <Paper
+          className={clsx(
+            "mb-2 flex flex-row items-center p-2",
+            isRest && "border-2 border-dashed border-base-400 bg-base-800"
+          )}
+        >
+          <View className="mr-2">
+            <Icon color="white" name="reorder-three-outline" />
+          </View>
+          <TextButton
             className={clsx(
-              "mb-2 flex flex-row items-center p-2",
-              isRest && "border-2 border-dashed border-base-400 bg-base-800"
+              "mr-auto text-lg text-white",
+              isRest && "text-base-300"
             )}
+            onPress={() => navigate("session", { session })}
           >
-            <View className="mr-2">
-              <Icon color="white" name="reorder-three-outline" />
-            </View>
-            <TextButton
-              className={clsx(
-                "mr-auto text-lg text-white",
-                isRest && "text-base-300"
-              )}
-              onPress={() => navigate("session", { session })}
-            >
-              {isRest ? "Rest day" : session.name}
-            </TextButton>
-            <Icon
-              color="white"
-              onPress={() => bottomSheetRef.current?.present(session)}
-              name="ellipsis-horizontal-outline"
-            />
-          </Paper>
-        </Animated.View>
+            {isRest ? "Rest day" : session.name}
+          </TextButton>
+          <Icon
+            color="white"
+            onPress={() => bottomSheetRef.current?.present(session)}
+            name="ellipsis-horizontal-outline"
+          />
+        </Paper>
       </Animated.View>
     </GestureDetector>
   );

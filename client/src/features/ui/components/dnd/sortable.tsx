@@ -5,6 +5,8 @@ import {
   withTiming,
 } from "react-native-reanimated";
 
+import { useComposedRefs } from "@features/core/hooks/use-composed-refs";
+
 import { useDndContext } from "./DndContext";
 import { useDraggable } from "./draggable";
 import { useDroppable } from "./droppable";
@@ -66,10 +68,7 @@ export const useSortable = (id: NodeId) => {
     };
   }, [dragging]);
 
-  const refs = useMemo(
-    () => ({ draggable: draggableRef, droppable: droppableRef }),
-    [draggableRef, droppableRef]
-  );
+  const ref = useComposedRefs(draggableRef, droppableRef);
 
-  return { dragging, isDragging, isOver, refs, panGesture, style };
+  return { dragging, isDragging, isOver, ref, panGesture, style };
 };

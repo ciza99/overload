@@ -85,7 +85,7 @@ export const ReorderDialog = <TItem,>({
 };
 
 const Item = ({ id, label }: { id: NodeId; label: string }) => {
-  const { refs, style, panGesture, isDragging } = useSortable(id);
+  const { ref, style, panGesture, isDragging } = useSortable(id);
   const transition = useDerivedValue(
     () => withSpring(isDragging ? 1 : 0),
     [isDragging]
@@ -110,25 +110,19 @@ const Item = ({ id, label }: { id: NodeId; label: string }) => {
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View
-        ref={refs.droppable}
-        style={style}
+        ref={ref}
+        style={[style, itemStyle]}
         className={clsx(
-          "flex flex-row items-center mr-auto py-1",
+          "mr-auto flex flex-row items-center py-1",
           isDragging && "z-10"
         )}
       >
-        <Animated.View
-          ref={refs.draggable}
-          className="flex flex-row items-center"
-          style={itemStyle}
-        >
-          <Animated.Text style={textStyle}>
-            <Icon name="reorder-three-outline" />
-          </Animated.Text>
-          <Typography weight="bold" className="px-2 text-lg">
-            {label}
-          </Typography>
-        </Animated.View>
+        <Animated.Text style={textStyle}>
+          <Icon name="reorder-three-outline" />
+        </Animated.Text>
+        <Typography weight="bold" className="px-2 text-lg">
+          {label}
+        </Typography>
       </Animated.View>
     </GestureDetector>
   );

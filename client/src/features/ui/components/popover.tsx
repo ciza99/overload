@@ -20,8 +20,8 @@ export const Popover = forwardRef<View, PopoverProps>(
         <Modal transparent={true} visible={visible} className="grow">
           <TouchableWithoutFeedback onPressIn={onDismiss}>
             <Animated.View
-              entering={FadeIn}
-              exiting={FadeOut}
+              entering={FadeIn.duration(200)}
+              exiting={FadeOut.duration(200)}
               className={clsx("bg-black/50", { grow: showOverlay })}
             >
               <TouchableWithoutFeedback>

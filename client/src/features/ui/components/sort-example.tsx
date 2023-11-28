@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { View } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 
@@ -64,20 +63,18 @@ export const SortExample = () => {
 };
 
 const Item = ({ id }: { id: string }) => {
-  const { refs, style, panGesture } = useSortable(id);
+  const { ref, style, panGesture } = useSortable(id);
 
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View
-        ref={refs.draggable}
+        ref={ref}
         style={style}
         className="mt-4 w-1/2 rounded-lg bg-base-600 p-4"
       >
-        <Animated.View ref={refs.droppable}>
-          <Typography weight="bold" className="text-center">
-            {id}
-          </Typography>
-        </Animated.View>
+        <Typography weight="bold" className="text-center">
+          {id}
+        </Typography>
       </Animated.View>
     </GestureDetector>
   );
