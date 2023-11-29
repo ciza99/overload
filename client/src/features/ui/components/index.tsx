@@ -1,5 +1,5 @@
 // General design system components
-export { Button } from "./button";
+export { Button, ButtonProps } from "./button";
 export { Paper } from "./paper";
 export { Typography } from "./typography";
 export { TextButton } from "./text-button";

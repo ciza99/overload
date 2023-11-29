@@ -12,7 +12,6 @@ import { trpc } from "@features/api/trpc";
 import {
   BottomSheetModal,
   Button,
-  Divider,
   Icon,
   Paper,
   TextButton,
@@ -32,6 +31,7 @@ import {
 import { colors } from "@features/ui/theme";
 
 import { CreateSessionDialog } from "../components/create-session-dialog";
+import { useSession } from "../hooks/useSession";
 import { sessionToFormValues } from "../lib/session-to-form-values";
 import { SessionType } from "../types/training";
 
@@ -50,7 +50,7 @@ export const Training = () => {
 
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);
-  const startSession = useStore((state) => state.session.startSession);
+  const { startSession } = useSession();
   const { mutateAsync: swapSessions } =
     trpc.training.dragSwapSession.useMutation({
       onSuccess: (_, { fromId, toId }) => {
@@ -172,14 +172,7 @@ export const Training = () => {
                           />
                         ),
                         onPress: () => {
-                          startSession({
-                            startedAt: new Date(),
-                            templateId: template.id,
-                            initialFormValues: sessionToFormValues(
-                              data,
-                              exercises
-                            ),
-                          });
+                          startSession(data, exercises);
                           bottomSheet.current?.close();
                         },
                       },

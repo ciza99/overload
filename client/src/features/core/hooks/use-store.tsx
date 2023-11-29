@@ -44,7 +44,7 @@ type PopoverSlice = {
   open: <T extends object = object>(props: Popover<T>) => void;
 };
 
-type SessionState = {
+export type SessionState = {
   startedAt: Date;
   templateId: number;
   initialFormValues: SessionFormType;
@@ -52,8 +52,8 @@ type SessionState = {
 
 type SessionSlice = SessionState & {
   active: boolean;
-  startSession: (sessionData: SessionState) => void;
-  stopSession: () => void;
+  setSession: (sessionData: SessionState) => void;
+  endSession: () => void;
 };
 
 type Store = {
@@ -98,11 +98,11 @@ export const useStore = create<Store>((set) => ({
     startedAt: new Date(),
     templateId: 0,
     initialFormValues: { id: 0, name: "New session", exercises: [] },
-    startSession: (sessionData) =>
+    setSession: (sessionData) =>
       set((state) => ({
         session: { ...state.session, ...sessionData, active: true },
       })),
-    stopSession: () =>
+    endSession: () =>
       set((state) => ({ session: { ...state.session, active: false } })),
   },
 }));

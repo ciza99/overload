@@ -1,4 +1,4 @@
-import { FC, useMemo, useRef, useState } from "react";
+import { FC, ReactNode, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -28,7 +28,8 @@ import { Exercise } from "./exercise";
 export const SessionFormExercises: FC<{
   className?: string;
   contentContainerStyle?: StyleProp<ViewStyle>;
-}> = ({ className, contentContainerStyle }) => {
+  actions?: ReactNode;
+}> = ({ className, actions, contentContainerStyle }) => {
   const [reordering, setReordering] = useState(false);
   const { watch, control } = useFormContext<SessionFormType>();
   const { fields, append, remove, replace } = useFieldArray({
@@ -103,13 +104,16 @@ export const SessionFormExercises: FC<{
             )}
 
             {!reordering && (
-              <Button
-                variant="outlined"
-                beforeIcon={<Icon color="white" name="add-outline" />}
-                onPress={() => addExerciseBottomSheet.current?.present()}
-              >
-                Add exercise
-              </Button>
+              <>
+                <Button
+                  variant="outlined"
+                  beforeIcon={<Icon color="white" name="add-outline" />}
+                  onPress={() => addExerciseBottomSheet.current?.present()}
+                >
+                  Add exercise
+                </Button>
+                {actions}
+              </>
             )}
           </Animated.View>
         </ScrollContainer>

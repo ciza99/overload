@@ -11,14 +11,18 @@ import {
   Typography,
 } from "@features/ui/components";
 import { getSessionForDate } from "@features/profile/lib/routine";
+import { useSession } from "@features/training/hooks/useSession";
 
 import { Calendar } from "./parts/calendar";
 
 export const Profile = () => {
   const user = useStore((store) => store.auth.user);
-  const [toggle, setToggle] = useState(false);
+  const { startSession } = useSession();
 
-  const { data: routine } = trpc.routine.getRoutine.useQuery();
+  const { data: routine, isLoading: isRoutineLoading } =
+    trpc.routine.getRoutine.useQuery();
+  const { data: exercises, isLoading: isExercisesLoading } =
+    trpc.training.getExercises.useQuery();
   const sessionToday = useMemo(
     () => getSessionForDate(new Date(), routine),
     [routine]
@@ -41,15 +45,20 @@ export const Profile = () => {
           </Typography>
         </View>
       </Paper>
-      <Button
-        className="mt-4"
-        loading={toggle}
-        onPress={() => setToggle((prev) => !prev)}
-        beforeIcon={<Icon name="caret-forward" />}
-        disabled={sessionToday?.isRest}
-      >
-        Start training
-      </Button>
+      {!sessionToday?.isRest && (
+        <Button
+          className="mt-4"
+          onPress={() => {
+            if (!exercises || !sessionToday) return;
+            startSession(sessionToday, exercises);
+          }}
+          beforeIcon={<Icon name="caret-forward" />}
+          disabled={sessionToday?.isRest}
+          loading={isRoutineLoading || isExercisesLoading}
+        >
+          Start training
+        </Button>
+      )}
       <View className="pt-4" />
       <Calendar />
     </View>

@@ -5,6 +5,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { SharedValue } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ConfirmationDialog } from "@features/core/components/confirmation-dialog";
 import { useStore } from "@features/core/hooks/use-store";
 import { trpc } from "@features/api/trpc";
 import { Button, toast } from "@features/ui/components";
@@ -22,18 +23,19 @@ export const TrainingBottomSheet: FC<{
   const { mutate: uploadSession } = trpc.training.logSession.useMutation({
     onSuccess: () => {
       ref.current?.close();
-      stopSession();
+      endSession();
     },
     onError: () => {
       toast.show({ type: "error", text1: "Something went wrong" });
     },
   });
+  const open = useStore((state) => state.dialog.open);
   const initialFormValues = useStore(
     (state) => state.session.initialFormValues
   );
   const active = useStore((state) => state.session.active);
   const startedAt = useStore((state) => state.session.startedAt);
-  const stopSession = useStore((state) => state.session.stopSession);
+  const endSession = useStore((state) => state.session.endSession);
 
   const methods = useForm({ defaultValues: initialFormValues });
 
@@ -85,7 +87,35 @@ export const TrainingBottomSheet: FC<{
             </Button>
           </View>
           <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-            <SessionFormExercises className="overflow-visible py-4" />
+            <SessionFormExercises
+              className="overflow-visible py-4"
+              actions={
+                <Button
+                  className="mt-4 bg-danger"
+                  onPress={() => {
+                    open({
+                      title: "Cancel session",
+                      Component: ConfirmationDialog,
+                      props: {
+                        content:
+                          "Are you sure you want to cancel this session?",
+                        confirmText: "Cancel session",
+                        confirmButtonProps: {
+                          className: "bg-danger",
+                        },
+                        onConfirm: () => {
+                          endSession();
+                          ref.current?.close();
+                        },
+                        cancelText: "Keep going",
+                      },
+                    });
+                  }}
+                >
+                  Cancel session
+                </Button>
+              }
+            />
           </KeyboardAvoidingView>
         </BottomSheetScrollView>
       </FormProvider>

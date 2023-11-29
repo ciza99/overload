@@ -44,7 +44,23 @@ export const routineServiceFactory = ({ db }: { db: PrismaClient }) => {
       include: {
         template: {
           include: {
-            sessions: true,
+            sessions: {
+              include: {
+                exercises: {
+                  include: {
+                    sets: {
+                      include: {
+                        sessionExercise: {
+                          include: {
+                            exercise: true,
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
