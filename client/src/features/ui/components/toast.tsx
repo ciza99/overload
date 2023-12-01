@@ -4,6 +4,7 @@ import BaseToast, {
   ToastShowParams,
 } from "react-native-toast-message";
 
+import { colors } from "../theme";
 import { Divider } from "./divider";
 import { Icon } from "./icon";
 import { Typography } from "./typography";
@@ -13,11 +14,11 @@ const renderToast = ({ type, text1, text2 }: ToastConfigParams<unknown>) => (
     <View className="flex grow flex-row items-center rounded-lg bg-base-600/95 px-4 py-2">
       <View className="mr-2">
         {type === "success" ? (
-          <Icon color="white" name="checkmark-circle-outline" />
+          <Icon color={colors.success} name="checkmark-circle-outline" />
         ) : type === "error" ? (
-          <Icon color="white" name="alert-circle-outline" />
+          <Icon color={colors.danger} name="alert-circle-outline" />
         ) : (
-          <Icon color="white" name="information-circle-outline" />
+          <Icon color={colors.danger} name="information-circle-outline" />
         )}
       </View>
       <Divider direction="vertical" className="mr-2 bg-base-300" />

@@ -61,11 +61,11 @@ export const CalendarPopover: FC<{
               No session logs
             </Typography>
           )}
-          {sessionLogs.map(({ name, startedAt, id }) => {
+          {sessionLogs.slice(0, 3).map(({ name, startedAt, id }) => {
             return (
               <View
                 key={id}
-                className="mb-4 flex flex-row justify-between gap-x-8"
+                className="mb-2 flex flex-row justify-between gap-x-8"
               >
                 <Typography className="text-sm text-base-100">
                   {name}
@@ -76,6 +76,11 @@ export const CalendarPopover: FC<{
               </View>
             );
           })}
+          {sessionLogs.length > 3 && (
+            <Typography className="mb-2 text-xs text-base-300">
+              +{sessionLogs.length - 3} more
+            </Typography>
+          )}
           {hasLogs && (
             <TextButton
               onPress={() => {

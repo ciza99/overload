@@ -70,7 +70,7 @@ export const TextField = <TFormValues extends FieldValues>({
       borderColor: interpolateColor(
         colorTransition.value,
         [0, 1],
-        ["rgba(0,0,0,0)", colors.primary]
+        ["rgba(0,0,0,0)", colors.base[300]]
       ),
     };
   }, []);

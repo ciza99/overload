@@ -1,19 +1,15 @@
-import React, { ReactNode } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { View, ViewProps } from "react-native";
 import clsx from "clsx";
 
-type PaperProps = {
-  children?: ReactNode;
+type PaperProps = ViewProps & {
   elevation?: 1 | 2 | 3 | 4;
-  className?: string;
-  style?: StyleProp<ViewStyle>;
 };
 
 export const Paper = ({
   elevation = 1,
   children,
   className,
-  style,
+  ...props
 }: PaperProps) => {
   return (
     <View
@@ -27,7 +23,7 @@ export const Paper = ({
         },
         className
       )}
-      style={style}
+      {...props}
     >
       {children}
     </View>

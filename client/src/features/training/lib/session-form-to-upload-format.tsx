@@ -24,7 +24,7 @@ export const sessionFormToLogFormat = (
   form: SessionFormType,
   { startedAt, endedAt }: { startedAt: Date; endedAt: Date }
 ): SessionLogInputType => {
-  console.log(form);
+  console.log("FORM\n", JSON.stringify(form, null, 2));
   return {
     startedAt,
     endedAt,

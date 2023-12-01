@@ -22,7 +22,7 @@ export const Popover = forwardRef<View, PopoverProps>(
             <Animated.View
               entering={FadeIn.duration(200)}
               exiting={FadeOut.duration(200)}
-              className={clsx("bg-black/50", { grow: showOverlay })}
+              className={clsx("bg-black/75", { grow: showOverlay })}
             >
               <TouchableWithoutFeedback>
                 <View {...props} ref={ref}>

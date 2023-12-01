@@ -86,6 +86,12 @@ export const trainingProducersFactory = ({
       return await trainingService.listSessionLogs(input, ctx.user);
     }),
 
+  findSessionLog: authProcedure
+    .input(z.object({ id: z.number().nonnegative() }))
+    .query(async ({ input, ctx }) => {
+      return await trainingService.findSessionLog(input.id, ctx.user);
+    }),
+
   dragSwapSession: authProcedure
     .input(
       z

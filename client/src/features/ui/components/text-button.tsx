@@ -11,7 +11,7 @@ export const TextButton = ({ className, ...rest }: TextButtonProps) => {
   return (
     <Typography
       weight="bold"
-      className={clsx("text-primary", className)}
+      className={clsx("text-base text-primary", className)}
       {...rest}
     />
   );

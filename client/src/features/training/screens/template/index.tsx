@@ -106,6 +106,7 @@ export const Templates = () => {
                 onPress: () => {
                   open<ReorderDialogProps<TemplateGroupType>>({
                     Component: ReorderDialog,
+                    title: "Reorder groups",
                     props: {
                       items: templateGroups,
                       extractId: (item) => item.id,

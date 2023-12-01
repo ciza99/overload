@@ -21,7 +21,7 @@ export const BackdropComponent = ({
     opacity: interpolate(
       animatedIndex.value,
       [-1, 0],
-      [0, 0.5],
+      [0, 0.75],
       Extrapolate.CLAMP
     ),
   }));

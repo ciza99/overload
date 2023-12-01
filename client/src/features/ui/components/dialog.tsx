@@ -1,5 +1,6 @@
 import {
   KeyboardAvoidingView,
+  ScrollView,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -11,7 +12,15 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useStore } from "@features/core/hooks/use-store";
-import { Paper, Typography } from "@features/ui/components";
+import {
+  Button,
+  Divider,
+  Icon,
+  Paper,
+  Typography,
+} from "@features/ui/components";
+
+import { colors } from "../theme";
 
 export const Dialog = () => {
   const { dialogs, close } = useStore((state) => state.dialog);
@@ -20,40 +29,48 @@ export const Dialog = () => {
   return (
     dialog && (
       <Animated.View
-        className="absolute top-0 left-0 right-0 bottom-0 z-10"
+        className="absolute inset-0 z-10"
         entering={FadeIn}
         exiting={FadeOut}
       >
-        <TouchableWithoutFeedback onPressIn={() => close(dialog.id)}>
-          <View className="flex-1 items-center justify-center bg-black/50 px-4 py-16">
-            <TouchableWithoutFeedback>
-              <KeyboardAvoidingView
-                behavior="padding"
-                keyboardVerticalOffset={100}
-                className="w-full"
-              >
-                <Animated.View
-                  entering={ZoomIn}
-                  exiting={ZoomOut}
-                  className="w-full"
-                >
-                  <Paper className="w-full rounded-lg p-4">
-                    {dialog.title && (
-                      <Typography weight="bold" className="pb-4 text-base-200">
-                        {dialog.title}
-                      </Typography>
-                    )}
-                    <dialog.Component
-                      {...dialog.props}
-                      id={dialog.id}
-                      close={() => close(dialog.id)}
-                    />
-                  </Paper>
-                </Animated.View>
-              </KeyboardAvoidingView>
-            </TouchableWithoutFeedback>
-          </View>
+        <TouchableWithoutFeedback onPress={() => close(dialog.id)}>
+          <View className="absolute inset-0 bg-black/75" />
         </TouchableWithoutFeedback>
+        <Animated.View
+          pointerEvents="box-none"
+          className="w-full flex-1 justify-center"
+          entering={ZoomIn}
+          exiting={ZoomOut}
+        >
+          <KeyboardAvoidingView
+            className="m-4"
+            behavior="padding"
+            keyboardVerticalOffset={100}
+          >
+            <Paper className="relative max-h-full w-full rounded-lg">
+              <View className="flex flex-row items-center justify-between p-4">
+                <Typography weight="bold" className="text-base-200">
+                  {dialog.title}
+                </Typography>
+                <Button
+                  className="h-6 w-6 p-0"
+                  variant="secondary"
+                  onPress={() => close(dialog.id)}
+                >
+                  <Icon size={18} color={colors.primary} name="close" />
+                </Button>
+              </View>
+              <Divider />
+              <View className="max-h-[400px] p-4">
+                <dialog.Component
+                  {...dialog.props}
+                  id={dialog.id}
+                  close={() => close(dialog.id)}
+                />
+              </View>
+            </Paper>
+          </KeyboardAvoidingView>
+        </Animated.View>
       </Animated.View>
     )
   );

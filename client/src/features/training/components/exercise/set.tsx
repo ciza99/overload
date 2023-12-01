@@ -109,7 +109,9 @@ export const Set = ({
           >
             <View className="flex-[1] rounded-lg">
               <View className="rounded-lg bg-base-600">
-                <Typography className="py-2 text-center">{setIndex}</Typography>
+                <Typography className="py-2 text-center">
+                  {setIndex + 1}
+                </Typography>
               </View>
             </View>
             <View className="flex-[3] rounded-lg">

@@ -176,6 +176,13 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
   };
 
   const logSession = async (session: SessionLogSchema, user: User) => {
+    if (session.exercises.every(({ sets }) => sets.length === 0)) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Session must have at least one set",
+      });
+    }
+
     return await db.sessionLog.create({
       data: {
         userId: user.id,
@@ -184,12 +191,14 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
         endedAt: session.endedAt,
         name: session.name,
         exercises: {
-          create: session.exercises.map(({ exerciseId, sets }) => ({
-            exerciseId,
-            sets: {
-              create: sets.map(({ weight, reps }) => ({ weight, reps })),
-            },
-          })),
+          create: session.exercises
+            .filter(({ sets }) => sets.length > 0)
+            .map(({ exerciseId, sets }) => ({
+              exerciseId,
+              sets: {
+                create: sets.map(({ weight, reps }) => ({ weight, reps })),
+              },
+            })),
         },
       },
     });
@@ -205,6 +214,28 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
       include: {
         exercises: {
           include: {
+            sets: {
+              include: {
+                sessionExercise: {
+                  include: {
+                    exercise: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  };
+
+  const findSessionLog = async (id: number, user: User) => {
+    return await db.sessionLog.findUnique({
+      where: { id, userId: user.id },
+      include: {
+        exercises: {
+          include: {
+            exercise: true,
             sets: {
               include: {
                 sessionExercise: {
@@ -298,6 +329,7 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
     updateSession,
     logSession,
     listSessionLogs,
+    findSessionLog,
     swapSessions,
     getTemplate,
   };
