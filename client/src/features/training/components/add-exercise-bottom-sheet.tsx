@@ -44,7 +44,7 @@ export const AddExerciseBottomSheetContent = ({
           placeholder="search"
           name="search"
           control={control}
-          rightContent={<Icon name="search-outline" />}
+          rightContent={<Icon color="white" name="search-outline" />}
         />
         {filteredExercises?.map((exercise) => (
           <Fragment key={exercise.id}>
@@ -57,7 +57,7 @@ export const AddExerciseBottomSheetContent = ({
                   <View className="flex flex-row">
                     <Typography className="mr-1">
                       {exercise.bodyParts
-                        .map((bodyPart) => bodyPart.id)
+                        .map((bodyPart) => bodyPart.bodyPart.name)
                         .join(",")}
                     </Typography>
                   </View>

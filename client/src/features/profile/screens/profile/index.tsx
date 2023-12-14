@@ -23,6 +23,7 @@ export const Profile = () => {
     trpc.routine.getRoutine.useQuery();
   const { data: exercises, isLoading: isExercisesLoading } =
     trpc.training.getExercises.useQuery();
+
   const sessionToday = useMemo(
     () => getSessionForDate(new Date(), routine),
     [routine]
@@ -52,7 +53,7 @@ export const Profile = () => {
           startSession(sessionToday, exercises);
         }}
         beforeIcon={<Icon name="caret-forward" />}
-        disabled={sessionToday?.isRest}
+        disabled={!routine || sessionToday?.isRest}
         loading={isRoutineLoading || isExercisesLoading}
       >
         Start training

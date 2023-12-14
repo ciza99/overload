@@ -142,7 +142,9 @@ export const trainingServiceFactory = ({ db }: { db: PrismaClient }) => {
   };
 
   const getExercises = async () => {
-    return await db.exercise.findMany({ include: { bodyParts: true } });
+    return await db.exercise.findMany({
+      include: { bodyParts: { include: { bodyPart: true } } },
+    });
   };
 
   const updateSession = async (session: SessionSchema, user: User) => {
