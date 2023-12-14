@@ -48,10 +48,10 @@ export const SignUp = () => {
   const { handleSubmit, control } = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      username: "mike",
-      email: "mike@gmail.com",
-      password: "1234",
-      repeatPassword: "1234",
+      username: "",
+      email: "",
+      password: "",
+      repeatPassword: "",
     },
   });
 
