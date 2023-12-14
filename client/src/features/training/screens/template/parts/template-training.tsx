@@ -42,8 +42,11 @@ export const TemplateTraining = ({
     onSuccess: () => {
       utils.routine.getRoutine.invalidate();
     },
-    onError: () => {
-      toast.show({ type: "error", text1: "Something went wrong" });
+    onError: (error) => {
+      toast.show({
+        type: "error",
+        text1: error.message ?? "Something went wrong",
+      });
     },
     onSettled: () => bottomSheet.current?.close(),
   });

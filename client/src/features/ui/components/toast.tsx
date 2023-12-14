@@ -5,7 +5,6 @@ import BaseToast, {
 } from "react-native-toast-message";
 
 import { colors } from "../theme";
-import { Divider } from "./divider";
 import { Icon } from "./icon";
 import { Typography } from "./typography";
 
@@ -21,7 +20,6 @@ const renderToast = ({ type, text1, text2 }: ToastConfigParams<unknown>) => (
           <Icon color={colors.danger} name="information-circle-outline" />
         )}
       </View>
-      <Divider direction="vertical" className="mr-2 bg-base-300" />
       <View className="flex shrink flex-col">
         {text1 && <Typography className="text-lg">{text1}</Typography>}
         {text2 && <Typography className="text-base-100">{text2}</Typography>}

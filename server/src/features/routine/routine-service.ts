@@ -12,7 +12,9 @@ export const routineServiceFactory = ({ db }: { db: PrismaClient }) => {
     const template = await db.template.findUnique({
       where: { id: templateId },
       include: {
-        sessions: true,
+        _count: {
+          select: { sessions: true },
+        },
       },
     });
 
@@ -20,7 +22,14 @@ export const routineServiceFactory = ({ db }: { db: PrismaClient }) => {
       throw new TRPCError({ code: "NOT_FOUND", message: "Template not found" });
     }
 
-    const normalizedShift = (shift ?? 0) % template.sessions.length;
+    if (!template._count.sessions) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "Template has no sessions",
+      });
+    }
+
+    const normalizedShift = (shift || 0) % template._count.sessions;
 
     await db.routine.upsert({
       where: { userId: user.id },
@@ -32,6 +41,7 @@ export const routineServiceFactory = ({ db }: { db: PrismaClient }) => {
       },
       update: {
         templateId,
+        userId: user.id,
         startedAt: new Date(),
         shift: normalizedShift,
       },
