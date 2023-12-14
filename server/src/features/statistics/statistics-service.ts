@@ -4,7 +4,7 @@ import { ExerciseStatisticsInput } from "./statistics-schema";
 
 export type StatisticsService = ReturnType<typeof statisticsServiceFactory>;
 
-type OneRepMaxData = {
+type ExerciseStatisticsData = {
   weight: number;
   performedAt: Date;
 };
@@ -20,7 +20,7 @@ export const statisticsServiceFactory = ({ db }: { db: PrismaClient }) => {
     user: User
   ) => {
     if (type == "1RM") {
-      const res = await db.$queryRaw<OneRepMaxData[]>`
+      return await db.$queryRaw<ExerciseStatisticsData[]>`
         with oneRepMaxes as (
           select max(weight) as weight, DATE_TRUNC('day', sl."startedAt") as "performedAt" 
           from "ExerciseSetLog" as esl
@@ -42,9 +42,18 @@ export const statisticsServiceFactory = ({ db }: { db: PrismaClient }) => {
           from oneRepMaxes
         )
       `;
-      console.log(JSON.stringify(res, null, 2));
-      return res;
     }
+
+    const res = await db.$queryRaw<ExerciseStatisticsData[]>`
+      select sum(weight * reps) as weight, date_trunc('day', sl."startedAt") as "performedAt"
+      from "ExerciseSetLog" as esl
+      inner join "SessionExerciseLog" as sel ON sel.id = esl."sessionExerciseId"
+      inner join "SessionLog" as sl ON sl.id = sel."sessionId"
+      where sel."exerciseId" = ${exerciseId} AND sl."userId" = ${user.id} AND sl."startedAt" >= ${startDate} AND sl."startedAt" <= ${endDate}
+      group by date_trunc('day', sl."startedAt")
+    `;
+    console.log({ res });
+    return res;
   };
 
   return { getExerciseStatistics };
