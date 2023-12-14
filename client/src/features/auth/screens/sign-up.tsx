@@ -18,7 +18,10 @@ import {
   TextField,
   Typography,
 } from "@features/ui/components";
+import { colors } from "@features/ui/theme";
 import { passwordSchema } from "@features/auth/schema";
+
+import OverloadLogo from "../../../../assets/overload-logo.svg";
 
 type SignupSchema = z.infer<typeof signUpSchema>;
 
@@ -71,11 +74,14 @@ export const SignUp = () => {
     >
       <View className="grow">
         <TouchableWithoutFeedback className="grow" onPress={Keyboard.dismiss}>
-          <View className="px-7 my-auto">
-            <Typography weight="bold" className="text-3xl text-center">
-              Overload
-            </Typography>
-            <Typography weight="bold" className="text-lg mb-10 text-center">
+          <View className="my-auto px-7">
+            <View className="mb-4 flex flex-row items-end justify-center">
+              <OverloadLogo color={colors.primary} height={40} width={40} />
+              <Typography weight="bold" className="ml-4 text-center text-3xl">
+                Overload
+              </Typography>
+            </View>
+            <Typography weight="bold" className="mb-10 text-center text-lg">
               Track your progress and see results.
             </Typography>
             <TextField
@@ -122,7 +128,7 @@ export const SignUp = () => {
             </Button>
             {error && (
               <Animated.View entering={StretchInY} exiting={StretchOutY}>
-                <Typography className="text-danger text-sm text-center">
+                <Typography className="text-center text-sm text-danger">
                   {error.message}
                 </Typography>
               </Animated.View>

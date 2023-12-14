@@ -19,8 +19,11 @@ import {
   TextField,
   Typography,
 } from "@features/ui/components";
+import { colors } from "@features/ui/theme";
 import { tokenHandler } from "@features/auth/lib/token-handler";
 import { passwordSchema } from "@features/auth/schema";
+
+import OverloadLogo from "../../../../assets/overload-logo.svg";
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
@@ -75,9 +78,12 @@ export const Login = () => {
             enabled
             className="grow"
           >
-            <Typography weight="bold" className="text-center text-3xl">
-              Overload
-            </Typography>
+            <View className="mb-4 flex flex-row items-end justify-center">
+              <OverloadLogo color={colors.primary} height={40} width={40} />
+              <Typography weight="bold" className="ml-4 text-center text-3xl">
+                Overload
+              </Typography>
+            </View>
             <Typography weight="bold" className="mb-10 text-center text-lg">
               Track your progress and see results.
             </Typography>
