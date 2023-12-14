@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { View } from "react-native";
 
 import { useStore } from "@features/core/hooks/use-store";
@@ -45,20 +45,18 @@ export const Profile = () => {
           </Typography>
         </View>
       </Paper>
-      {!sessionToday?.isRest && (
-        <Button
-          className="mt-4"
-          onPress={() => {
-            if (!exercises || !sessionToday) return;
-            startSession(sessionToday, exercises);
-          }}
-          beforeIcon={<Icon name="caret-forward" />}
-          disabled={sessionToday?.isRest}
-          loading={isRoutineLoading || isExercisesLoading}
-        >
-          Start training
-        </Button>
-      )}
+      <Button
+        className="mt-4"
+        onPress={() => {
+          if (!exercises || !sessionToday) return;
+          startSession(sessionToday, exercises);
+        }}
+        beforeIcon={<Icon name="caret-forward" />}
+        disabled={sessionToday?.isRest}
+        loading={isRoutineLoading || isExercisesLoading}
+      >
+        Start training
+      </Button>
       <View className="pt-4" />
       <Calendar />
     </View>

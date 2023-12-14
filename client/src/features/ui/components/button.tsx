@@ -92,6 +92,7 @@ export const Button = forwardRef<View, ButtonProps>(
             "bg-primary": variant === "primary",
             "bg-base-600": variant === "secondary",
             "border border-base-200 bg-transparent": variant === "outlined",
+            "bg-base-500": disabled,
           },
           className
         )}
