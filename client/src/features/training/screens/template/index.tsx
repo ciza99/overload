@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { ScrollView, View } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import clsx from "clsx";
 import { useForm } from "react-hook-form";
 
 import {
@@ -14,7 +15,8 @@ import {
   BottomSheetModalType,
   Button,
   Icon,
-  TextField,
+  Paper,
+  TextButton,
   toast,
   Typography,
 } from "@features/ui/components";
@@ -27,11 +29,13 @@ import { TemplateGroup } from "./parts/template-group";
 
 export const Templates = () => {
   const utils = trpc.useUtils();
+  const { navigate } = useNavigation();
   const { data: templateGroups } = trpc.training.getGroupedTemplates.useQuery();
+  const { data: routine } = trpc.routine.getRoutine.useQuery();
   useFocusEffect(() => {
     utils.training.getGroupedTemplates.invalidate();
+    utils.routine.getRoutine.invalidate();
   });
-  const { control } = useForm({});
   const open = useStore((state) => state.dialog.open);
   const groupBottomSheetActions = useRef<BottomSheetModalType>(null);
 
@@ -57,6 +61,24 @@ export const Templates = () => {
     <>
       <ScrollView>
         <View className="p-4">
+          <Paper className="mb-8 p-3">
+            <Typography className="mb-2 text-base" weight="semibold">
+              Curent training plan:
+            </Typography>
+            <View className="flex flex-row justify-between">
+              <Typography>{routine?.template?.name ?? "-"}</Typography>
+              <TextButton
+                disabled={!routine}
+                className={clsx(!routine && "text-base-400")}
+                onPress={() =>
+                  routine &&
+                  navigate("training", { templateId: routine.templateId })
+                }
+              >
+                Edit
+              </TextButton>
+            </View>
+          </Paper>
           <Typography weight="bold" className="mb-5 text-2xl">
             Trainings
           </Typography>

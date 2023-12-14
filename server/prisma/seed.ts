@@ -67,14 +67,14 @@ const seed = async () => {
       {
         id: 3,
         name: "5/3/1",
-        sort: 2,
+        sort: 3,
         userId: user.id,
         templateGroupId: 1,
       },
       {
         id: 4,
         name: "5/3/1",
-        sort: 2,
+        sort: 4,
         userId: user.id,
         templateGroupId: 2,
       },

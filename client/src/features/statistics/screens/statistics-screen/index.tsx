@@ -1,27 +1,14 @@
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 import { Dimensions, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useFocusEffect } from "@react-navigation/native";
-import {
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  isSameDay,
-  startOfMonth,
-} from "date-fns";
+import { eachDayOfInterval, format, isSameDay, startOfMonth } from "date-fns";
 import { LineChart } from "react-native-chart-kit";
 
 import { trpc } from "@features/api/trpc";
-import {
-  BottomSheetModal,
-  BottomSheetModalType,
-  Button,
-  Icon,
-  Typography,
-} from "@features/ui/components";
+import { Icon, Typography } from "@features/ui/components";
 import { SelectItem, SelectRoot } from "@features/ui/components/select";
 import { colors } from "@features/ui/theme";
-import { AddExerciseBottomSheetContent } from "@features/training/components/add-exercise-bottom-sheet";
 
 type ExerciseStatisticsType = "1RM" | "Volume";
 
@@ -36,13 +23,9 @@ export const StatisticsScreen = () => {
     number | undefined
   >(exercises?.[0].id);
 
-  const ref = useRef<BottomSheetModalType>(null);
-
   const selectedExercise = exercises?.find(
     (exercise) => exercise.id === selectedExerciseId
   );
-
-  console.log({ type });
 
   const { data: statistics, refetch } =
     trpc.statistics.getExerciseStatistics.useQuery({
@@ -80,8 +63,6 @@ export const StatisticsScreen = () => {
       return acc;
     return [...acc, index];
   }, []);
-
-  console.log({ statistics, labels });
 
   return (
     <>

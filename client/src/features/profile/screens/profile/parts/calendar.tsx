@@ -24,9 +24,12 @@ export const Calendar: FC = () => {
     lt: endOfMonth(month),
   });
 
-  if (routine === undefined || !sessionLogs) return <Spinner />;
-
-  console.log(month);
+  if (routine === undefined || !sessionLogs)
+    return (
+      <View className="align-center flex flex-row justify-center p-4">
+        <Spinner />
+      </View>
+    );
 
   const weeks = eachWeekOfInterval({
     start: startOfWeek(month),

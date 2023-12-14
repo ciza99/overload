@@ -11,7 +11,10 @@ export const getSessionForDate = (date: Date, routine?: Routine) => {
     date,
     startOfDay(new Date(routine.startedAt))
   );
-  const offset = moduloWrap(routineDayOffset, routine.template.sessions.length);
+  const offset = moduloWrap(
+    routineDayOffset + routine.shift,
+    routine.template.sessions.length
+  );
 
   return routine.template.sessions[offset];
 };

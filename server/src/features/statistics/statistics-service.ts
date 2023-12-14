@@ -52,7 +52,6 @@ export const statisticsServiceFactory = ({ db }: { db: PrismaClient }) => {
       where sel."exerciseId" = ${exerciseId} AND sl."userId" = ${user.id} AND sl."startedAt" >= ${startDate} AND sl."startedAt" <= ${endDate}
       group by date_trunc('day', sl."startedAt")
     `;
-    console.log({ res });
     return res;
   };
 

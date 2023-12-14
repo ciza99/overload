@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import clsx from "clsx";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -16,6 +15,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useIsFirstRender } from "@features/core/hooks/use-is-first-render";
+import { clamp } from "@features/core/lib/worklets";
 import { TextField, Typography } from "@features/ui/components";
 import { colors } from "@features/ui/theme";
 
@@ -23,13 +23,7 @@ import { SessionFormType, SetFormType } from "../../types/training";
 
 const swipeThreshold = 100;
 
-const clamp = (value: number, lowerBound: number, upperBound: number) => {
-  "worklet";
-  return Math.min(Math.max(lowerBound, value), upperBound);
-};
-
 export const Set = ({
-  set,
   setIndex,
   exerciseIndex,
   removeSelf,
