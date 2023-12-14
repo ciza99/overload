@@ -1,6 +1,5 @@
 import { FC, ReactNode, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Animated, { Layout } from "react-native-reanimated";
 
@@ -29,7 +28,8 @@ export const SessionFormExercises: FC<{
   className?: string;
   contentContainerStyle?: StyleProp<ViewStyle>;
   actions?: ReactNode;
-}> = ({ className, actions, contentContainerStyle }) => {
+  disableSetCompletion?: boolean;
+}> = ({ className, actions, contentContainerStyle, disableSetCompletion }) => {
   const [reordering, setReordering] = useState(false);
   const { watch, control } = useFormContext<SessionFormType>();
   const { fields, append, remove, replace } = useFieldArray({
@@ -81,6 +81,7 @@ export const SessionFormExercises: FC<{
             <ScrollContainer>
               {fields.map((sessionExercise, exerciseIndex) => (
                 <Exercise
+                  disableSetCompletion={disableSetCompletion}
                   id={sessionExercise.id}
                   key={sessionExercise.id}
                   exercise={sessionExercise}

@@ -1,6 +1,11 @@
 import { useRef } from "react";
-import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 import { trpc } from "@features/api/trpc";
 import {
@@ -11,6 +16,7 @@ import {
 } from "@features/ui/components";
 import { BottomSheetActions } from "@features/ui/components/bottom-sheet-actions";
 import { BottomSheetModalType } from "@features/ui/components/bottom-sheet-modal";
+import { useSortable } from "@features/ui/components/dnd";
 import { colors } from "@features/ui/theme";
 
 import { TemplateGroupType } from "../../../types/template";
@@ -20,6 +26,7 @@ export const TemplateTraining = ({
 }: {
   template: TemplateGroupType["templates"][number];
 }) => {
+  const { ref, style, isDragging, panGesture } = useSortable(template.id);
   const utils = trpc.useUtils();
   const { navigate } = useNavigation();
   const bottomSheet = useRef<BottomSheetModalType>(null);
@@ -41,24 +48,41 @@ export const TemplateTraining = ({
     onSettled: () => bottomSheet.current?.close(),
   });
 
+  const itemStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(
+        isDragging ? colors.base[600] : "rgba(0,0,0,0)"
+      ),
+    };
+  }, [isDragging]);
+
   return (
     <>
-      <View className="ml-8 flex flex-row items-center p-2">
-        <View className="mr-2">
-          <Icon size="lg" color={colors.primary} name="reorder-three-outline" />
-        </View>
-        <Typography
-          className="mr-auto text-lg"
-          onPress={() => navigate("training", { templateId: template.id })}
+      <GestureDetector gesture={panGesture}>
+        <Animated.View
+          style={[style, itemStyle]}
+          className="ml-8 flex flex-row items-center rounded-lg p-2"
         >
-          {template.name}
-        </Typography>
-        <Icon
-          onPress={() => bottomSheet.current?.present()}
-          color="white"
-          name="ellipsis-horizontal-outline"
-        />
-      </View>
+          <Animated.View className="mr-2" ref={ref}>
+            <Icon
+              size="lg"
+              color={colors.primary}
+              name="reorder-three-outline"
+            />
+          </Animated.View>
+          <Typography
+            className="mr-auto text-lg"
+            onPress={() => navigate("training", { templateId: template.id })}
+          >
+            {template.name}
+          </Typography>
+          <Icon
+            onPress={() => bottomSheet.current?.present()}
+            color="white"
+            name="ellipsis-horizontal-outline"
+          />
+        </Animated.View>
+      </GestureDetector>
 
       <BottomSheetModal ref={bottomSheet} snapPoints={["50%"]}>
         <BottomSheetActions

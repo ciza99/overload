@@ -8,7 +8,7 @@ import { trpc } from "@features/api/trpc";
 import { Button, Icon, TextField } from "@features/ui/components";
 
 const createGroupSchema = z.object({
-  name: z.string().min(3, "Name is too short").max(20, "Name is too long"),
+  name: z.string().min(4, "Name is too short").max(20, "Name is too long"),
 });
 
 export const CreateGroupDialog = ({ close }: DialogProps) => {

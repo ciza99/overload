@@ -39,6 +39,8 @@ type TextFieldProps<TFormValues extends FieldValues> = Omit<
   precision?: number;
   rightContent?: ReactNode;
   control: Control<TFormValues>;
+  borderColor?: string;
+  activeBorderColor?: string;
 };
 
 export const TextField = <TFormValues extends FieldValues>({
@@ -55,6 +57,8 @@ export const TextField = <TFormValues extends FieldValues>({
   precision = 2,
   control,
   editable,
+  borderColor = "rgba(0,0,0,0)",
+  activeBorderColor = colors.base[300],
   ...rest
 }: TextFieldProps<TFormValues>) => {
   const focused = useSharedValue(false);
@@ -63,6 +67,7 @@ export const TextField = <TFormValues extends FieldValues>({
   );
   const {
     field,
+    formState: { submitCount },
     fieldState: { isTouched, error },
   } = useController({ name, control });
   const animatedStyle = useAnimatedStyle(() => {
@@ -70,10 +75,10 @@ export const TextField = <TFormValues extends FieldValues>({
       borderColor: interpolateColor(
         colorTransition.value,
         [0, 1],
-        ["rgba(0,0,0,0)", colors.base[300]]
+        [borderColor, activeBorderColor]
       ),
     };
-  }, []);
+  }, [borderColor, activeBorderColor]);
 
   const onChange = (value: string) => {
     if (
@@ -97,6 +102,8 @@ export const TextField = <TFormValues extends FieldValues>({
 
     field.onChange(value);
   };
+
+  const showErrors = isTouched || submitCount > 0;
 
   return (
     <View className={className} style={style}>
@@ -135,7 +142,7 @@ export const TextField = <TFormValues extends FieldValues>({
         {rightContent}
       </Animated.View>
 
-      {isTouched && error && (
+      {showErrors && error && (
         <Animated.View
           entering={StretchInY}
           exiting={StretchOutY}

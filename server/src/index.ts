@@ -1,5 +1,5 @@
-import { appFactory } from "components/app/app-factory";
-import { createAppConfig } from "config/app-config";
+import { appFactory } from "features/core/lib/app-factory";
+import { createAppConfig } from "features/core/lib/config-factory";
 
 const config = createAppConfig();
 const app = appFactory({ config });

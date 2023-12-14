@@ -53,7 +53,7 @@ type RegisterFnc = (
 ) => void;
 type UnregisterFnc = (id: NodeId, type: NodeType) => void;
 
-type OnDragEndFnc = (props: {
+export type OnDragEndFnc = (props: {
   active: Draggable;
   over: Droppable | null;
 }) => void;

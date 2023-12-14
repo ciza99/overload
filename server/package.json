@@ -8,12 +8,13 @@
     "seed": "ts-node ./prisma/seed.ts"
   },
   "scripts": {
-    "start": "NODE_PATH=./dist/src node build/index.js",
+    "start": "NODE_PATH=./build node build/index.js",
     "dev": "NODE_PATH=./src nodemon",
-    "build": "yarn tsc --project tsconfig.build.json",
+    "build": "npx tsc --project tsconfig.build.json",
     "test": "jest -c ./jest.config.json"
   },
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^10.6.1",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -30,6 +31,7 @@
     "nodemon": "^3.0.1",
     "prettier": "^2.7.1",
     "prisma": "5",
+    "prisma-erd-generator": "^1.12.0-alpha.2",
     "ts-jest": "^29.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.2"

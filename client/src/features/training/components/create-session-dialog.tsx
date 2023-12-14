@@ -10,7 +10,7 @@ import { Toggle } from "@features/ui/components/toggle";
 
 const createSessionSchema = z.discriminatedUnion("isRest", [
   z.object({
-    name: z.string().min(3, "Name is too short").max(20, "Name is too long"),
+    name: z.string().min(4, "Name is too short").max(20, "Name is too long"),
     isRest: z.literal(false),
   }),
   z.object({

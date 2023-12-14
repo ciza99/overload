@@ -6,6 +6,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useStore } from "@features/core/hooks/use-store";
+import { trpc } from "@features/api/trpc";
 import {
   BottomSheetModalType,
   Collapsable,
@@ -13,6 +14,11 @@ import {
   Icon,
   Typography,
 } from "@features/ui/components";
+import {
+  DndContext,
+  restrictToYAxis,
+  SortableContext,
+} from "@features/ui/components/dnd";
 
 import { CreateTemplateDialog } from "../../../components/create-template-dialog";
 import { TemplateGroupType } from "../../../types/template";
@@ -27,6 +33,11 @@ export const TemplateGroup = ({
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   const open = useStore((state) => state.dialog.open);
+  const utils = trpc.useUtils();
+
+  const { mutate: swapTemplates } = trpc.training.dragSwapTemplate.useMutation({
+    onSuccess: () => utils.training.getGroupedTemplates.invalidate(),
+  });
 
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [
@@ -43,7 +54,7 @@ export const TemplateGroup = ({
     <View>
       <View className="flex flex-row items-center p-2">
         <Pressable
-          className="flex flex-row items-center grow"
+          className="flex grow flex-row items-center"
           onPress={() => setCollapsed((prev) => !prev)}
         >
           <Animated.View style={chevronStyle} className="mr-2">
@@ -75,18 +86,31 @@ export const TemplateGroup = ({
         />
       </View>
 
-      <Collapsable open={!collapsed}>
-        {group.templates.length === 0 && (
-          <View className="p-2 bg-base-700 rounded-lg mb-2">
-            <Typography className="text-base-300 text-center text-lg">
-              No templates
-            </Typography>
-          </View>
-        )}
-        {group.templates.map((template) => (
-          <TemplateTraining key={template.id} template={template} />
-        ))}
-      </Collapsable>
+      <DndContext
+        modifiers={[restrictToYAxis]}
+        onDragEnd={({ active, over }) => {
+          if (!over || active.id === over.id) return;
+          swapTemplates({
+            fromId: active.id as number,
+            toId: over.id as number,
+          });
+        }}
+      >
+        <SortableContext items={group.templates.map(({ id }) => id)}>
+          <Collapsable open={!collapsed}>
+            {group.templates.length === 0 && (
+              <View className="mb-2 rounded-lg bg-base-700 p-2">
+                <Typography className="text-center text-lg text-base-300">
+                  No templates
+                </Typography>
+              </View>
+            )}
+            {group.templates.map((template) => (
+              <TemplateTraining key={template.id} template={template} />
+            ))}
+          </Collapsable>
+        </SortableContext>
+      </DndContext>
 
       <Divider className="my-2" />
     </View>

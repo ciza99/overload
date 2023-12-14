@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import clsx from "clsx";
 import { useFormContext, useWatch } from "react-hook-form";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -22,6 +23,11 @@ import { SessionFormType, SetFormType } from "../../types/training";
 
 const swipeThreshold = 100;
 
+const clamp = (value: number, lowerBound: number, upperBound: number) => {
+  "worklet";
+  return Math.min(Math.max(lowerBound, value), upperBound);
+};
+
 export const Set = ({
   set,
   setIndex,
@@ -29,6 +35,7 @@ export const Set = ({
   removeSelf,
   setsLength,
   removeExercise,
+  disableCompletion,
 }: {
   set: SetFormType;
   exerciseIndex: number;
@@ -36,6 +43,7 @@ export const Set = ({
   removeSelf: () => void;
   setsLength: number;
   removeExercise: () => void;
+  disableCompletion?: boolean;
 }) => {
   const { control, setValue } = useFormContext<SessionFormType>();
   const isFirstRender = useIsFirstRender();
@@ -60,7 +68,7 @@ export const Set = ({
     })
     .onEnd(({ translationX }) => {
       tx.value = withTiming(0);
-      if (translationX > swipeThreshold) {
+      if (translationX > swipeThreshold && !disableCompletion) {
         runOnJS(toggleCompleted)();
       }
       if (translationX < -swipeThreshold) {
@@ -70,7 +78,15 @@ export const Set = ({
 
   const rowStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateX: tx.value }],
+      transform: [
+        {
+          translateX: clamp(
+            tx.value,
+            -Infinity,
+            disableCompletion ? 0 : Infinity
+          ),
+        },
+      ],
     };
   });
 
@@ -79,7 +95,7 @@ export const Set = ({
       opacity: interpolate(
         tx.value,
         [-swipeThreshold, 0, swipeThreshold],
-        [0.5, completed ? 0.5 : 0, 0.5],
+        [0.5, 0, disableCompletion ? 0 : 0.5],
         Extrapolation.CLAMP
       ),
       backgroundColor: interpolateColor(
@@ -89,6 +105,14 @@ export const Set = ({
       ),
     };
   }, [completed]);
+
+  const borderColor = completed ? colors.primary : "rgba(0,0,0,0)";
+
+  const borderStyle = useAnimatedStyle(() => {
+    return {
+      borderColor,
+    };
+  }, [borderColor]);
 
   return (
     <Animated.View
@@ -108,11 +132,14 @@ export const Set = ({
             style={rowStyle}
           >
             <View className="flex-[1] rounded-lg">
-              <View className="rounded-lg bg-base-600">
+              <Animated.View
+                style={borderStyle}
+                className="rounded-lg border bg-base-600"
+              >
                 <Typography className="py-2 text-center">
                   {setIndex + 1}
                 </Typography>
-              </View>
+              </Animated.View>
             </View>
             <View className="flex-[3] rounded-lg">
               <View className="rounded-lg">
@@ -121,6 +148,8 @@ export const Set = ({
             </View>
             <View className="flex-[3] rounded-lg">
               <TextField
+                borderColor={borderColor}
+                activeBorderColor={completed ? colors.primary : undefined}
                 control={control}
                 name={`exercises.${exerciseIndex}.sets.${setIndex}.weight`}
                 maxLength={6}
@@ -131,6 +160,8 @@ export const Set = ({
             <View className="flex-[3] rounded-lg">
               <TextField
                 control={control}
+                borderColor={borderColor}
+                activeBorderColor={completed ? colors.primary : undefined}
                 maxLength={6}
                 name={`exercises.${exerciseIndex}.sets.${setIndex}.reps`}
                 className="ml-3"

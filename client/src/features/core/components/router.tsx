@@ -12,6 +12,7 @@ import { Login } from "@features/auth/screens/login";
 import { SignUp } from "@features/auth/screens/sign-up";
 import { HistoryRouter } from "@features/history/components/history-router";
 import { ProfileRouter } from "@features/profile/components/profile-router";
+import { StatisticsRouter } from "@features/statistics/components/statistics-router";
 
 import { TrainingRouter } from "../../training/components/training-router";
 import { SessionType } from "../../training/types/training";
@@ -35,6 +36,7 @@ export type NavigationParamMap = {
   history: undefined;
   historyRoutes: undefined;
 
+  statisticsRoutes: undefined;
   statistics: undefined;
 };
 
@@ -134,13 +136,13 @@ const ProtectedRoutes = () => {
       />
       <Tab.Screen
         options={{
-          title: screens.statistics.title,
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Icon size="lg" name="stats-chart" color={color} />
           ),
         }}
-        name={screens.statistics.key}
-        component={SortExample}
+        name={screens.statisticsRoutes.key}
+        component={StatisticsRouter}
       />
     </Tab.Navigator>
   );

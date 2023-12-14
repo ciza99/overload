@@ -20,6 +20,7 @@ import {
   SortableContext,
   useSortable,
 } from "@features/ui/components/dnd";
+import { OnDragEndFnc } from "@features/ui/components/dnd/DndContext";
 import { NodeId } from "@features/ui/components/dnd/types";
 import { colors } from "@features/ui/theme";
 
@@ -27,13 +28,15 @@ export type ReorderDialogProps<TItem> = {
   items: TItem[];
   extractId: (item: TItem) => NodeId;
   extractLabel: (item: TItem) => string;
-  onDone: (items: TItem[]) => void;
+  onDone?: (items: TItem[]) => void;
+  onSwap?: OnDragEndFnc;
 };
 
 export const ReorderDialog = <TItem,>({
   items: initialItems,
   extractLabel,
   onDone,
+  onSwap,
   close,
   extractId,
 }: DialogProps<ReorderDialogProps<TItem>>) => {
@@ -55,6 +58,7 @@ export const ReorderDialog = <TItem,>({
 
         if (activeIndex === -1 || overIndex === -1) return;
         setItems(arrayMove(items, activeIndex, overIndex));
+        onSwap?.({ active, over });
       }}
     >
       <View className="w-full">
@@ -72,7 +76,7 @@ export const ReorderDialog = <TItem,>({
             className="mt-4"
             beforeIcon={<Icon name="checkmark-done-outline" />}
             onPress={() => {
-              onDone(items);
+              onDone?.(items);
               close();
             }}
           >

@@ -1,6 +1,10 @@
 import { RefObject, useMemo, useRef } from "react";
 import { View } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import clsx from "clsx";
 import { GestureDetector } from "react-native-gesture-handler";
@@ -32,7 +36,6 @@ import { colors } from "@features/ui/theme";
 
 import { CreateSessionDialog } from "../components/create-session-dialog";
 import { useSession } from "../hooks/useSession";
-import { sessionToFormValues } from "../lib/session-to-form-values";
 import { SessionType } from "../types/training";
 
 type Props = NativeStackScreenProps<NavigationParamMap, "training">;
@@ -46,6 +49,9 @@ export const Training = () => {
   } = useRoute<Props["route"]>();
   const { data: template } = trpc.training.getTemplate.useQuery({
     id: templateId,
+  });
+  useFocusEffect(() => {
+    utils.training.getTemplate.invalidate({ id: templateId });
   });
 
   const { navigate } = useNavigation();
@@ -224,7 +230,10 @@ const TrainingSession = ({
               "mr-auto text-lg text-white",
               isRest && "text-base-300"
             )}
-            onPress={() => navigate("session", { session })}
+            onPress={() => {
+              if (isRest) return;
+              navigate("session", { session });
+            }}
           >
             {isRest ? "Rest day" : session.name}
           </TextButton>

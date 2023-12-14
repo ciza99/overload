@@ -74,6 +74,7 @@ const SessionForm = ({ exercises }: { exercises: ExerciseType[] }) => {
     <FormProvider {...methods}>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
         <SessionFormExercises
+          disableSetCompletion
           className="py-8"
           contentContainerStyle={{ paddingBottom: height }}
         />

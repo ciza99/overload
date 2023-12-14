@@ -29,6 +29,7 @@ export const Exercise = ({
   removeSelf,
   exerciseActionsBottomSheet,
   reordering,
+  disableSetCompletion,
 }: {
   id: string;
   exercise: ExerciseFormType;
@@ -36,6 +37,7 @@ export const Exercise = ({
   removeSelf: () => void;
   exerciseActionsBottomSheet: RefObject<BottomSheetModalType>;
   reordering: boolean;
+  disableSetCompletion?: boolean;
 }) => {
   const { control } = useFormContext<SessionFormType>();
   const { fields, append, remove } = useFieldArray({
@@ -122,6 +124,7 @@ export const Exercise = ({
               setsLength={fields.length}
               removeSelf={() => remove(setIndex)}
               removeExercise={removeSelf}
+              disableCompletion={disableSetCompletion}
             />
           ))}
           <Animated.View layout={Layout}>

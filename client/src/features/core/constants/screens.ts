@@ -42,6 +42,10 @@ export const screens: ScreensMap = {
     key: "session",
     title: "Session",
   },
+  statisticsRoutes: {
+    key: "statisticsRoutes",
+    title: "",
+  },
   statistics: {
     key: "statistics",
     title: "Statistics",
